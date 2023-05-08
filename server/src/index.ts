@@ -1,68 +1,88 @@
 import { WebSocket, WebSocketServer } from 'ws';
 import * as dotenv from 'dotenv';
 import { SpeechClient } from '@google-cloud/speech';
+import { createHttpServer } from './http';
+import connectDB from './database';
+import { createSocketServer } from './web-socket';
 
 dotenv.config();
 
-const socketServer = new WebSocketServer({ port: 3001 });
+// On connections
 
-const Rooms = {};
+// HttpServer
+const httpServer = createHttpServer();
 
-// Rooms[id].messages.push();
+// SocketServer
+const socketServer = createSocketServer();
 
-socketServer.on('connection', (socketClient) => {
-  // RoomID
-  console.log('Client connected');
-  const client = new SpeechClient({
-    credentials: {
-      client_email: process.env.GOOGLE_CLIENT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY,
-    },
+(async () => {
+  const { success, error } = await connectDB();
+
+  if (!success) return;
+
+  const PORT = process.env.PORT_HTTP || 3001;
+  httpServer.listen(PORT, () => {
+    console.log(`⚡️ Server started on http://localhost:${PORT}`);
   });
+})();
 
-  const recognizeStream = client
-    .streamingRecognize({
-      config: {
-        encoding: 'WEBM_OPUS',
-        sampleRateHertz: 16000,
-        languageCode: 'en-US',
-      },
-      interimResults: false,
-    })
-    .on('error', console.error)
-    .on('data', (data) => {
-      data.results[0];
-      console.log(new Date().toISOString());
-      console.log(
-        `Transcription: ${data.results[0].alternatives[0].transcript}`
-      );
+// Rooms[id].messages.push()
 
-      // SAVE TO LOCAL MEMORY
+// socketServer.on('connection', (socketClient, request) => {
 
-      // SEND to RoomID + Save it to MONGO?
-      // socketServer.clients.forEach((client) => {
-      //   if (client.roomID === 'thisroom' && client.readyState === WebSocket.OPEN) {
-      //     client.send('Data')
-      //   }
-      // })
+//   console.log(request.headers.roomid);
+//   // RoomID
+//   console.log('Client connected');
+//   const client = new SpeechClient({
+//     credentials: {
+//       client_email: process.env.GOOGLE_CLIENT_EMAIL,
+//       private_key: process.env.GOOGLE_PRIVATE_KEY,
+//     },
+//   });
 
-      // schedulere
-    });
+//   const recognizeStream = client
+//     .streamingRecognize({
+//       config: {
+//         encoding: 'WEBM_OPUS',
+//         sampleRateHertz: 16000,
+//         languageCode: 'en-US',
+//       },
+//       interimResults: false,
+//     })
+//     .on('error', console.error)
+//     .on('data', (data) => {
+//       data.results[0];
+//       console.log(new Date().toISOString());
+//       console.log(
+//         `Transcription: ${data.results[0].alternatives[0].transcript}`
+//       );
 
-  socketClient.on('error', console.error);
+//       // SAVE TO LOCAL MEMORY
 
-  socketClient.on('message', (data) => {
-    console.log(data);
+//       // SEND to RoomID + Save it to MONGO?
+//       // socketServer.clients.forEach((client) => {
+//       //   if (client.roomID === 'thisroom' && client.readyState === WebSocket.OPEN) {
+//       //     client.send('Data')
+//       //   }
+//       // })
 
-    recognizeStream.write(data);
+//       // schedulere
+//     });
 
-    // Instance of google client
+//   socketClient.on('error', console.error);
 
-    // Socket connection
+//   socketClient.on('message', (data) => {
+//     console.log(data);
 
-    // on('event' => {
-    // Update mongo document..
-    // socketClient.send('sfajbfaisj)
-    // })
-  });
-});
+//     recognizeStream.write(data);
+
+//     // Instance of google client
+
+//     // Socket connection
+
+//     // on('event' => {
+//     // Update mongo document..
+//     // socketClient.send('sfajbfaisj)
+//     // })
+//   });
+// });
