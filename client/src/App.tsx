@@ -122,8 +122,9 @@ interface AppProps {
 
 const App: React.FC<AppProps> = (props:AppProps) => {
   const participantRef = dbRef.child('participants')
+  const {user} = props
    useEffect(() => {
-    connectedRef.on('value', snap => {
+    connectedRef.on('value', (snap) => {
       if(snap.val()){
         const defaultPreferences = {
           audio: true,
@@ -142,11 +143,12 @@ const App: React.FC<AppProps> = (props:AppProps) => {
         })
         userRef.onDisconnect().remove();
       }
-    })
-
+    });
   }, [])
+
   useEffect(() => {
-    if(props.user) {
+    console.log('aaa')
+    if(user !== null) {
       participantRef.on('child_added', (snap) => {
         const {userName, preferences} = snap.val()
         props.addParticipant({
@@ -160,9 +162,12 @@ const App: React.FC<AppProps> = (props:AppProps) => {
         props.removeParticipant(snap.key as string)
         })
     }
-  },[props.user])
+  },[user])
   return (
-    <h1>{JSON.stringify(props.user)}{JSON.stringify(props.participants)}</h1>
+    <div>
+      Current User: {JSON.stringify(props.user)}<br></br>
+      Participants: {JSON.stringify(props.participants)}
+    </div>
   )
 }
 
