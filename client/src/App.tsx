@@ -107,9 +107,10 @@
 //   );
 // }
 
-import React, { FC, useEffect } from "react";
+import React, { Dispatch, FC, useEffect } from "react";
 import dbRef, { userName, connectedRef } from "./server/firebase";
-
+import {connect} from 'react-redux';
+import { addParticipant, removeParticipant, setUser } from "./store/actionCreator";
 
 const App: FC = () => {
   const participantRef = dbRef.child('participants')
@@ -134,4 +135,18 @@ const App: FC = () => {
   )
 }
 
-export default App;
+const mapStateToProps = (state: any) => {
+  return {
+    user: state.currentUser,
+    participants: state.participants,
+  };
+}
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    setUser: (user) => dispatch(setUser(user)),
+    addParticipant: (participant) => dispatch(addParticipant(participant)),
+    removeParticipant: (participantKey) => dispatch(removeParticipant(participantKey)),
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(App);
