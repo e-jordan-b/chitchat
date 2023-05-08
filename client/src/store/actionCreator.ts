@@ -11,7 +11,7 @@ export const setUser = (user: any) => {
 
 export const addParticipant = (participant: any) => {
   return {
-    type: SET_USER,
+    type: ADD_USERS,
     payload: {
       participant,
     },
@@ -20,7 +20,7 @@ export const addParticipant = (participant: any) => {
 
 export const removeParticipant = (participantKey: any) => {
   return {
-    type: SET_USER,
+    type: REMOVE_USERS,
     payload: {
       participantKey,
     },

@@ -112,7 +112,15 @@ import dbRef, { userName, connectedRef } from "./server/firebase";
 import {connect} from 'react-redux';
 import { addParticipant, removeParticipant, setUser } from "./store/actionCreator";
 
-const App: FC = () => {
+interface AppProps {
+  setUser: (user: { [key: string]: any }) => void;
+  addParticipant: (participant: { [key: string]: any }) => void;
+  removeParticipant: (participantId: string) => void;
+  user: any,
+  participants: any
+}
+
+const App: React.FC<AppProps> = (props:AppProps) => {
   const participantRef = dbRef.child('participants')
    useEffect(() => {
     connectedRef.on('value', snap => {
@@ -126,12 +134,35 @@ const App: FC = () => {
           userName,
           preferences: defaultPreferences
         });
+        props.setUser({
+          [userRef.key as string]: {
+            userName,
+            ...defaultPreferences,
+          }
+        })
         userRef.onDisconnect().remove();
       }
     })
-  })
+
+  }, [])
+  useEffect(() => {
+    if(props.user) {
+      participantRef.on('child_added', (snap) => {
+        const {userName, preferences} = snap.val()
+        props.addParticipant({
+          [snap.key as string]: {
+            userName,
+            ...preferences
+          }
+        })
+      })
+      participantRef.on('child_removed', (snap) => {
+        props.removeParticipant(snap.key as string)
+        })
+    }
+  },[props.user])
   return (
-    <h1>{userName}</h1>
+    <h1>{JSON.stringify(props.user)}{JSON.stringify(props.participants)}</h1>
   )
 }
 
@@ -142,11 +173,11 @@ const mapStateToProps = (state: any) => {
   };
 }
 
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapDispatchToProps = (dispatch: any) => {
   return {
-    setUser: (user) => dispatch(setUser(user)),
-    addParticipant: (participant) => dispatch(addParticipant(participant)),
-    removeParticipant: (participantKey) => dispatch(removeParticipant(participantKey)),
+    setUser: (user: any) => dispatch(setUser(user)),
+    addParticipant: (participant: any) => dispatch(addParticipant(participant)),
+    removeParticipant: (participantKey: any) => dispatch(removeParticipant(participantKey)),
   }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -3,6 +3,8 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux'
 import { createStore } from 'redux';
 import { reducer } from "./store/reducer"
+import App from './App';
+import React from 'react';
 
 const store = createStore(reducer)
 
