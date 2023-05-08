@@ -3,6 +3,8 @@ import logo from './logo.svg';
 import './App.css';
 import { blob } from 'stream/consumers';
 
+console.log('a')
+
 function App() {
   const audioRef1 = useRef<HTMLAudioElement>(null);
   const audioRef2 = useRef<HTMLAudioElement>(null);
