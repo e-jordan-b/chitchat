@@ -4,6 +4,7 @@ import { getFirestore, collection, getDoc, doc, setDoc, addDoc, onSnapshot, upda
 import '../call.css'
 
 const firebaseConfig = {
+  //TODO export into .env file
   apiKey: "AIzaSyCCtVo2gU7eBFsW4RqhMnoC6_qghEaahRI",
   authDomain: "test2-876c9.firebaseapp.com",
   projectId: "test2-876c9",
