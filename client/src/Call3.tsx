@@ -4,7 +4,7 @@ import { getFirestore, collection, getDoc, doc, setDoc, addDoc, onSnapshot, upda
 
 let initialState = {
   callButtonDisable: true,
-  answerButtonDisable: true,
+  answerButtonDisable: false,
   webcamButtonDisable: false,
   hangupButtonDisable: true
 }
@@ -12,7 +12,7 @@ let initialState = {
 const Call: React.FC = () => {
   const [disabled, setDisabled] = useState(initialState);
   const videoRef = useRef<HTMLVideoElement>(null)
-  
+  const localVideoRef = useRef<HTMLVideoElement>(null)
   const firebaseConfig = {
     apiKey: "AIzaSyDsYKaXtjxhueQL_tlKwYRFffeFZidWLGU",
     authDomain: "videocall-77bc8.firebaseapp.com",
@@ -21,7 +21,7 @@ const Call: React.FC = () => {
     messagingSenderId: "416852717529",
     appId: "1:416852717529:web:ed6188b4975e206d0173c8"
   };
-  
+
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
@@ -30,7 +30,7 @@ const Call: React.FC = () => {
   const servers = {
     iceServers: [
       {
-        urls: ['stun:stun1.1.google.com:19302', 'stun:stun2.1.google.com:19302']
+        urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302']
       }
     ],
     iceCandidatePoolSize: 10,
@@ -42,36 +42,59 @@ const Call: React.FC = () => {
   const callInput = document.querySelector('#callInput') as HTMLInputElement;
 
   const HandleWebcamButtonClick = async () => {
-    var constraints = { audio: true, video: { width: 1280, height: 720 } };
-    navigator.mediaDevices
-      .getUserMedia(constraints)
-      .then(function(localStream) {
-        let video = document.querySelector("#webcamVideo") as HTMLVideoElement;
-        video.srcObject = localStream;
+    // var constraints = { audio: true, video: { width: 1280, height: 720 } };
+    // navigator.mediaDevices
+    //   .getUserMedia(constraints)
+    //   .then(function(localStream) {
+    //     let video = document.querySelector("#webcamVideo") as HTMLVideoElement;
+    //     console.log(localStream, 'localStream')
+    //     video.srcObject = localStream;
 
-        localStream.getTracks().forEach(track => {
-          pc.addTrack(track, localStream);
-        })
-      })
-      .catch(function(err) {
-        console.log(err.name + ": " + err.message);
-      }); // always check for errors at the end.
-    
-  
+    //     localStream.getTracks().forEach(track => {
+    //       pc.addTrack(track, localStream);
+    //     })
+    //   })
+    //   .catch(function(err) {
+    //     console.log(err.name + ": " + err.message);
+    //   }); // always check for errors at the end.
+
     // initalizing the remote server to the mediastream
+
+
     let remoteStream: MediaStream = new MediaStream();
-  
-    pc.ontrack = event => {
-        event.streams[0].getTracks().forEach(track => {
+
+    let localStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true
+    })
+
+    pc.ontrack = (event) => {
+      console.log('im HHEEEEERE')
+        event.streams[0].getTracks().forEach((track) => {
             remoteStream.addTrack(track)
         })
-    }  
-  
+    }
+
+    localStream.getTracks().forEach(track => {
+      pc.addTrack(track, localStream);
+    })
+
+
     // displaying the video data from the stream to the webpage
-    let remoteVideo = document.querySelector('#remoteVideo') as HTMLVideoElement;
-    console.log(remoteStream)
-    // remoteVideo.current.srcObject = remoteStream;
-    if(videoRef.current) videoRef.current.srcObject = remoteStream
+    // let remoteVideo = document.querySelector('#remoteVideo') as HTMLVideoElement;
+    console.log(remoteStream, "mediaastreeeam")
+    // remoteVideo.srcObject = remoteStream;
+
+    if(localVideoRef.current){
+      localVideoRef.current.srcObject = localStream;
+      // localVideoRef.current.play()
+    }
+    if(remoteStream && videoRef.current){
+      console.log('insideVideoRefCurrent')
+      videoRef.current.srcObject = remoteStream;
+      videoRef.current.play()
+    }
+    // if(videoRef.current) videoRef.current.srcObject = remoteStream
     // enabling and disabling interface based on the current condtion
     let afterClickState = {
       callButtonDisable: false,
@@ -81,7 +104,7 @@ const Call: React.FC = () => {
     }
     setDisabled(afterClickState);
   }
-  
+
   const handleCallButtonClick = async () => {
     // Reference Firestore collection
     const callDocRef = doc(collection(db, "calls"))
@@ -92,6 +115,7 @@ const Call: React.FC = () => {
 
     // Get candidates for caller, save to db
     pc.onicecandidate = event => {
+      console.log('IM ON ICECANDIDATE')
       if(event.candidate){
         const candidateJson = event.candidate.toJSON();
         addDoc(offerCandidates, candidateJson);
@@ -112,7 +136,7 @@ const Call: React.FC = () => {
     // Listen for remote answer
     onSnapshot(callDocRef, (snapshot) => {
       const data = snapshot.data();
-      console.log('CALLDOCREF DATA', data)
+      // console.log('CALLDOCREF DATA', data)
       if (!pc.currentRemoteDescription && data?.answer) {
         const answerDescription = new RTCSessionDescription(data.answer);
         pc.setRemoteDescription(answerDescription)
@@ -122,6 +146,7 @@ const Call: React.FC = () => {
     // When answered, add candidate to peer connection
     onSnapshot(answerCandidates, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
+        console.log(change, 'change')
         if(change.type === 'added') {
           const candidate = new RTCIceCandidate(change.doc.data());
           pc.addIceCandidate(candidate);
@@ -130,7 +155,7 @@ const Call: React.FC = () => {
     });
 
   }
-  
+
   const handleAnswerButtonClick = async () => {
     const callId = callInput.value;
     const callDoc = doc(collection(db, 'calls'), callId);
@@ -168,6 +193,7 @@ const Call: React.FC = () => {
         if(change.type === 'added') {
           let data = change.doc.data();
           pc.addIceCandidate(new RTCIceCandidate(data))
+          console.log('on offercandidates addicecandidate')
         }
       })
     })
@@ -179,7 +205,7 @@ const Call: React.FC = () => {
       <div className="videos">
         <span>
           <h3>Local Stream</h3>
-          <video id="webcamVideo" autoPlay playsInline></video>
+          <video id="webcamVideo" ref={localVideoRef} autoPlay playsInline></video>
         </span>
         <span>
           <h3>Remote Stream</h3>
@@ -195,7 +221,7 @@ const Call: React.FC = () => {
 
       <h2>3. Join a Call</h2>
       <p>Answer the call from a different browser window or device</p>
-      
+
       <input id="callInput" />
       <button id="answerButton" onClick={handleAnswerButtonClick} disabled={disabled.answerButtonDisable}>Answer</button>
 

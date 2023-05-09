@@ -1,7 +1,7 @@
+//@ts-nocheck
 import React, { useEffect, useRef, useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { blob } from 'stream/consumers';
+// import './App.css';
+// import { blob } from 'stream/consumers';
 import Call from './Call3';
 
 // function App() {
@@ -141,14 +141,282 @@ import Call from './Call3';
   //   });
   //   return devices;
   // };
+
+  // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, getDoc, doc, setDoc, addDoc, onSnapshot, updateDoc } from 'firebase/firestore'
+import './call.css'
+
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCCtVo2gU7eBFsW4RqhMnoC6_qghEaahRI",
+  authDomain: "test2-876c9.firebaseapp.com",
+  projectId: "test2-876c9",
+  storageBucket: "test2-876c9.appspot.com",
+  messagingSenderId: "720642594094",
+  appId: "1:720642594094:web:c1acb8640d990c64ac56bf"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const servers = {
+  iceServers: [
+    {
+      urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302']
+    }
+  ],
+  iceCandidatePoolSize: 10,
+};
+
+const pc = new RTCPeerConnection(servers)
+
 const App: React.FC = () => {
+  // return (
+  //   <div className="App">
+  //     {/* <audio ref={audioRef1} controls={true} /> */}
+  //     {/* <audio ref={audioRef2} controls={true} /> */}
+  //     <Call/>
+  //   </div>
+  // );
+  const [currentPage, setCurrentPage] = useState("home");
+  const [joinCode, setJoinCode] = useState("");
+
   return (
-    <div className="App">
-      {/* <audio ref={audioRef1} controls={true} /> */}
-      {/* <audio ref={audioRef2} controls={true} /> */}
-      <Call/>
+      <div className="app">
+          {currentPage === "home" ? (
+              <Menu
+                  joinCode={joinCode}
+                  setJoinCode={setJoinCode}
+                  setPage={setCurrentPage}
+              />
+          ) : (
+              <Videos
+                  mode={currentPage}
+                  callId={joinCode}
+                  setPage={setCurrentPage}
+              />
+          )}
+      </div>
+  );
+}
+
+interface props {
+  joinCode: any,
+}
+
+const Menu: React.FC = ({joinCode, setPage, setJoinCode}) => {
+  return (
+    <div className="home">
+        <div className="create box">
+            <button onClick={() => setPage("create")}>Create Call</button>
+        </div>
+
+        <div className="answer box">
+            <input
+                value={joinCode}
+                onChange={(e) => setJoinCode(e.target.value)}
+                placeholder="Join with code"
+            />
+            <button onClick={() => setPage("join")}>Answer</button>
+        </div>
     </div>
   );
+}
+
+const Videos: React.FC = ({mode, callId, setPage}) => {
+  const [webcamActive, setWebcamActive] = useState(false);
+  const [roomId, setRoomId] = useState(callId);
+  console.log(roomId)
+  const localRef = useRef();
+  const remoteRef = useRef();
+
+  const setupSources = async () => {
+    const  localStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true
+    })
+    const remoteStream = new MediaStream();
+
+    localStream.getTracks().forEach(track => {
+      pc.addTrack(track, localStream);
+    })
+
+    pc.ontrack = (event) => {
+      console.log('im HHEEEEERE')
+        event.streams[0].getTracks().forEach((track) => {
+            remoteStream.addTrack(track)
+        })
+    }
+
+    localRef.current.srcObject = localStream;
+    remoteRef.current.srcObject = remoteStream;
+
+    setWebcamActive(true)
+
+    if(mode === "create") {
+      const callDoc = doc(collection(db, "calls"));
+      const offerCandidates = collection(callDoc, 'offerCandidates');
+      const answerCandidates = collection(callDoc, 'answerCandidates');
+
+      setRoomId(callDoc.id)
+
+      pc.onicecandidate = (event) => {
+        event.candidate &&
+          addDoc(offerCandidates, event.candidate.toJSON())
+      };
+
+      const offerDescription = await pc.createOffer();
+      await pc.setLocalDescription(offerDescription);
+
+      const offer = {
+        sdp: offerDescription.sdp,
+        type: offerDescription.type
+      };
+
+      await setDoc(callDoc, { offer })
+
+      onSnapshot(callDoc, (snapshot) => {
+        const data = snapshot.data();
+        if(!pc.currentRemoteDescription && data?.answer) {
+          const answerDescription = new RTCSessionDescription(data.answer)
+          pc.setRemoteDescription(answerDescription);
+        }
+      })
+
+      onSnapshot(answerCandidates, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if(change.type === 'added') {
+            let data = change.doc.data()
+            pc.addIceCandidate(new RTCIceCandidate(data))
+          }
+        })
+      })
+    } else if (mode === 'join') {
+      const callDoc = doc(collection(db, 'calls'), callId);
+      const answerCandidates = collection(callDoc, 'answerCandidates');
+      const offerCandidates = collection(callDoc, 'offerCandidates');
+
+      pc.onicecandidate = (event) => {
+        event.candidate &&
+          addDoc(answerCandidates, event.candidate.toJSON())
+      }
+
+      const callData = (await getDoc(callDoc)).data();
+
+      const offerDescription = callData.offer;
+      await pc.setRemoteDescription(new RTCSessionDescription(offerDescription))
+
+      const answerDescription = await pc.createAnswer();
+      await pc.setLocalDescription(answerDescription)
+
+      const answer = {
+        type: answerDescription.type,
+        sdp: answerDescription.sdp
+      }
+
+      await updateDoc(callDoc, { answer })
+
+      onSnapshot(offerCandidates, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if(change.type === 'added') {
+            let data = change.doc.data();
+            pc.addIceCandidate(new RTCIceCandidate(data))
+          }
+        })
+      })
+    }
+    pc.onconnectionstatechange = (event) => {
+      if (pc.connectionState === 'disconnected') {
+        hangUp()
+      }
+    }
+  }
+
+  const hangUp = async () => {
+    pc.close();
+
+    if(roomId) {
+      let roomRef = doc(collection(db, 'calls'), roomId);
+      await roomRef.collection('anwerCandidates')
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            doc.ref.delete()
+          })
+        })
+      await roomRef.collection('offerCandidates')
+        .get()
+        .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            doc.ref.delete()
+          })
+        })
+      await roomRef.delete()
+    }
+    window.location.reload()
+  }
+
+  return (
+    <div className="videos">
+        <video
+            ref={localRef}
+            autoPlay
+            playsInline
+            className="local"
+            muted
+        />
+        <video ref={remoteRef} autoPlay playsInline className="remote" />
+
+        <div className="buttonsContainer">
+            <button
+                onClick={hangUp}
+                disabled={!webcamActive}
+                className="hangup button"
+            >
+                {/* <HangupIcon /> */}
+            </button>
+            <div tabIndex={0} role="button" className="more button">
+                {/* <MoreIcon /> */}
+                <div className="popover">
+                    <button
+                        onClick={() => {
+                            navigator.clipboard.writeText(roomId);
+                        }}
+                    >
+                        {/* <CopyIcon />  */}
+                        Copy joining code
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {!webcamActive && (
+            <div className="modalContainer">
+                <div className="modal">
+                    <h3>
+                        Turn on your camera and microphone and start the
+                        call
+                    </h3>
+                    <div className="container">
+                        <button
+                            onClick={() => setPage("home")}
+                            className="secondary"
+                        >
+                            Cancel
+                        </button>
+                        <button onClick={setupSources}>Start</button>
+                    </div>
+                </div>
+            </div>
+        )}
+    </div>
+);
+
 }
 
 export default App;
