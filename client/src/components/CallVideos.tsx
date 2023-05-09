@@ -54,25 +54,25 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
     peerConnection.ontrack = (event) => {
       console.log('im HHEEEEERE')
         event.streams[0].getTracks().forEach((track) => {
-            remoteStream.addTrack(track)
+            remoteStream.addTrack(track);
         })
     }
 
     if(localRef.current) localRef.current.srcObject = localStream;
     if(remoteRef.current) remoteRef.current.srcObject = remoteStream;
 
-    setWebcamActive(true)
+    setWebcamActive(true);
 
     if(mode === "create") {
       const callDoc = doc(collection(db, "calls"));
       const offerCandidates = collection(callDoc, 'offerCandidates');
       const answerCandidates = collection(callDoc, 'answerCandidates');
 
-      setRoomId(callDoc.id)
+      setRoomId(callDoc.id);
 
       peerConnection.onicecandidate = (event) => {
         event.candidate &&
-          addDoc(offerCandidates, event.candidate.toJSON())
+          addDoc(offerCandidates, event.candidate.toJSON());
       };
 
       const offerDescription = await peerConnection.createOffer();
@@ -83,12 +83,12 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
         type: offerDescription.type
       };
 
-      await setDoc(callDoc, { offer })
+      await setDoc(callDoc, { offer });
 
       onSnapshot(callDoc, (snapshot) => {
         const data = snapshot.data();
         if(!peerConnection.currentRemoteDescription && data?.answer) {
-          const answerDescription = new RTCSessionDescription(data.answer)
+          const answerDescription = new RTCSessionDescription(data.answer);
           peerConnection.setRemoteDescription(answerDescription);
         }
       })
