@@ -1,4 +1,3 @@
-//@ts-nocheck
 import React, { useEffect, useRef, useState } from 'react';
 // import './App.css';
 // import { blob } from 'stream/consumers';
@@ -143,279 +142,292 @@ import React, { useEffect, useRef, useState } from 'react';
   // };
 
   // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDoc, doc, setDoc, addDoc, onSnapshot, updateDoc } from 'firebase/firestore'
-import './call.css'
+// import { initializeApp } from "firebase/app";
+// import { getFirestore, collection, getDoc, doc, setDoc, addDoc, onSnapshot, updateDoc, getDocs, deleteDoc } from 'firebase/firestore'
+// import './call.css'
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+// // TODO: Add SDKs for Firebase products that you want to use
+// // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCCtVo2gU7eBFsW4RqhMnoC6_qghEaahRI",
-  authDomain: "test2-876c9.firebaseapp.com",
-  projectId: "test2-876c9",
-  storageBucket: "test2-876c9.appspot.com",
-  messagingSenderId: "720642594094",
-  appId: "1:720642594094:web:c1acb8640d990c64ac56bf"
-};
+// // Your web app's Firebase configuration
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCCtVo2gU7eBFsW4RqhMnoC6_qghEaahRI",
+//   authDomain: "test2-876c9.firebaseapp.com",
+//   projectId: "test2-876c9",
+//   storageBucket: "test2-876c9.appspot.com",
+//   messagingSenderId: "720642594094",
+//   appId: "1:720642594094:web:c1acb8640d990c64ac56bf"
+// };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// // Initialize Firebase
+// const app = initializeApp(firebaseConfig);
+// const db = getFirestore(app);
 
-const servers = {
-  iceServers: [
-    {
-      urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302']
-    }
-  ],
-  iceCandidatePoolSize: 10,
-};
+// const servers = {
+//   iceServers: [
+//     {
+//       urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302']
+//     }
+//   ],
+//   iceCandidatePoolSize: 10,
+// };
 
-const pc = new RTCPeerConnection(servers)
-
+// const peerConnection = new RTCPeerConnection(servers)
+import Call from './components/Call';
 const App: React.FC = () => {
-  // return (
-  //   <div className="App">
-  //     {/* <audio ref={audioRef1} controls={true} /> */}
-  //     {/* <audio ref={audioRef2} controls={true} /> */}
-  //     <Call/>
-  //   </div>
-  // );
-  const [currentPage, setCurrentPage] = useState("home");
-  const [joinCode, setJoinCode] = useState("");
-
+//   // Federicos original code within APP component
+//   // return (
+//   //   <div className="App">
+//   //     {/* <audio ref={audioRef1} controls={true} /> */}
+//   //     {/* <audio ref={audioRef2} controls={true} /> */}
+//   //     <Call/>
+//   //   </div>
+//   // );
   return (
-      <div className="app">
-          {currentPage === "home" ? (
-              <Menu
-                  joinCode={joinCode}
-                  setJoinCode={setJoinCode}
-                  setPage={setCurrentPage}
-              />
-          ) : (
-              <Videos
-                  mode={currentPage}
-                  callId={joinCode}
-                  setPage={setCurrentPage}
-              />
-          )}
-      </div>
-  );
-}
+    <Call/>
+  )
+//   const [currentPage, setCurrentPage] = useState<string>("home");
+//   const [joinCode, setJoinCode] = useState<string>("");
 
-interface props {
-  joinCode: any,
-}
+//   return (
+//       <div className="app">
+//           {currentPage === "home" ? (
+//               <Menu
+//                   joinCode={joinCode}
+//                   setJoinCode={setJoinCode}
+//                   setPage={setCurrentPage}
+//               />
+//           ) : (
+//               <Videos
+//                   mode={currentPage}
+//                   callId={joinCode}
+//                   setPage={setCurrentPage}
+//               />
+//           )}
+//       </div>
+//   );
+// }
 
-const Menu: React.FC = ({joinCode, setPage, setJoinCode}) => {
-  return (
-    <div className="home">
-        <div className="create box">
-            <button onClick={() => setPage("create")}>Create Call</button>
-        </div>
+// interface menuProps {
+//   joinCode: string,
+//   setPage: React.Dispatch<React.SetStateAction<string>>,
+//   setJoinCode: React.Dispatch<React.SetStateAction<string>>
+// }
 
-        <div className="answer box">
-            <input
-                value={joinCode}
-                onChange={(e) => setJoinCode(e.target.value)}
-                placeholder="Join with code"
-            />
-            <button onClick={() => setPage("join")}>Answer</button>
-        </div>
-    </div>
-  );
-}
+// const Menu: React.FC<menuProps> = ({joinCode, setPage, setJoinCode}: menuProps) => {
+//   return (
+//     <div className="home">
+//         <div className="create box">
+//             <button onClick={() => setPage("create")}>Create Call</button>
+//         </div>
 
-const Videos: React.FC = ({mode, callId, setPage}) => {
-  const [webcamActive, setWebcamActive] = useState(false);
-  const [roomId, setRoomId] = useState(callId);
-  console.log(roomId)
-  const localRef = useRef();
-  const remoteRef = useRef();
+//         <div className="answer box">
+//             <input
+//                 value={joinCode}
+//                 onChange={(e) => setJoinCode(e.target.value)}
+//                 placeholder="Join with code"
+//             />
+//             <button onClick={() => setPage("join")}>Answer</button>
+//         </div>
+//     </div>
+//   );
+// }
 
-  const setupSources = async () => {
-    const  localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true
-    })
-    const remoteStream = new MediaStream();
+// interface videoProps {
+//   mode: string,
+//   callId: string,
+//   setPage: React.Dispatch<React.SetStateAction<string>>,
+// }
 
-    localStream.getTracks().forEach(track => {
-      pc.addTrack(track, localStream);
-    })
+// const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
+//   const [webcamActive, setWebcamActive] = useState(false);
+//   const [roomId, setRoomId] = useState(callId);
+//   console.log(roomId)
+//   const localRef = useRef<HTMLVideoElement>(null);
+//   const remoteRef = useRef<HTMLVideoElement>(null);
 
-    pc.ontrack = (event) => {
-      console.log('im HHEEEEERE')
-        event.streams[0].getTracks().forEach((track) => {
-            remoteStream.addTrack(track)
-        })
-    }
+//   const setupSources = async () => {
+//     const  localStream = await navigator.mediaDevices.getUserMedia({
+//       video: true,
+//       audio: true
+//     })
+//     const remoteStream = new MediaStream();
 
-    localRef.current.srcObject = localStream;
-    remoteRef.current.srcObject = remoteStream;
+//     localStream.getTracks().forEach(track => {
+//       peerConnection.addTrack(track, localStream);
+//     })
 
-    setWebcamActive(true)
+//     peerConnection.ontrack = (event) => {
+//       console.log('im HHEEEEERE')
+//         event.streams[0].getTracks().forEach((track) => {
+//             remoteStream.addTrack(track)
+//         })
+//     }
 
-    if(mode === "create") {
-      const callDoc = doc(collection(db, "calls"));
-      const offerCandidates = collection(callDoc, 'offerCandidates');
-      const answerCandidates = collection(callDoc, 'answerCandidates');
+//     if(localRef.current) localRef.current.srcObject = localStream;
+//     if(remoteRef.current) remoteRef.current.srcObject = remoteStream;
 
-      setRoomId(callDoc.id)
+//     setWebcamActive(true)
 
-      pc.onicecandidate = (event) => {
-        event.candidate &&
-          addDoc(offerCandidates, event.candidate.toJSON())
-      };
+//     if(mode === "create") {
+//       const callDoc = doc(collection(db, "calls"));
+//       const offerCandidates = collection(callDoc, 'offerCandidates');
+//       const answerCandidates = collection(callDoc, 'answerCandidates');
 
-      const offerDescription = await pc.createOffer();
-      await pc.setLocalDescription(offerDescription);
+//       setRoomId(callDoc.id)
 
-      const offer = {
-        sdp: offerDescription.sdp,
-        type: offerDescription.type
-      };
+//       peerConnection.onicecandidate = (event) => {
+//         event.candidate &&
+//           addDoc(offerCandidates, event.candidate.toJSON())
+//       };
 
-      await setDoc(callDoc, { offer })
+//       const offerDescription = await peerConnection.createOffer();
+//       await peerConnection.setLocalDescription(offerDescription);
 
-      onSnapshot(callDoc, (snapshot) => {
-        const data = snapshot.data();
-        if(!pc.currentRemoteDescription && data?.answer) {
-          const answerDescription = new RTCSessionDescription(data.answer)
-          pc.setRemoteDescription(answerDescription);
-        }
-      })
+//       const offer = {
+//         sdp: offerDescription.sdp,
+//         type: offerDescription.type
+//       };
 
-      onSnapshot(answerCandidates, (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if(change.type === 'added') {
-            let data = change.doc.data()
-            pc.addIceCandidate(new RTCIceCandidate(data))
-          }
-        })
-      })
-    } else if (mode === 'join') {
-      const callDoc = doc(collection(db, 'calls'), callId);
-      const answerCandidates = collection(callDoc, 'answerCandidates');
-      const offerCandidates = collection(callDoc, 'offerCandidates');
+//       await setDoc(callDoc, { offer })
 
-      pc.onicecandidate = (event) => {
-        event.candidate &&
-          addDoc(answerCandidates, event.candidate.toJSON())
-      }
+//       onSnapshot(callDoc, (snapshot) => {
+//         const data = snapshot.data();
+//         if(!peerConnection.currentRemoteDescription && data?.answer) {
+//           const answerDescription = new RTCSessionDescription(data.answer)
+//           peerConnection.setRemoteDescription(answerDescription);
+//         }
+//       })
 
-      const callData = (await getDoc(callDoc)).data();
+//       onSnapshot(answerCandidates, (snapshot) => {
+//         snapshot.docChanges().forEach((change) => {
+//           if(change.type === 'added') {
+//             let data = change.doc.data()
+//             peerConnection.addIceCandidate(new RTCIceCandidate(data))
+//           }
+//         })
+//       })
+//     } else if (mode === 'join') {
+//       const callDoc = doc(collection(db, 'calls'), callId);
+//       const answerCandidates = collection(callDoc, 'answerCandidates');
+//       const offerCandidates = collection(callDoc, 'offerCandidates');
 
-      const offerDescription = callData.offer;
-      await pc.setRemoteDescription(new RTCSessionDescription(offerDescription))
+//       peerConnection.onicecandidate = (event) => {
+//         event.candidate &&
+//           addDoc(answerCandidates, event.candidate.toJSON())
+//       }
 
-      const answerDescription = await pc.createAnswer();
-      await pc.setLocalDescription(answerDescription)
+//       const callData = (await getDoc(callDoc)).data();
 
-      const answer = {
-        type: answerDescription.type,
-        sdp: answerDescription.sdp
-      }
+//       const offerDescription = callData?.offer;
+//       await peerConnection.setRemoteDescription(new RTCSessionDescription(offerDescription))
 
-      await updateDoc(callDoc, { answer })
+//       const answerDescription = await peerConnection.createAnswer();
+//       await peerConnection.setLocalDescription(answerDescription)
 
-      onSnapshot(offerCandidates, (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if(change.type === 'added') {
-            let data = change.doc.data();
-            pc.addIceCandidate(new RTCIceCandidate(data))
-          }
-        })
-      })
-    }
-    pc.onconnectionstatechange = (event) => {
-      if (pc.connectionState === 'disconnected') {
-        hangUp()
-      }
-    }
-  }
-  //change syntax test test test
-  const hangUp = async () => {
-    pc.close();
+//       const answer = {
+//         type: answerDescription.type,
+//         sdp: answerDescription.sdp
+//       }
 
-    if(roomId) {
-      let roomRef = doc(collection(db, 'calls'), roomId);
-      await roomRef.collection('anwerCandidates')
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            doc.ref.delete()
-          })
-        })
-      await roomRef.collection('offerCandidates')
-        .get()
-        .then((querySnapshot) => {
-          querySnapshot.forEach((doc) => {
-            doc.ref.delete()
-          })
-        })
-      await roomRef.delete()
-    }
-    window.location.reload()
-  }
+//       await updateDoc(callDoc, { answer })
 
-  return (
-    <div className="videos">
-        <video
-            ref={localRef}
-            autoPlay
-            playsInline
-            className="local"
-            muted
-        />
-        <video ref={remoteRef} autoPlay playsInline className="remote" />
+//       onSnapshot(offerCandidates, (snapshot) => {
+//         snapshot.docChanges().forEach((change) => {
+//           if(change.type === 'added') {
+//             let data = change.doc.data();
+//             peerConnection.addIceCandidate(new RTCIceCandidate(data))
+//           }
+//         })
+//       })
+//     }
 
-        <div className="buttonsContainer">
-            <button
-                onClick={hangUp}
-                disabled={!webcamActive}
-                className="hangup button"
-            >
-                {/* <HangupIcon /> */}
-            </button>
-            <div tabIndex={0} role="button" className="more button">
-                {/* <MoreIcon /> */}
-                <div className="popover">
-                    <button
-                        onClick={() => {
-                            navigator.clipboard.writeText(roomId);
-                        }}
-                    >
-                        {/* <CopyIcon />  */}
-                        Copy joining code
-                    </button>
-                </div>
-            </div>
-        </div>
+//     peerConnection.onconnectionstatechange = (event) => {
+//       if (peerConnection.connectionState === 'disconnected') {
+//         hangUp()
+//       }
+//     }
+//   }
+//   //change syntax test test test
+//   const hangUp = async () => {
+//     peerConnection.close();
 
-        {!webcamActive && (
-            <div className="modalContainer">
-                <div className="modal">
-                    <h3>
-                        Turn on your camera and microphone and start the
-                        call
-                    </h3>
-                    <div className="container">
-                        <button
-                            onClick={() => setPage("home")}
-                            className="secondary"
-                        >
-                            Cancel
-                        </button>
-                        <button onClick={setupSources}>Start</button>
-                    </div>
-                </div>
-            </div>
-        )}
-    </div>
-);
+//     if(roomId) {
+//       const roomRef = doc(db, 'calls', roomId);
+//       const answerCandidatesRef = collection(roomRef, 'answerCandidates');
+//       const offerCandidatesRef = collection(roomRef, 'offerCandidates');
+
+//       const answerCandidatesSnapshot = await getDocs(answerCandidatesRef);
+//       answerCandidatesSnapshot.forEach((doc) => {
+//         deleteDoc(doc.ref);
+//       });
+
+//       const offerCandidatesSnapshot = await getDocs(offerCandidatesRef);
+//       offerCandidatesSnapshot.forEach((doc) => {
+//         deleteDoc(doc.ref);
+//       });
+
+//       await deleteDoc(roomRef);
+//     }
+
+//     window.location.reload()
+//   }
+
+//   return (
+//     <div className="videos">
+//         <video
+//             ref={localRef}
+//             autoPlay
+//             playsInline
+//             className="local"
+//             muted
+//         />
+//         <video ref={remoteRef} autoPlay playsInline className="remote" />
+
+//         <div className="buttonsContainer">
+//             <button
+//                 onClick={hangUp}
+//                 disabled={!webcamActive}
+//                 className="hangup button"
+//             >
+//                 {/* <HangupIcon /> */}
+//             </button>
+//             <div tabIndex={0} role="button" className="more button">
+//                 {/* <MoreIcon /> */}
+//                 <div className="popover">
+//                     <button
+//                         onClick={() => {
+//                             navigator.clipboard.writeText(roomId);
+//                         }}
+//                     >
+//                         {/* <CopyIcon />  */}
+//                         Copy joining code
+//                     </button>
+//                 </div>
+//             </div>
+//         </div>
+
+//         {!webcamActive && (
+//             <div className="modalContainer">
+//                 <div className="modal">
+//                     <h3>
+//                         Turn on your camera and microphone and start the
+//                         call
+//                     </h3>
+//                     <div className="container">
+//                         <button
+//                             onClick={() => setPage("home")}
+//                             className="secondary"
+//                         >
+//                             Cancel
+//                         </button>
+//                         <button onClick={setupSources}>Start</button>
+//                     </div>
+//                 </div>
+//             </div>
+//         )}
+//     </div>
+// );
 
 }
 
