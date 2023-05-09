@@ -1,17 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { blob } from 'stream/consumers';
+import Call from './components/Call';
+// import './App.css';
+// import { blob } from 'stream/consumers';
+// import Call from './Call3';
 
 function App() {
   const [socket, _] = useState<WebSocket>(
-    new WebSocket('ws://localhost:3002/?room=room_1', )
+    new WebSocket('ws://localhost:3001/')
   );
   const audioRef1 = useRef<HTMLAudioElement>(null);
 
   socket.onopen = () => {
     setupStreaming(socket);
+
   };
+
+
 
   const setupStreaming = async (socket: WebSocket) => {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -138,10 +142,12 @@ function App() {
   //   return devices;
   // };
 
+//   // Federicos original code within APP component
   return (
     <div className="App">
-      <audio ref={audioRef1} controls={true} />
+      {/* <audio ref={audioRef1} controls={true} /> */}
       {/* <audio ref={audioRef2} controls={true} /> */}
+      <Call/>
     </div>
   );
 }
