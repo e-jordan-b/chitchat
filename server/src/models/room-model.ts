@@ -1,9 +1,11 @@
 import mongoose, { MongooseError, ObjectId } from 'mongoose';
+import uuid4 from 'uuid4';
 
 export interface IRoom {
   _id: ObjectId | string;
+  urlUUID: string;
   createdAt: number;
-  endedAt: number;
+  endedAt?: number;
   participants: string[] | ObjectId[];
   transcriptions: string[] | ObjectId[];
   summaries: ObjectId[] | string[];
@@ -14,6 +16,10 @@ export interface IRoom {
 const RoomSchema = new mongoose.Schema<IRoom>({
   createdAt: {
     type: Number,
+  },
+  urlUUID: {
+    type: String,
+    required: true,
   },
   endedAt: {
     type: Number,
@@ -32,7 +38,7 @@ const RoomSchema = new mongoose.Schema<IRoom>({
   },
   callSummary: {
     type: String,
-    default: [],
+    default: '',
   },
   agenda: {
     type: [String],
@@ -43,14 +49,22 @@ const RoomSchema = new mongoose.Schema<IRoom>({
 export const Room = mongoose.model<IRoom>('Room', RoomSchema);
 
 // [ START Helpers]
-export const createOneRoom = async (
-  data: IRoom
+export const create = async (
+  agenda: string[]
 ): Promise<{ room?: IRoom; error?: MongooseError }> => {
+  const createdAt = new Date().getTime();
+  const urlUUID = uuid4();
+
   try {
-    const room = await Room.create(data);
+    const room = await Room.create({
+      urlUUID,
+      createdAt,
+      agenda,
+    });
     return { room };
   } catch (error) {
     const mongooseError = error as MongooseError;
+    console.log(mongooseError.message);
     return { error: mongooseError };
   }
 };

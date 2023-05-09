@@ -1,5 +1,5 @@
 export interface AuthToken {
   id: string; // UserID
-  username: string;
+  email: string;
   iat: number;
 }
