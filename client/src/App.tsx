@@ -336,7 +336,7 @@ const Videos: React.FC = ({mode, callId, setPage}) => {
       }
     }
   }
-
+  //change syntax
   const hangUp = async () => {
     pc.close();
 
