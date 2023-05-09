@@ -5,16 +5,13 @@ import { blob } from 'stream/consumers';
 
 function App() {
   const [socket, _] = useState<WebSocket>(
-    new WebSocket('ws://localhost:3001/')
+    new WebSocket('ws://localhost:3002/?room=room_1', )
   );
   const audioRef1 = useRef<HTMLAudioElement>(null);
 
   socket.onopen = () => {
     setupStreaming(socket);
-
   };
-
-
 
   const setupStreaming = async (socket: WebSocket) => {
     const stream = await navigator.mediaDevices.getUserMedia({
