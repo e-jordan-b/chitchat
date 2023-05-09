@@ -1,5 +1,6 @@
 import express, { Express } from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 import router from '../routes';
 import authMiddleware from '../middlewares/auth-middleware';
@@ -9,6 +10,8 @@ export const createHttpServer = (): Express => {
 
   app.use(cors({ origin: ['http://localhost:3000'], credentials: true }));
 
+  app.use(cookieParser());
+
   app.use(express.json());
 
   // Middleware
@@ -16,6 +19,8 @@ export const createHttpServer = (): Express => {
 
   // Room routes
   app.use('/room', router.room);
+
+  app.use('/auth', router.auth);
 
   return app;
 };
