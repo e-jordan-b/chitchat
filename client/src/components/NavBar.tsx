@@ -11,9 +11,18 @@ import { BsThreeDots } from "react-icons/bs";
 import { VscDashboard } from "react-icons/vsc";
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
+import useAuth from "../hooks/useAuth";
+const user = {
+  id: 1,
+  name: "John Doe",
+  email: "test@test.com",
+  avatar: "https://i.pravatar.cc/150?img=3",
+}
+
 
 const NavBar = () => {
   const [nav, setnav] = useState(false);
+  const {isAuthenticated} = useAuth();
 
   const NavUrl = ({ url, icon, description }: {url:string, icon: React.ReactNode, description: string}) => {
     const checkWindowSize = () => {
@@ -36,6 +45,7 @@ const NavBar = () => {
 
   return (
     <>
+    {!isAuthenticated ? null:
     <div className='border border-zinc-700 handle responisiveness here'>
 
       <nav>
@@ -56,7 +66,7 @@ const NavBar = () => {
           </span>
 
           <NavUrl
-            url="/app/dashboard"
+            url={`/app/dashboard`}
             icon={<MdOutlineDashboard />}
             description="Dashboard"
           />
@@ -68,7 +78,7 @@ const NavBar = () => {
           />
 
         <NavUrl
-            url="/app/conversations"
+            url={`/app/conversations`}
             icon={<MdOutlineMessage />}
             description="Conversations"
           />
@@ -97,6 +107,7 @@ const NavBar = () => {
         {/* ADD BACKGROUND FOR MOBILE */}
       </nav>
     </div>
+    }
     </>
   );
 };

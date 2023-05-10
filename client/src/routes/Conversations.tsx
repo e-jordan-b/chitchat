@@ -49,6 +49,8 @@ export default function Conversations() {
   return (
     <div className={`flex flex-col justify-center items-center ${ navigation.state === "loading" ? "opacity-25 transition delay-200" : null}`}>
     <div>Conversations</div>
+    <h1>TODO: big table with all conversations filterable tanstack/table + shadcnui</h1>
+    <h3 className='mb-5'>Click on conversation goes to conversation edit route </h3>
     <div>
       {conversations.map((conversation) => {
         return (
