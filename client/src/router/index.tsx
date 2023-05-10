@@ -6,6 +6,7 @@ import Landing from '../pages/Landing';
 //public routes
 import PrivacyPolicy from '../pages/PrivacyPolicy';
 import TermsAndConditions from '../pages/TermsAndConditions';
+import { ErrorPage } from '../pages/ErrorPage';
 
 import PreCallScreen from '../routes/Call';
 
@@ -21,8 +22,10 @@ export const router = createBrowserRouter(
   createRoutesFromElements(
     <>
     <Route path="/" element={<Landing/>} />
-    <Route path="/terms" element={<TermsAndConditions/>} />
-    <Route path="/privacy" element={<PrivacyPolicy/>} />
+    <Route path="/terms" element={<TermsAndConditions/>} errorElement={<ErrorPage />}/>
+    <Route path="/privacy" element={<PrivacyPolicy/>} errorElement={<ErrorPage />}/>
+
+
 
     <Route path="/app" element={<Protected><RootLayout/></Protected>} >
       <Route index element={<Dashboard/>} />
