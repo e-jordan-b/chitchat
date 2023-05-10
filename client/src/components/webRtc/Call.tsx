@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Menu from "./CallMenu";
 import Videos from "./CallVideos";
-import '../call.css'
+import './call.css'
 
 const Call: React.FC = () => {
   // Federicos original code within APP component

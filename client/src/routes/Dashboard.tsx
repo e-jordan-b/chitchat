@@ -1,15 +1,33 @@
 import { useLoaderData, Form, NavLink } from 'react-router-dom'
+import {useState} from 'react';
 
 export default function Dashboard() {
+  const [roomId, setRoomId] = useState<string>('enter room id');
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRoomId(e.target.value);
+  }
+
   return (
-    <div id="dashboard-container" className='border-2 border-red-400 bg-red-200 w-full h-full flex justify-center items-center'>
+    <div id="dashboard-container" className='bg-zinc-600 w-full h-full flex justify-center items-center'>
 
-      <div id="dashboard-content" className="flex flex-col justify-around items-center border border-zinc-700 w-10/12 h-9/10 rounded-lg bg-green-300">
+      <div id="dashboard-content" className="flex flex-col justify-around items-center border w-10/12 h-9/10 rounded-lg bg-zinc-300 drop-shadow-lg">
 
-      <div id="top-section" className='flex justify-between items-center w-9/10 h-3/6 bg-indigo-400'>
+      <div id="top-section" className='flex justify-between items-center w-9/10 h-3/6 '>
+      <section className='flex flex-col items-center boder-2 bg-zinc-100 drop-shadow-lg rounded-xl w-12/25 h-9/10'>
+      <section className='flex items-center justify-center boder-2  border-zinc-600  w-12/25 h-9/10 rounded-xl'>
 
+    <div className='flex flex-col items-start justify-center'>
+      <NavLink to="/room" className='btn-primary mb-5'>Start a Call</NavLink>
+      <Form className='flex'>
+        <input defaultValue={roomId} onChange={handleInputChange} className="flex pl-3 border border-zinc-700 mr-2 rounded-xl" type="text" />
+        <button className='btn-secondary border-2 border-slate-200' type='submit'>join</button>
+      </Form>
 
-        <section className='flex flex-col items-center boder-2 bg-slate-500  border-zinc-600 rounded-xl w-12/25 h-9/10'>
+      </div>
+    </section>
+        </section>
+
+        <section className='flex flex-col items-center boder-2 bg-zinc-100 drop-shadow-lg rounded-xl w-12/25 h-9/10'>
             <h2 className='mt-5 mb-5 text-3xl'>Last Call</h2>
             <div className='bg-slate-500'>
 
@@ -24,18 +42,7 @@ export default function Dashboard() {
         </section>
     </div>
 
-    <section id="bottom-section" className='flex flex-col items-center boder-2 bg-slate-500 border-zinc-600 rounded-xl w-9/10 h-9/20'>
-    <h2 className='mt-5 mb-5 text-3xl'>Previous Calls</h2>
-      <div className='bg-slate-500'>
-        TODO: add tanstack table + shadcn-ui
-        <ul>
-          <li>call 1</li>
-          <li>call 2</li>
-          <li>call 3</li>
-        </ul>
 
-      </div>
-    </section>
     </div>
   </div>
 

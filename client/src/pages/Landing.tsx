@@ -1,18 +1,12 @@
 import { NavLink } from 'react-router-dom';
 
 
-export default  function Landing() {
+export default function Landing() {
   return (
-    <div className="flex flex-col justify-center items-center">
-      <h1>
-        Landing Page
-      </h1>
-    <p>should handle login and signup then redicret to OAuth consent screen which redirects to /dashboard</p>
+    <div className="w-screen h-screen flex flex-col justify-center items-center">
+      <h1>Landing Page</h1>
 
-    <NavLink to={"/app/dashboard" }>
-
-         login
-        </NavLink>
+      <NavLink className="btn-primary mt-5" to={"/app/dashboard" }>login</NavLink>
     </div>
 
   )

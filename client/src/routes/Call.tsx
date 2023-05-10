@@ -18,7 +18,7 @@ export default function PreCallScreen(){
         <input defaultValue={roomId} className="flex pl-3 border border-zinc-700 mr-2 rounded-xl" type="text" />
         <button className='btn-secondary' type='submit'>join</button>
       </Form>
-      <NavLink to="/dashboard" className='btn-primary mt-5'>Dashboard</NavLink>
+
       </div>
     </section>
   </div>

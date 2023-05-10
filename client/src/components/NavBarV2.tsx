@@ -1,68 +1,84 @@
-import { MdOutlineDashboard, MdOutlineSettings } from 'react-icons/md'
+import { MdOutlineDashboard, MdOutlineSettings, MdOutlineSummarize, MdOutlineMessage,MdOutlineLogout } from 'react-icons/md'
+import {CgProfile } from 'react-icons/cg'
+import {RiMessageLine} from 'react-icons/ri'
+import {TbMessages} from 'react-icons/tb'
 import { NavLink } from 'react-router-dom'
 
 export default function NavBarV2() {
   return (
     <>
     <div className="flex flex-col items-center w-16 h-screen overflow-hidden text-gray-400 bg-zinc-900">
-		<a className="flex items-center justify-center mt-3" href="/">
+		  <div className="flex items-center justify-center mt-3 ">
+        <div>Logo</div>
+		  </div>
 
-			<div>Logo</div>
-		</a>
-
-		<div className="flex flex-col items-center mt-3 border-t border-zinc-700">
+		  <div className="flex flex-col items-center mt-3 border-t border-zinc-700 border-b ">
 
     {/* //Dashboard Icon */}
       <NavLink to="/app/dashboard"
-        // className=" hover:bg-zinc-700 hover:text-zinc-300">
-         className={({ isActive, isPending }) =>
-    isPending ? "pending" : isActive ? "side-nav-icon text-gray-200 bg-gray-700" : " side-nav-icon"
-  }>
-
+         className={({ isActive }) =>
+          isActive
+          ? "side-nav-icon text-gray-200 bg-gray-700"
+          : " side-nav-icon hover:bg-gray-700 hover:text-gray-300"
+      }>
         <MdOutlineDashboard size={30}/>
       </NavLink>
 
+     {/* //Conversations Icon */}
+      <NavLink to="/app/conversations"
+         className={({ isActive }) =>
+         isActive
+         ? "side-nav-icon text-gray-200 bg-gray-700"
+         : " side-nav-icon hover:bg-gray-700 hover:text-gray-300"
+      }>
+        <TbMessages size={30}/>
+         {/* <MdOutlineSummarize size={30}/> */}
+      </NavLink>
 
-
-
-
-
-
-
-
-      <a className="flex items-center justify-center w-12 h-12 mt-2 rounded hover:bg-gray-700 hover:text-gray-300" href="/">
-    asd
-			</a>
-			<a className="flex items-center justify-center w-12 h-12 mt-2 text-gray-200 bg-gray-700 rounded" href="/">
-			Convo icon
-			</a>
-			<a className="flex items-center justify-center w-12 h-12 mt-2 rounded hover:bg-gray-700 hover:text-gray-300" href="/">
-			chat?
-			</a>
+      {/* //Chat Icon */}
+      <NavLink to="/app/chat"
+         className={({ isActive }) =>
+         isActive
+         ? "side-nav-icon relative text-gray-200 bg-gray-700"
+         : " relative side-nav-icon hover:bg-gray-700 hover:text-gray-300"
+      }>
+        <RiMessageLine size={30}/>
+        <span className="absolute top-0 left-0 w-2 h-2 mt-2 ml-2 bg-indigo-500 rounded-full"></span>
+      </NavLink>
 		</div>
 
-    <div className="flex flex-col items-center mt-2 border-t border-gray-700">
-
-
-			<a className="relative flex items-center justify-center w-12 h-12 mt-2 rounded hover:bg-gray-700 hover:text-gray-300" href="/">
-				<svg className="w-6 h-6 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-				</svg>
-				<span className="absolute top-0 left-0 w-2 h-2 mt-2 ml-2 bg-indigo-500 rounded-full"></span>
-			</a>
-		</div>
     <div className="mt-auto">
+      <NavLink to="/app/settings"
+         className={({ isActive }) =>
+         isActive
+         ? "side-nav-icon w-16 h-16 mt-2 text-gray-200 bg-gray-700"
+         : "side-nav-icon hover:bg-gray-700 hover:text-gray-300 w-16 h-16 mt-2"
+      }>
+        <MdOutlineSettings size={30}/>
+      </NavLink>
 
-    <a className="flex items-center justify-center w-16 h-16 mt-2 rounded hover:bg-gray-700 hover:text-gray-300" href="/">
-    < MdOutlineSettings size={30}/>
-			</a>
-		<a className="flex items-center justify-center w-16 h-16 mt-2 bg-gray-800 hover:bg-gray-700 hover:text-gray-300" href="/">
-			<svg className="w-6 h-6 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-			</svg>
-		</a>
+      <NavLink to="/"
+         className={({ isActive }) =>
+         isActive
+         ? "side-nav-icon w-16 h-16 mt-2 text-gray-200 bg-gray-700"
+         : "side-nav-icon hover:bg-gray-700 hover:text-gray-300 w-16 h-16 mt-2"
+      }>
+        <MdOutlineLogout size={30}/>
+      </NavLink>
+
+      <NavLink to="/app/me"
+         className={({ isActive }) =>
+         isActive
+         ? "side-nav-icon w-16 h-16 mt-2 text-gray-200 bg-gray-800"
+         : "side-nav-icon hover:bg-gray-600 bg-gray-800 hover:text-gray-300 w-16 h-16 mt-2"
+      }>
+        <CgProfile size={30}/>
+      </NavLink>
+
     </div>
 	</div>
+
+
 
 {/* <div className="flex flex-col items-center w-40 h-screen ml-2 overflow-hidden text-gray-400 bg-gray-900">
 <a className="flex items-center w-full px-3 mt-3" href="/">

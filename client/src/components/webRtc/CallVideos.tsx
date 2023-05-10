@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react"
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDoc, doc, setDoc, addDoc, onSnapshot, updateDoc, getDocs, deleteDoc } from 'firebase/firestore'
-import '../call.css'
+import './call.css'
 
 const firebaseConfig = {
   //TODO export into .env file
