@@ -3,13 +3,14 @@ import {CgProfile } from 'react-icons/cg'
 import {RiMessageLine} from 'react-icons/ri'
 import {TbMessages} from 'react-icons/tb'
 import { NavLink } from 'react-router-dom'
+import logo from "./../assets/cc-logo-v2.svg"
 
 export default function NavBarV2() {
   return (
     <>
     <div className="flex flex-col items-center w-16 h-screen overflow-hidden text-gray-400 bg-zinc-900">
 		  <div className="flex items-center justify-center mt-3 ">
-        <div>Logo</div>
+     Logo
 		  </div>
 
 		  <div className="flex flex-col items-center mt-3 border-t border-zinc-700 border-b ">
