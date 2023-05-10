@@ -57,6 +57,25 @@ export const create = async (
   }
 };
 
+export const findUserByEmail = async (
+  email: string
+): Promise<{ user?: IUser; error?: MongooseError }> => {
+  try {
+    const user = await User.findOne({ email }).orFail();
+    return {
+      user: {
+        _id: user.id,
+        email: user.email,
+        createdRooms: user.createdRooms,
+        participatedRooms: user.participatedRooms,
+      },
+    };
+  } catch (error) {
+    const mongooseError = error as MongooseError;
+    return { error: mongooseError };
+  }
+};
+
 export const addRoomToUser = async (
   userId: string,
   roomId: ObjectId | string

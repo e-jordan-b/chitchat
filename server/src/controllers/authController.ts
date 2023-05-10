@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { ErrorMessage } from '../models/error-message';
-import { create } from '../models/user-model';
+import { create, findUserByEmail } from '../models/user-model';
 import { signToken } from '../services/token-service';
+import bcrypt from 'bcrypt';
 
 export const signup = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -29,7 +30,53 @@ export const signup = async (req: Request, res: Response) => {
     httpOnly: true,
   });
 
-  res.status(200).json(user)
+  res.status(200).json(user);
 };
 
-export const signin = (req: Request, res: Response) => {};
+export const signin = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    res.status(400).send('BadData');
+    return;
+  }
+
+  try {
+    const { user, error } = await findUserByEmail(email);
+
+    if (error) {
+      res.sendStatus(500);
+      return;
+    }
+
+    if (!user) {
+      res.status(400).send('NoUser');
+      return;
+    }
+
+    const passMatch = await bcrypt.compare(password, user.password!);
+
+    if (!passMatch) {
+      res.status(401).send('IncorrectPassword');
+      return;
+    }
+
+    // Create JWT token
+    const token = signToken(user._id as string, user.email);
+
+    if (!token) {
+      res.status(500).send('ServerError');
+      return;
+    }
+
+    // Should refresh token
+    res.cookie('authToken', token, {
+      httpOnly: true,
+    });
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.log('authController/signin error:', error);
+    res.sendStatus(500);
+  }
+};
