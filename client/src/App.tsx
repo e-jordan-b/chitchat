@@ -1,82 +1,15 @@
 import React , { useEffect, useRef, useState } from 'react';
-// import './App.css';
+import { RouterProvider } from "react-router-dom";
+import './App.css';
 // import { blob } from 'stream/consumers';
 // import Call from './Call3';
 
-import {
-  Routes,
-  Route,
-  Link,
-  useNavigate,
-  createBrowserRouter,
-  createRoutesFromElements,
-  RouterProvider,
-  Navigate
-} from 'react-router-dom';
-
-//public routes
-import Landing from './pages/Landing';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsAndConditions from './pages/TermsAndConditions';
-
-import RootLayout from './layouts/RootLayout';
-import Call from './components/Call';
-
-
-import Dashboard from './routes/Dashboard';
-import CallMenu from './components/CallMenu';
-import Settings from './routes/Settings';
-import PreCallScreen from './routes/Call';
-
-
-
+import { router } from "./router";
 
 export default function App() {
-  const [loggedIn, setLoggedIn ] = useState(true)
-
-
-
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <>
-
-      <Route
-        path="/"
-        element={
-          loggedIn ? (
-            <Navigate replace to={"/app"} />
-          ) : (
-          <Navigate replace to={"/hello"} />
-          )
-        }
-      />
-      <Route path="/hello" element={<Landing/>} />
-      <Route path="/terms" element={<TermsAndConditions/>} />
-      <Route path="/privacy" element={<PrivacyPolicy/>} />
-
-      <Route path="/app" element={<RootLayout/>} >
-        <Route index element={<Dashboard/>} />
-        <Route path="dashboard" element={<Dashboard/>} />
-        <Route path="settings" element={<Settings/>} />
-        <Route path="call" element={<PreCallScreen/>} />
-      </Route>
-
-      <Route path="/room/:roomId" element={<Call/>} />
-      <Route path="*" element={<h1>Not Found</h1>} />
-
-      </>
-  )
-  )
-
   return (
-    // <AuthProvider>
-<>
 
       <RouterProvider router={router} />
-
-
-</>
-    // </AuthProvider>
 
   );
 

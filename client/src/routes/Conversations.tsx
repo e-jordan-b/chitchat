@@ -1,9 +1,9 @@
 
 
-export default function Dashboard() {
+export default function Conversations() {
   return (
     <div className='flex flex-col justify-center items-center'>
-    <div>Dashboard</div>
+    <div>Conversations</div>
     </div>
   )
 }
