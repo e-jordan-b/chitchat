@@ -16,6 +16,7 @@ import Call from '../components/Call';
 import Dashboard from '../routes/Dashboard';
 import Settings from '../routes/Settings';
 import Conversations from '../routes/Conversations';
+import ConversationsLayout from '../layouts/ConversationLayout';
 
 
 export const router = createBrowserRouter(
@@ -25,13 +26,13 @@ export const router = createBrowserRouter(
     <Route path="/terms" element={<TermsAndConditions/>} errorElement={<ErrorPage />}/>
     <Route path="/privacy" element={<PrivacyPolicy/>} errorElement={<ErrorPage />}/>
 
-
-
     <Route path="/app" element={<Protected><RootLayout/></Protected>} >
-      <Route index element={<Dashboard/>} />
       <Route path="dashboard" element={<Dashboard/>} />
       <Route path="call" element={<PreCallScreen/>} />
       <Route path="conversations" element={<Conversations/>} />
+      <Route/>
+
+      {/* <Route path="/conversations/" element={<ConversationsLayout/>} /> */}
       <Route path="settings" element={<Settings/>} />
     </Route>
 
