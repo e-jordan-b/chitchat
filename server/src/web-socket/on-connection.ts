@@ -9,6 +9,7 @@ import { IRoom, Room, fetchRoomByUrl } from '../models/room-model';
 import { parse } from 'url';
 import { addToMemory } from '../services/memory-service';
 import RoomService from '../services/room-service';
+import uuid4 from 'uuid4';
 
 const transcriptionService = new TranscriptionService();
 const roomService = new RoomService();
@@ -19,9 +20,14 @@ export const onConnection = async (
   request: IncomingMessage
 ) => {
   console.log('new connection');
-  const { room: roomUrl } = parse(request.url || '', true).query;
+  const { room: roomUrl, speaker } = parse(request.url || '', true).query;
 
-  if (!roomUrl || typeof roomUrl !== 'string') {
+  if (
+    !roomUrl ||
+    !speaker ||
+    typeof roomUrl !== 'string' ||
+    typeof speaker !== 'string'
+  ) {
     socketClient.close();
     return;
   }
@@ -35,15 +41,16 @@ export const onConnection = async (
     return;
   }
 
+  const userId = uuid4();
   const roomId = room._id.toString();
   const roomAgenda = room.agenda;
 
   // [ START RoomService ]
   roomService.addRoom(roomId);
-  roomService.addCallerToRoom(roomId, 'userid');
+  roomService.addCallerToRoom(roomId, userId);
 
   // [ START TranscriptionService ]
-  const stream = transcriptionService.addStream(roomId, 'userId');
+  const stream = transcriptionService.addStream(roomId, userId, speaker);
 
   // [ START SocketClient ]
   (socketClient as SocketClient).roomId = roomId;
@@ -64,27 +71,30 @@ export const onConnection = async (
   // Cleanup the stream
   socketClient.on('close', () => {
     // TODO: Add real user id
-    roomService.removeCallerFromRoom(roomId, 'userid');
+    roomService.removeCallerFromRoom(roomId, userId);
     if (roomService.shouldPauseStream(roomId)) {
       // stream.removeAllListeners();
       // stream.destroy();
-
-      // TODO: Call to stop the scheduler
+      // TODO: Call to STOP the scheduler
+      // TODO: Call to REMOVE the scheduler
+      // TODO: Tell FE to Stop MediaRecording
+      // TODO: Stop the mediarecording for all clients
     }
   });
 
   // LOGIC DONE FOR LIFECYCLE
 
   // [ STREAMING CAN START ? ]
-  console.log(
-    roomService.shouldResumeStream(roomId),
-    transcriptionService.resumeStream(roomId, 'userid')
-  );
+  // console.log(
+  //   roomService.shouldResumeStream(roomId),
+  //   transcriptionService.resumeStream(roomId, userId)
+  // );
   if (
     roomService.shouldResumeStream(roomId) &&
-    transcriptionService.resumeStream(roomId, 'userid')
+    transcriptionService.resumeStream(roomId, userId)
   ) {
-    // TODO: Call to scheduler
+    // TODO: Call to INSTANTIATE? scheduler
+    // TODO: Call to START scheduler
 
     socketServer.clients.forEach((client) => {
       const socketClient = client as SocketClient;

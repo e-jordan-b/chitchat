@@ -26,7 +26,7 @@ class TranscriptionService {
    * Can attach listeners to the stream
    * @returns
    */
-  addStream(roomId: string, userId: string): boolean {
+  addStream(roomId: string, userId: string, speaker: string): boolean {
     const streamId = this.mergeIds(roomId, userId);
     if (this.streams.has(streamId)) return false;
 
@@ -46,7 +46,9 @@ class TranscriptionService {
     stream.on('error', (error) => console.log(error));
     stream.on('data', (data) => {
       // Add transcript
-      const transcription = data.results[0].alternatives[0].transcript;
+      const timestamp = new Date().getTime();
+      const text = data.results[0].alternatives[0].transcript;
+      const transcription: ITranscript = { speaker, text, timestamp };
 
       // TODO: Add transcription to memory
     });

@@ -1,7 +1,5 @@
 export interface ITranscript {
-  _id?: string;
-  speaker: string;
-  room: string;
+  speaker: string; // Speaker name
   text: string;
   timestamp: number;
 }
