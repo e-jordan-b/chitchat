@@ -6,8 +6,10 @@ import { SpeechClient } from '@google-cloud/speech';
 
 import serviceAccount from './gcloud-service-account.json';
 import { ITranscript } from '../models/transcription-model';
+import { IRoom, Room } from '../models/room-model';
 import { parse } from 'url';
 import { addToMemory, getFromMemoryByRoom } from '../services/memory-service';
+import { start } from 'repl';
 
 const speechClient = new SpeechClient({
   credentials: {
@@ -16,7 +18,7 @@ const speechClient = new SpeechClient({
   },
 });
 
-export const onConnection = (
+export const onConnection = async (
   socketServer: WebSocketServer,
   socketClient: WebSocket,
   request: IncomingMessage
@@ -28,8 +30,14 @@ export const onConnection = (
     return;
   }
 
+  const fetchedRoom:IRoom | null = await Room.findOne({urlUUID: room}).exec();
+  if (fetchedRoom) {
+    const roomId = fetchedRoom._id;
+    const agenda = fetchedRoom.agenda;
+  }
+
   const recognizeStream = speechClient
-    .streamingRecognize({
+  .streamingRecognize({
       config: {
         encoding: 'WEBM_OPUS',
         sampleRateHertz: 16000,
@@ -53,7 +61,8 @@ export const onConnection = (
       addToMemory(transcript);
     });
 
-  socketClient.on('message', (data) =>
-    onMessage(socketServer, socketClient as SocketClient, recognizeStream, data)
-  );
+    socketClient.on('message', (data) =>
+      onMessage(socketServer, socketClient as SocketClient, recognizeStream, data)
+    );
+
 };

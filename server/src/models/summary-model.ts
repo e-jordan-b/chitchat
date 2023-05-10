@@ -1,10 +1,10 @@
 import mongoose, { MongooseError, ObjectId } from "mongoose";
 
 export interface ISummary {
-  _id: ObjectId | string,
+  _id?: ObjectId | string,
   timestamp: number,
-  room: ObjectId,
-  //! possibly with markdown 
+  room: ObjectId | string,
+  //! possibly with markdown
   text: string
 }
 
