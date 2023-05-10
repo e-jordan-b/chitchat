@@ -66,6 +66,7 @@ export const findUserByEmail = async (
       user: {
         _id: user.id,
         email: user.email,
+        password: user.password,
         createdRooms: user.createdRooms,
         participatedRooms: user.participatedRooms,
       },

@@ -74,7 +74,12 @@ export const signin = async (req: Request, res: Response) => {
       httpOnly: true,
     });
 
-    res.status(200).json(user);
+    res.status(200).json({
+      _id: user._id,
+      email: user.email,
+      createdRooms: user.createdRooms,
+      participatedRooms: user.participatedRooms,
+    });
   } catch (error) {
     console.log('authController/signin error:', error);
     res.sendStatus(500);
