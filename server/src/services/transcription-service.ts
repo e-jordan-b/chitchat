@@ -47,6 +47,8 @@ class TranscriptionService {
     stream.on('data', (data) => {
       // Add transcript
       const transcription = data.results[0].alternatives[0].transcript;
+
+      // TODO: Add transcription to memory
     });
 
     this.streams.set(streamId, stream);

@@ -26,6 +26,8 @@ export const onConnection = async (
     return;
   }
 
+  // TODO: Get user id
+
   const { room, error } = await fetchRoomByUrl(roomUrl);
 
   if (!room || error) {
@@ -33,8 +35,8 @@ export const onConnection = async (
     return;
   }
 
-  const roomId = room._id as string;
-  const agenda = room.agenda;
+  const roomId = room._id.toString();
+  const roomAgenda = room.agenda;
 
   // [ START RoomService ]
   roomService.addRoom(roomId);
@@ -66,30 +68,41 @@ export const onConnection = async (
     if (roomService.shouldPauseStream(roomId)) {
       // stream.removeAllListeners();
       // stream.destroy();
+
+      // TODO: Call to stop the scheduler
     }
   });
 
+  // LOGIC DONE FOR LIFECYCLE
+
   // [ STREAMING CAN START ? ]
+  console.log(
+    roomService.shouldResumeStream(roomId),
+    transcriptionService.resumeStream(roomId, 'userid')
+  );
   if (
     roomService.shouldResumeStream(roomId) &&
     transcriptionService.resumeStream(roomId, 'userid')
   ) {
+    // TODO: Call to scheduler
+
     socketServer.clients.forEach((client) => {
       const socketClient = client as SocketClient;
       if (
         socketClient.readyState === WebSocket.OPEN &&
-        socketClient.roomId === room._id
+        socketClient.roomId === roomId
       ) {
         const message = JSON.stringify({ callUpdate: { status: 'STARTED' } });
         socketClient.send(message);
       }
     });
   } else if (roomService.shouldResumeStream(roomId)) {
+    console.log('IN ERROR');
     socketServer.clients.forEach((client) => {
       const socketClient = client as SocketClient;
       if (
         socketClient.readyState === WebSocket.OPEN &&
-        socketClient.roomId === room._id
+        socketClient.roomId === roomId
       ) {
         const message = JSON.stringify({ callUpdate: { status: 'ERROR' } });
         socketClient.send(message);
