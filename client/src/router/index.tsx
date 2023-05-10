@@ -37,12 +37,11 @@ export const router = createBrowserRouter(
       <Route path="call" element={<PreCallScreen/>} />
     <Route/>
 
-
       <Route path="settings" element={<Settings/>} />
     </Route>
 
-    <Route path="call" element={<PreCallScreen/>} />
-    <Route path="/room/:roomId" element={<Call/>} />
+
+    <Route path="/room/:roomId" element={<PreCallScreen/>} />
     <Route path="*" element={<h1>Not Found</h1>} />
 
     </>
