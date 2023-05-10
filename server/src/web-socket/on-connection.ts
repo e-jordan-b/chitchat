@@ -8,9 +8,10 @@ import { ITranscript } from '../models/transcription-model';
 import { IRoom, Room, fetchRoomByUrl } from '../models/room-model';
 import { parse } from 'url';
 import { addToMemory } from '../services/memory-service';
-import { safelyCreateRoom } from '../services/room-service';
+import RoomService from '../services/room-service';
 
 const transcriptionService = new TranscriptionService();
+const roomService = new RoomService();
 
 export const onConnection = async (
   socketServer: WebSocketServer,
@@ -32,40 +33,69 @@ export const onConnection = async (
     return;
   }
 
-  safelyCreateRoom(room._id as string, room.urlUUID);
+  const roomId = room._id as string;
+  const agenda = room.agenda;
 
-  // const fetchedRoom: IRoom | null = await Room.findOne({
-  //   urlUUID: room,
-  // }).exec();
-  // if (fetchedRoom) {
-  //   const roomId = fetchedRoom._id;
-  //   const agenda = fetchedRoom.agenda;
-  // }
+  // [ START RoomService ]
+  roomService.addRoom(roomId);
+  roomService.addCallerToRoom(roomId, 'userid');
 
-  // This should not be called until both clients are ready to start the call
-  const stream = transcriptionService.addStream(); // Should be done here?
-  stream.pause();
+  // [ START TranscriptionService ]
+  const stream = transcriptionService.addStream(roomId, 'userId');
 
-  stream.on('error', (error) => console.log(error));
+  // [ START SocketClient ]
+  (socketClient as SocketClient).roomId = roomId;
+  (socketClient as SocketClient).userId = 'mao' as string;
 
-  stream.on('data', (data) => {
-    const timestamp = new Date().getTime();
-    const transcription = data.results[0].alternatives[0].transcript;
-
-    // const transcript: ITranscript = {
-    //   speaker: 'fksoasf', // TODO: Add speaker ID
-    //   room,
-    //   text: transcription,
-    //   timestamp: timestamp,
-    // };
-
-    // addToMemory(transcript);
-  });
+  console.log('SOCKET CLIENT ROOMID', (socketClient as SocketClient).roomId);
 
   socketClient.on('message', (data, isBinary) => {
     console.log(isBinary);
     console.log(data);
+    // Check state of the room
+    // getRoom.callStatus === STARTED;
+    // if (callHasStarted) {
+    //   stream.write(data);
+    // }
   });
+
+  // Cleanup the stream
+  socketClient.on('close', () => {
+    // TODO: Add real user id
+    roomService.removeCallerFromRoom(roomId, 'userid');
+    if (roomService.shouldPauseStream(roomId)) {
+      // stream.removeAllListeners();
+      // stream.destroy();
+    }
+  });
+
+  // [ STREAMING CAN START ? ]
+  if (
+    roomService.shouldResumeStream(roomId) &&
+    transcriptionService.resumeStream(roomId, 'userid')
+  ) {
+    socketServer.clients.forEach((client) => {
+      const socketClient = client as SocketClient;
+      if (
+        socketClient.readyState === WebSocket.OPEN &&
+        socketClient.roomId === room._id
+      ) {
+        const message = JSON.stringify({ callUpdate: { status: 'STARTED' } });
+        socketClient.send(message);
+      }
+    });
+  } else if (roomService.shouldResumeStream(roomId)) {
+    socketServer.clients.forEach((client) => {
+      const socketClient = client as SocketClient;
+      if (
+        socketClient.readyState === WebSocket.OPEN &&
+        socketClient.roomId === room._id
+      ) {
+        const message = JSON.stringify({ callUpdate: { status: 'ERROR' } });
+        socketClient.send(message);
+      }
+    });
+  }
 
   // socketClient.on('message', (data) =>
   //   onMessage(socketServer, socketClient as SocketClient, stream, data)
