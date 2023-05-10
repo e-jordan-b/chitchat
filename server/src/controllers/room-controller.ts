@@ -14,8 +14,6 @@ export const createRoom = async (req: AuthenticatedRequest, res: Response) => {
     return;
   }
 
-  console.log('passed');
-
   const { room, error: createError } = await create(agenda);
 
   if (createError || !room) {
