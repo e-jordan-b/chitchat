@@ -8,5 +8,7 @@ export const onMessage = (
   recognize: Pumpify,
   data: RawData
 ) => {
-  recognize.write(data);
+
+
+  // recognize.write(data);
 };

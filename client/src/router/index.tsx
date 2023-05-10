@@ -15,7 +15,7 @@ import Call from '../components/Call';
 import Dashboard from '../routes/Dashboard';
 import Settings from '../routes/Settings';
 import Conversations from '../routes/Conversations';
-
+import Login from '../components/Login';
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -23,6 +23,7 @@ export const router = createBrowserRouter(
     <Route path="/" element={<Landing/>} />
     <Route path="/terms" element={<TermsAndConditions/>} />
     <Route path="/privacy" element={<PrivacyPolicy/>} />
+    <Route path='/login' element={<Login/>}/>
 
     <Route path="/app" element={<Protected><RootLayout/></Protected>} >
       <Route index element={<Dashboard/>} />

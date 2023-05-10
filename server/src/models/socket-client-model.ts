@@ -6,4 +6,5 @@ export interface CustomWebSocket extends WebSocket {
 
 export interface SocketClient extends CustomWebSocket {
   roomId: string;
+  userId: string;
 }

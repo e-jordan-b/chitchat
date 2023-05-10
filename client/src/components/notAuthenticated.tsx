@@ -2,9 +2,9 @@ import { Navigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const UnAuthenticated= ({ children }: {children: React.ReactNode}) => {
-  const { isAuthenticated } = useAuth();
+  const { user } = useAuth();
 
-  return !isAuthenticated ? children : <Navigate to={"/"} replace />;
+  return !user ? children : <Navigate to={"/"} replace />;
 };
 
 export default UnAuthenticated;

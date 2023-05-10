@@ -22,5 +22,7 @@ export const createHttpServer = (): Express => {
 
   app.use('/auth', router.auth);
 
+  app.use('/user', router.user);
+
   return app;
 };
