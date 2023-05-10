@@ -8,6 +8,8 @@ import PrivacyPolicy from '../pages/PrivacyPolicy';
 import TermsAndConditions from '../pages/TermsAndConditions';
 import { ErrorPage } from '../pages/ErrorPage';
 
+import PreCallRoom from '../routes/PreCallRoom';
+
 import PreCallScreen from '../routes/Call';
 
 // protected routes
@@ -29,6 +31,15 @@ export const router = createBrowserRouter(
     <Route path="/terms" element={<TermsAndConditions/>} errorElement={<ErrorPage />}/>
     <Route path="/privacy" element={<PrivacyPolicy/>} errorElement={<ErrorPage />}/>
 
+    <Route path="/join" element={<PreCallRoom/>} />
+    {/* //like google meets with a staging area that redicres
+    to the call once the connection has been established? */}
+    <Route path="/:callId" element={<Call/>} />
+
+
+
+
+
     <Route path="/app" element={<Protected><RootLayout/></Protected>} >
       <Route path="dashboard" element={<Dashboard/>} />
       <Route path="conversations" element={<Conversations/>} loader={conversationsLoader}/>
@@ -41,7 +52,7 @@ export const router = createBrowserRouter(
     </Route>
 
 
-    <Route path="/room/:roomId" element={<PreCallScreen/>} />
+    <Route path="/room/:roomId" element={<Call/>} />
     <Route path="*" element={<h1>Not Found</h1>} />
 
     </>
