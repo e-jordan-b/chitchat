@@ -177,7 +177,7 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
             className="local"
             muted
         />
-        <video ref={remoteRef} autoPlay playsInline className="remote" />
+        <video ref={remoteRef} autoPlay playsInline className="remote w-full h-full" />
 
         <div className="buttonsContainer">
             <button

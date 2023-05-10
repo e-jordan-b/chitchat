@@ -4,6 +4,10 @@ import { Outlet } from 'react-router-dom'
 
 export default function ConversationLayout() {
   return (
-    <section><Outlet/></section>
+
+    <section>
+      <h1>Conversation Layout</h1>
+      <Outlet/>
+    </section>
   )
 }

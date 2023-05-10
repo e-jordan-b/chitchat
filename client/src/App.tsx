@@ -1,16 +1,27 @@
 import React , { useEffect, useRef, useState } from 'react';
 import { RouterProvider } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { router } from "./router";
 import './App.css';
 // import { blob } from 'stream/consumers';
 // import Call from './Call3';
 
-import { router } from "./router";
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 10,
+    },
+  },
+});
+
 
 export default function App() {
   return (
-
-      <RouterProvider router={router} />
-
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <ReactQueryDevtools position="bottom-right" />
+      </QueryClientProvider>
   );
 
 }
