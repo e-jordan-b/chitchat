@@ -1,5 +1,5 @@
 import React from "react"
-import '../call.css'
+// import '../call.css'
 
 interface menuProps {
   joinCode: string,
