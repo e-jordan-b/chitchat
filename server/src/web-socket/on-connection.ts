@@ -1,68 +1,126 @@
 import { WebSocket, WebSocketServer } from 'ws';
 import { SocketClient } from '../models/socket-client-model';
+import TranscriptionService from '../services/transcription-service';
 import { IncomingMessage } from 'http';
 import { onMessage } from './on-message';
-import { SpeechClient } from '@google-cloud/speech';
 
-import serviceAccount from './gcloud-service-account.json';
 import { ITranscript } from '../models/transcription-model';
-import { IRoom, Room } from '../models/room-model';
+import { IRoom, Room, fetchRoomByUrl } from '../models/room-model';
 import { parse } from 'url';
-import { addToMemory, getFromMemoryByRoom } from '../services/memory-service';
-import { start } from 'repl';
+import { addToMemory } from '../services/memory-service';
+import RoomService from '../services/room-service';
+import uuid4 from 'uuid4';
 
-const speechClient = new SpeechClient({
-  credentials: {
-    client_email: serviceAccount.client_email,
-    private_key: serviceAccount.private_key,
-  },
-});
+const transcriptionService = new TranscriptionService();
+const roomService = new RoomService();
 
 export const onConnection = async (
   socketServer: WebSocketServer,
   socketClient: WebSocket,
   request: IncomingMessage
 ) => {
-  const { room } = parse(request.url || '', true).query;
+  console.log('new connection');
+  const { room: roomUrl, speaker } = parse(request.url || '', true).query;
 
-  if (!room || typeof room !== 'string') {
+  if (
+    !roomUrl ||
+    !speaker ||
+    typeof roomUrl !== 'string' ||
+    typeof speaker !== 'string'
+  ) {
     socketClient.close();
     return;
   }
 
-  const fetchedRoom:IRoom | null = await Room.findOne({urlUUID: room}).exec();
-  if (fetchedRoom) {
-    const roomId = fetchedRoom._id;
-    const agenda = fetchedRoom.agenda;
+  // TODO: Get user id
+
+  const { room, error } = await fetchRoomByUrl(roomUrl);
+
+  if (!room || error) {
+    socketClient.close();
+    return;
   }
 
-  const recognizeStream = speechClient
-  .streamingRecognize({
-      config: {
-        encoding: 'WEBM_OPUS',
-        sampleRateHertz: 16000,
-        languageCode: 'en-US',
-        model: 'latest_long',
-      },
-      interimResults: false,
-    })
-    .on('error', (error) => console.log(error))
-    .on('data', (data) => {
-      const timestamp = new Date().getTime();
-      const transcription = data.results[0].alternatives[0].transcript;
+  const userId = uuid4();
+  const roomId = room._id.toString();
+  const roomAgenda = room.agenda;
 
-      const transcript: ITranscript = {
-        speaker: 'fksoasf', // TODO: Add speaker ID
-        room,
-        text: transcription,
-        timestamp: timestamp,
-      };
+  // [ START RoomService ]
+  roomService.addRoom(roomId);
+  roomService.addCallerToRoom(roomId, userId);
 
-      addToMemory(transcript);
+  // [ START TranscriptionService ]
+  const stream = transcriptionService.addStream(roomId, userId, speaker);
+
+  // [ START SocketClient ]
+  (socketClient as SocketClient).roomId = roomId;
+  (socketClient as SocketClient).userId = 'mao' as string;
+
+  console.log('SOCKET CLIENT ROOMID', (socketClient as SocketClient).roomId);
+
+  socketClient.on('message', (data, isBinary) => {
+    console.log(isBinary);
+    console.log(data);
+    // Check state of the room
+    // getRoom.callStatus === STARTED;
+    // if (callHasStarted) {
+    //   stream.write(data);
+    // }
+  });
+
+  // Cleanup the stream
+  socketClient.on('close', () => {
+    // TODO: Add real user id
+    roomService.removeCallerFromRoom(roomId, userId);
+    if (roomService.shouldPauseStream(roomId)) {
+      // stream.removeAllListeners();
+      // stream.destroy();
+      // TODO: Call to STOP the scheduler
+      // TODO: Call to REMOVE the scheduler
+      // TODO: Tell FE to Stop MediaRecording
+      // TODO: Stop the mediarecording for all clients
+    }
+  });
+
+  // LOGIC DONE FOR LIFECYCLE
+
+  // [ STREAMING CAN START ? ]
+  // console.log(
+  //   roomService.shouldResumeStream(roomId),
+  //   transcriptionService.resumeStream(roomId, userId)
+  // );
+  if (
+    roomService.shouldResumeStream(roomId) &&
+    transcriptionService.resumeStream(roomId, userId)
+  ) {
+    // TODO: Call to INSTANTIATE? scheduler
+    // TODO: Call to START scheduler
+
+    socketServer.clients.forEach((client) => {
+      const socketClient = client as SocketClient;
+      if (
+        socketClient.readyState === WebSocket.OPEN &&
+        socketClient.roomId === roomId
+      ) {
+        const message = JSON.stringify({ callUpdate: { status: 'STARTED' } });
+        socketClient.send(message);
+      }
     });
+  } else if (roomService.shouldResumeStream(roomId)) {
+    console.log('IN ERROR');
+    socketServer.clients.forEach((client) => {
+      const socketClient = client as SocketClient;
+      if (
+        socketClient.readyState === WebSocket.OPEN &&
+        socketClient.roomId === roomId
+      ) {
+        const message = JSON.stringify({ callUpdate: { status: 'ERROR' } });
+        socketClient.send(message);
+      }
+    });
+  }
 
-    socketClient.on('message', (data) =>
-      onMessage(socketServer, socketClient as SocketClient, recognizeStream, data)
-    );
-
+  // socketClient.on('message', (data) =>
+  //   onMessage(socketServer, socketClient as SocketClient, stream, data)
+  // );
 };
