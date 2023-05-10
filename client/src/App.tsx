@@ -1,16 +1,19 @@
 import React , { useEffect, useRef, useState } from 'react';
 import { RouterProvider } from "react-router-dom";
 import './App.css';
+import useAuth from './hooks/useAuth';
 // import { blob } from 'stream/consumers';
 // import Call from './Call3';
+import Login from './components/Login';
 
 import { router } from "./router";
 
 export default function App() {
+  const { user } = useAuth()
+  console.log(user)
+
   return (
-
       <RouterProvider router={router} />
-
   );
 
 }
