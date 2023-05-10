@@ -68,3 +68,15 @@ export const create = async (
     return { error: mongooseError };
   }
 };
+
+export const fetchRoomByUrl = async (
+  url: string
+): Promise<{ room?: IRoom; error?: MongooseError }> => {
+  try {
+    const room = await Room.findOne({ urlUUID: url }).orFail();
+    return { room };
+  } catch (error) {
+    const mongooseError = error as MongooseError;
+    return { error: mongooseError };
+  }
+};
