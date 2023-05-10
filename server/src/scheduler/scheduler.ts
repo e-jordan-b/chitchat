@@ -1,9 +1,7 @@
 import { ITranscript } from '../models/transcription-model';
-import { getFromMemoryByRoom } from '../services/memory-service';
-import { Configuration, OpenAIApi, CreateChatCompletionResponse } from "openai";
+import { popFromMemoryByRoom } from '../services/memory-service';
+import { Configuration, OpenAIApi } from "openai";
 import { createSummary } from '../models/summary-model';
-import { response } from 'express';
-import { Room } from '../models/room-model';
 import { ObjectId } from 'mongoose';
 
 const configuration = new Configuration({
@@ -12,16 +10,14 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-let roomId: string | null = null;
-
 class SummaryScheduler {
   intervalId: NodeJS.Timeout | null;
   taskInterval: number;
-  roomId: ObjectId;
+  roomId: ObjectId | string;
   roomUUID: string;
   agenda: string[];
 
-  constructor(interval: number, roomId: ObjectId, roomUUID: string, agenda: string[]) {
+  constructor(interval: number, roomId: ObjectId | string, roomUUID: string, agenda: string[]) {
     this.intervalId = null;
     this.taskInterval = interval;
     this.roomId = roomId;
@@ -29,10 +25,10 @@ class SummaryScheduler {
     this.agenda = agenda;
   }
 
-  start(args: string) {
+  start() {
     if (!this.intervalId) {
       this.intervalId = setInterval(() => {
-        this.getSummaries(args);
+        this.getSummaries(this.roomUUID);
       }, this.taskInterval);
     }
   }
@@ -40,10 +36,10 @@ class SummaryScheduler {
   async getSummaries (roomUUID: string)  {
     //test
     console.log('INSIDE SCHEDULER CB: ', this.roomId)
-    //fetch transcripts from local memory
-    //base case - no transcripts in local memory
-    const transcripts = getFromMemoryByRoom(roomUUID);
+    //fetch and delete transcripts from local memory
+    const transcripts = popFromMemoryByRoom(roomUUID);
 
+    //base case - no transcripts in local memory
     if (transcripts === undefined) return;
 
     let allFormattedTranscripts: string = '';
@@ -56,7 +52,7 @@ class SummaryScheduler {
 
 
     //create openai prompt
-    const prompt = `Summarise the following meeting transcripts where the agenda is ${this.agenda}: \n\n ${allFormattedTranscripts}`
+    const prompt = `The following are transcript from a meeting between 2 speakers where the agenda is ${this.agenda}. Please summarise them : \n\n ${allFormattedTranscripts}`
     console.log(prompt);
     //req openai
     await openai.createChatCompletion({
@@ -71,18 +67,18 @@ class SummaryScheduler {
     .then((response) => {
       const summaryText = response.data.choices[0].message?.content;
 
+      console.log(summaryText);
+
       const summary = {
         timestamp: new Date().getTime(),
         room: this.roomId,
         text: summaryText!,
       }
+
+      //update mongoDB with new summaries
       createSummary(summary)
     })
 
-
-    //update mongoDB with new summaries
-
-    //delete from local memory
   }
 
   stop () {
@@ -93,4 +89,4 @@ class SummaryScheduler {
   }
 }
 
-
+export default SummaryScheduler;

@@ -1,14 +1,16 @@
-import { WebSocket, WebSocketServer } from 'ws';
+import { WebSocketServer } from 'ws';
 import { SocketClient } from '../models/socket-client-model';
+import { CustomWebSocket } from '../models/socket-client-model';
 import { IncomingMessage } from 'http';
 import { onMessage } from './on-message';
 import { SpeechClient } from '@google-cloud/speech';
-
+import { setSchedulerInMemoryByUrl } from '../services/scheduler-service';
 import serviceAccount from './gcloud-service-account.json';
 import { ITranscript } from '../models/transcription-model';
 import { IRoom, Room } from '../models/room-model';
 import { parse } from 'url';
-import { addToMemory, getFromMemoryByRoom } from '../services/memory-service';
+import { addToMemory } from '../services/memory-service';
+import SummaryScheduler from '../scheduler/scheduler';
 import { start } from 'repl';
 
 const speechClient = new SpeechClient({
@@ -20,7 +22,7 @@ const speechClient = new SpeechClient({
 
 export const onConnection = async (
   socketServer: WebSocketServer,
-  socketClient: WebSocket,
+  socketClient: CustomWebSocket,
   request: IncomingMessage
 ) => {
   const { room } = parse(request.url || '', true).query;
@@ -30,11 +32,12 @@ export const onConnection = async (
     return;
   }
 
+  socketClient.schedulerId = room;
+
   const fetchedRoom:IRoom | null = await Room.findOne({urlUUID: room}).exec();
-  if (fetchedRoom) {
-    const roomId = fetchedRoom._id;
-    const agenda = fetchedRoom.agenda;
-  }
+  const roomId = fetchedRoom!._id;
+  const agenda = fetchedRoom!.agenda;
+
 
   const recognizeStream = speechClient
   .streamingRecognize({
@@ -65,4 +68,7 @@ export const onConnection = async (
       onMessage(socketServer, socketClient as SocketClient, recognizeStream, data)
     );
 
+    const scheduler = new SummaryScheduler(300000, roomId, room, agenda);
+    scheduler.start();
+    setSchedulerInMemoryByUrl(socketClient.schedulerId, scheduler);
 };
