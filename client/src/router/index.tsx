@@ -21,17 +21,9 @@
 import { Route, createBrowserRouter, createRoutesFromElements, useParams } from 'react-router-dom'
 import PreCall from '../components/PreCall'
 import CallNew from '../components/CallNew'
+import LandingPage from '../components/LandingPage'
 
-const Call = () => {
-  const { roomId } = useParams()
-
-  return (
-    <div>
-      <h1>{roomId}</h1>
-    </div>
-  )
-}
-
+import Call from '../components/Call'
 
 
 
@@ -51,12 +43,8 @@ export const router = createBrowserRouter(
       <Route path="settings" element={<Settings/>} />
     </Route> */}
 
-    <Route path="/" element={<h1>Hello</h1>} />
-
-
-    <Route path='/call' element={<PreCall/>} />
-    <Route path="/call/:callId" element={<CallNew/>} errorElement={<h1>could not find that call</h1>} />
-    {/* <Route path="/call/:callId" element={<Call/>} errorElement={<h1>could not find that call</h1>} /> */}
+    <Route path='/createCall' element={<LandingPage/>} />
+    <Route path="/room/:roomId" element={<Call/>} />
     <Route path="*" element={<h1>Not Found</h1>} />
 
     </>

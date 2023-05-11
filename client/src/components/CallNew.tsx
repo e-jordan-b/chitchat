@@ -36,6 +36,8 @@ export default function  CallNew() {
         console.log("before", selectedAudioDevice)
         console.log(selectedVideoDevice)
 
+
+
         dispatch(setAudioInputDevices(audioDevices))
         console.log("Mimi");
         dispatch(setVideoInputDevices(videoDevices))

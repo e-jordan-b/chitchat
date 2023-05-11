@@ -7,7 +7,7 @@ interface menuProps {
   setJoinCode: React.Dispatch<React.SetStateAction<string>>
 }
 
-const Menu: React.FC<menuProps> = ({joinCode, setPage, setJoinCode}: menuProps) => {
+const Menu: React.FC<menuProps> = ({joinCode,  setPage , setJoinCode}: menuProps) => {
   return (
     <div className="home">
         <div className="create box">
