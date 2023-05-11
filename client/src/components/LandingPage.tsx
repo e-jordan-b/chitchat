@@ -35,7 +35,7 @@ const LandingPage= () => {
 
         <div className="flex justify-center items-center border-2 border-gray-300 rounded">
             <input
-                className="px-2 py-4 text-left"
+                className="px-2 py-4 text-left appearance-none"
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value)}
                 placeholder="Join with code"
