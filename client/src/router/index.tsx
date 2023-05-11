@@ -19,17 +19,19 @@
 
 
 import { Route, createBrowserRouter, createRoutesFromElements, useParams } from 'react-router-dom'
-import CreateCall from '../components/Create-call'
+import LandingPage from '../components/LandingPage'
+import Call from '../components/Call'
+// const Call = () => {
+//   const { roomId } = useParams()
 
-const Call = () => {
-  const { roomId } = useParams()
+//   return (
+//     <div className = 'flex justify-center items-center h-screen'>
+//       <button >Join</button>
+//     </div>
+//   )
+// }
 
-  return (
-    <div>
-      <h1>{roomId}</h1>
-    </div>
-  )
-}
+
 
 
 
@@ -50,7 +52,7 @@ export const router = createBrowserRouter(
       <Route path="settings" element={<Settings/>} />
     </Route> */}
 
-    <Route path='/createCall' element={<CreateCall/>} />
+    <Route path='/createCall' element={<LandingPage/>} />
     <Route path="/room/:roomId" element={<Call/>} />
     <Route path="*" element={<h1>Not Found</h1>} />
 

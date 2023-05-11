@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Menu from "./CallMenu";
 import Videos from "./CallVideos";
 import '../call.css'
-
+import Settings from './Seetings'
 const Call: React.FC = () => {
   // Federicos original code within APP component
   // return (
@@ -14,15 +14,16 @@ const Call: React.FC = () => {
   // );
   const [currentPage, setCurrentPage] = useState<string>("home");
   const [joinCode, setJoinCode] = useState<string>("");
-
+    console.log(currentPage)
   return (
       <div className="app">
           {currentPage === "home" ? (
-              <Menu
-                  joinCode={joinCode}
-                  setJoinCode={setJoinCode}
-                  setPage={setCurrentPage}
-              />
+            //   <Menu
+            //       joinCode={joinCode}
+            //       setJoinCode={setJoinCode}
+            //       setPage={setCurrentPage}
+            //   />
+            <Settings setCurrentPage={setCurrentPage}/>
           ) : (
               <Videos
                   mode={currentPage}

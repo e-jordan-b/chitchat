@@ -7,14 +7,14 @@ import useAuth from './hooks/useAuth';
 import Login from './components/Login';
 import Call from './components/Call';
 import { router } from "./router";
-import CreateCall from './components/Create-call';
+// import CreateCall from './components/Create-call';
 export default function App() {
   const { user } = useAuth()
   console.log(user)
 
   return (
-      // <RouterProvider router={router} />
-      <Call/>
+      <RouterProvider router={router} />
+      // <Call/>
       // <CreateCall/>
   );
 
