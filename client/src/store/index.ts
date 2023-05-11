@@ -1,10 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
-// import mediaDevicesReducer from './slices/mediaDevicesSlice';
+import mediaDevicesReducer from "./slices/mediaDeviceSlice"
+import videoCallReducer from './slices/videoCallSlice';
 
-// const store = configureStore({
-//   reducer: {
-//     mediaDevices: mediaDevicesReducer,
-//   },
-// });
+const store = configureStore({
+  reducer: {
+    mediaDevices: mediaDevicesReducer,
+    videoCall: videoCallReducer
+  },
+});
 
-// export default store;
+export type RootState = ReturnType<typeof store.getState>
+
+export type AppDispatch = typeof store.dispatch
+
+export default store;

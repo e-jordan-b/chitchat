@@ -14,6 +14,7 @@ const PreCall = () => {
 
   const handleCreateCall = () => {
     const {id} = doc(collection(db, "calls"));
+
      // const roomId = '645a205090d5f0e0b2b99689'
     navigation(`/call/${id}`)
    }
