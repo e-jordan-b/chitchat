@@ -5,7 +5,7 @@ import useAuth from './hooks/useAuth';
 // import { blob } from 'stream/consumers';
 // import Call from './Call3';
 import Login from './components/Login';
-import Call from './components/Call';
+import Call from './components/CallOld';
 import { router } from "./router";
 // import CreateCall from './components/Create-call';
 export default function App() {

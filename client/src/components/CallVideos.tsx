@@ -4,7 +4,7 @@ import useFirebase from "../hooks/useFirebase";
 // import useWebRtc from "../hooks/useWebRtc";
 import { getFirestore, collection, getDoc, doc, setDoc, addDoc, onSnapshot, updateDoc, getDocs, deleteDoc } from 'firebase/firestore'
 import '../call.css'
-
+import  {useSelector} from "react-redux"
 
 const servers = {
   iceServers: [
@@ -23,19 +23,17 @@ const peerConnection = new RTCPeerConnection(servers)
 interface videoProps {
   mode: string,
   callId: string,
-  setPage: React.Dispatch<React.SetStateAction<string>>,
+  // setPage: React.Dispatch<React.SetStateAction<string>>,
 }
 
-const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
+// Missing set Page
+
+const Videos: React.FC<videoProps> = ({mode, callId}: videoProps) => {
+  const isHost = useSelector((state: any) => state.videoCall.isHost)
   const [webcamActive, setWebcamActive] = useState(false);
-  const [roomId, setRoomId] = useState(callId);
-  // const {roomId} = useParams<{roomid: string}>()
   const { db } = useFirebase()
-  // const db = getFirestore(app);
+  alert(isHost.toString())
 
-
-
-  console.log(roomId)
   const localRef = useRef<HTMLVideoElement>(null);
   const remoteRef = useRef<HTMLVideoElement>(null);
 
@@ -76,7 +74,7 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
       const offerCandidates = collection(callDoc, 'offerCandidates');
       const answerCandidates = collection(callDoc, 'answerCandidates');
 
-      setRoomId(callDoc.id); // ask federico wtf the roomurl is
+       // ask federico wtf the roomurl is
 
       peerConnection.onicecandidate = (event) => {
         event.candidate &&
@@ -158,8 +156,8 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
   const hangUp = async () => {
     peerConnection.close();
 
-    if(roomId) {
-      const roomRef = doc(db, 'calls', roomId);
+    if(callId) {
+      const roomRef = doc(db, 'calls', callId);
       const answerCandidatesRef = collection(roomRef, 'answerCandidates');
       const offerCandidatesRef = collection(roomRef, 'offerCandidates');
 
@@ -204,7 +202,7 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
                 <div className="popover">
                     <button
                         onClick={() => {
-                            navigator.clipboard.writeText(roomId);
+                            navigator.clipboard.writeText(callId);
                         }}
                     >
                         {/* <CopyIcon />  */}
@@ -222,12 +220,12 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
                         call
                     </h3>
                     <div className="container">
-                        <button
+                        {/* <button
                             onClick={() => setPage("home")}
                             className="secondary"
                         >
                             Cancel
-                        </button>
+                        </button> */}
                         <button onClick={setupSources}>Start</button>
                     </div>
                 </div>

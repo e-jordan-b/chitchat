@@ -5,10 +5,14 @@ import '../call.css'
 import Settings from './Seetings'
 import PreCall from './PreCall';
 import { useSelector, useDispatch,  } from 'react-redux'
+
 import type { RootState } from '../store/index'
+import CallNew from './CallNew';
 
 const ConditionalRendering = () => {
+  alert("cond rend")
   let hasJoined = useSelector((state: RootState) => state.videoCall.hasJoined)
+  let isHost = useSelector((state: RootState) => state.videoCall.isHost)
   alert("hasJoined: " + hasJoined)
   // Federicos original code within APP component
   // return (
@@ -21,10 +25,12 @@ const ConditionalRendering = () => {
   const [currentPage, setCurrentPage] = useState<string>("home");
   const [joinCode, setJoinCode] = useState<string>("");
 
+
+
     console.log(currentPage)
   return (
     <div>
-    {!hasJoined ? <PreCall/> : <h1>Yay</h1>}
+    {!hasJoined ? <CallNew/> : <Videos  mode={isHost ? 'create' : "join"} callId='12345'/>}
     </div>
 
 

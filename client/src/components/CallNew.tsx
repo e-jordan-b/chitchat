@@ -15,6 +15,7 @@ export default function  CallNew() {
   const videoRef = useRef<HTMLVideoElement>(undefined!);
 
   let hasJoined = useSelector( (state: RootState) => state.videoCall.hasJoined)
+  alert(hasJoined)
   let audioInputDevices: MediaDeviceInfo[] = useSelector((state: RootState) => state.mediaDevices.audioInputDevices)
   let videoInputDevices: MediaDeviceInfo[] = useSelector((state: RootState) => state.mediaDevices.videoInputDevices)
   let selectedAudioDevice: MediaDeviceInfo | null = useSelector((state: RootState) => state.mediaDevices.selectedAudioDevice)

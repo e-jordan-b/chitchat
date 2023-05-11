@@ -1,19 +1,42 @@
 import { Navigate, useParams, useNavigate} from "react-router-dom"
 import { useEffect, useState } from "react"
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
+import useFirebase from '../hooks/useFirebase';
+import { useDispatch } from 'react-redux';
+
+import  { toggleIsHost } from '../store/slices/videoCallSlice';
 
 // const { roomId } = useParams()
 
 
 const LandingPage= () => {
+
+  // alert("landing page")
   const [roomId, setRoomId] = useState('645a205090d5f0e0b2b99689');
-  const [joinCode, setJoinCode] = useState('');
+  // const { db } = useFirebase()
+  const dispatch = useDispatch()
+  const [joinCode, setJoinCode] = useState('645a205090d5f0e0b2b99689');
   const navigation = useNavigate();
 
-  const handleClick = () => {
-    // Missing saving code into store / REDUX
-    navigation(`/room/${roomId}`);
-  };
+  const handleCreateCall = () => {
+    dispatch(toggleIsHost())
+    // const { id } = doc(collection(db, "calls"));
+    // setJoinId(id)
+    //  const id = '645a205090d5f0e0b2b99689'
+    navigation(`/call/${joinCode}`)
+   }
+
+
+   const handleJoinCall = () => {
+
+    if(!joinCode) return
+    navigation(`/call/${joinCode}`)
+  }
+
+  // const handleClick = () => {
+  //   // Missing saving code into store / REDUX
+  //   navigation(`/room/${roomId}`);
+  // };
 
   return (
     <div className="flex flex-col justify-center items-center h-screen w-screen">
@@ -30,7 +53,7 @@ const LandingPage= () => {
       </div>
       <div className= "flex justify-between items-center w-1/4 mt-16">
         <div className="text-white flex justify-center items-center">
-            <button className="bg-slate-600 px-7 py-4 " onClick={handleClick}>Create Call</button>
+            <button className="bg-slate-600 px-7 py-4 " onClick={handleCreateCall}>Create Call</button>
         </div>
 
         <div className="flex justify-center items-center border-2 border-gray-300 rounded">
@@ -40,7 +63,7 @@ const LandingPage= () => {
                 onChange={(e) => setJoinCode(e.target.value)}
                 placeholder="Join with code"
             />
-            <button onClick={handleClick} className="flex justify-center items-center rounded-xl whitespace-nowrap mr-4 transition-all duration-150 h-14 ">Join Call</button>
+            <button onClick={handleJoinCall} className="flex justify-center items-center rounded-xl whitespace-nowrap mr-4 transition-all duration-150 h-14 ">Join Call</button>
         </div>
       </div>
     </div>
