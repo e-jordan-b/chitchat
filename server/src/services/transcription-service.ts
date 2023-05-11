@@ -55,7 +55,7 @@ class TranscriptionService {
 
       console.log(`${speaker}: ${text}`);
 
-      // TODO: Add transcription to memory
+      //saves transcript to transcripts map --> used by scheduler to summarise
       this.saveTranscript(roomId, transcription);
     });
 

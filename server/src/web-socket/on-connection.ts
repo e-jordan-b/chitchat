@@ -7,9 +7,9 @@ import { fetchRoomByUrl } from '../models/room-model';
 import { parse } from 'url';
 import RoomService from '../services/room-service';
 import uuid4 from 'uuid4';
-
 import SchedulerService from '../services/scheduler-service';
 
+//Instantiate our services
 const transcriptionService = new TranscriptionService();
 const roomService = new RoomService();
 const schedulerService = new SchedulerService(transcriptionService);
@@ -19,9 +19,16 @@ export const onConnection = async (
   socketClient: SocketClient,
   request: IncomingMessage
 ) => {
+
+  //Handle Connection
   console.log('new connection');
+
+  //Extract room url and speaker name from request url
   const { room: roomUrl, speaker } = parse(request.url || '', true).query;
+
   console.log(roomUrl, speaker);
+
+  //Validate
   if (
     !roomUrl ||
     !speaker ||
@@ -34,6 +41,7 @@ export const onConnection = async (
 
   // TODO: Get user id
 
+  // Fetch room details based on room url
   const { room, error } = await fetchRoomByUrl(roomUrl);
 
   if (!room || error) {
@@ -49,23 +57,28 @@ export const onConnection = async (
 
   // [ START RoomService ]
   roomService.addRoom(roomId);
+  //add this caller to the room
   roomService.addCallerToRoom(roomId, userId);
 
   // [ START TranscriptionService ]
+  //adds the stream and initiates the transcription
   transcriptionService.addStream(roomId, userId, speaker);
 
   // [ START SocketClient ]
+  // Assign the roomId and userId to the SocketClient
   (socketClient as SocketClient).roomId = roomId;
   (socketClient as SocketClient).userId = userId;
 
   console.log('SOCKET CLIENT ROOMID', (socketClient as SocketClient).roomId);
 
+  // Handle incoming messages from the socket client
   socketClient.on('message', (data) =>
     onMessage(socketClient as SocketClient, transcriptionService, data)
   );
 
   // Cleanup the stream
   socketClient.on('close', () => {
+    //if socket closes we remove the caller that disconnected from room service
     roomService.removeCallerFromRoom(roomId, userId);
 
     // The stream gets paused if there are less than two callers in the room
@@ -83,9 +96,10 @@ export const onConnection = async (
       });
 
       // Clean up the stream
+      //removes listeners, destroys the dtream and deletes ref in store
       transcriptionService.cleanStream(roomId, userId);
 
-      // TODO: Call to STOP the scheduler
+      //stops the scheduler
       schedulerService.stop(roomId);
     }
   });
@@ -97,6 +111,7 @@ export const onConnection = async (
   //   roomService.shouldResumeStream(roomId),
   //   transcriptionService.resumeStream(roomId, userId)
   // );
+  //Check if the room has more than 1 participant? --> then resume the stream and transcription
   if (roomService.shouldResumeStream(roomId)) {
     const participants = roomService.getCallersForRoom(roomId);
 
@@ -107,11 +122,14 @@ export const onConnection = async (
         transcriptionService.resumeStream(roomId, userId)
       );
 
-      // TODO: Call to INSTANTIATE? scheduler
-      // TODO: Call to START scheduler
+      //Scheduler is only instantiated and started here on purpose
+      //The stream is automatically paused upon creation and only here
+      //when call has more than 1 participant, do we need to transcribe and summarise
       schedulerService.add(roomId, roomAgenda);
       schedulerService.start(roomId);
 
+
+    //Inform FE that stream is on and audio should be recorded and sent
       socketServer.clients.forEach((client) => {
         const socketClient = client as SocketClient;
         if (
@@ -123,6 +141,7 @@ export const onConnection = async (
         }
       });
     } else {
+      //error handling
       console.log('IN ERROR');
       socketServer.clients.forEach((client) => {
         const socketClient = client as SocketClient;
