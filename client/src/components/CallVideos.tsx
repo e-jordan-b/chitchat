@@ -19,9 +19,6 @@ const servers = {
 
 const peerConnection = new RTCPeerConnection(servers)
 
-// const { peerConnection / pc } = useWebRTC()
-
-// ##########################################
 
 interface videoProps {
   mode: string,
@@ -33,8 +30,8 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
   const [webcamActive, setWebcamActive] = useState(false);
   const [roomId, setRoomId] = useState(callId);
   // const {roomId} = useParams<{roomid: string}>()
-  const { app } = useFirebase()
-  const db = getFirestore(app);
+  const { db } = useFirebase()
+  // const db = getFirestore(app);
 
 
 
@@ -75,6 +72,7 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
     if(mode === "create") {
       // could this be extracted to the useFirebase hook?
       const callDoc = doc(collection(db, "calls"));
+      // const {id} = doc(collection(db, "calls"));
       const offerCandidates = collection(callDoc, 'offerCandidates');
       const answerCandidates = collection(callDoc, 'answerCandidates');
 

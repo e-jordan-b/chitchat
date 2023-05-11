@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getFirestore } from 'firebase/firestore';
 
 export default function useFirebase() {
   const firebaseConfig = {
@@ -12,6 +13,7 @@ export default function useFirebase() {
   };
 
   const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-  return { app }
+  return { db }
 }
