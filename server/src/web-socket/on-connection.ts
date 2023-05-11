@@ -115,7 +115,9 @@ export const onConnection = async (
 
       // TODO: Call to INSTANTIATE? scheduler
       // TODO: Call to START scheduler
-
+      const scheduler = new SummaryScheduler(300000, roomId, roomUrl, roomAgenda);
+      scheduler.start(transcriptionService, room._id);
+      summarySchedulerService.addSchedulerByUrl(socketClient.roomId, scheduler);
 
       socketServer.clients.forEach((client) => {
         const socketClient = client as SocketClient;

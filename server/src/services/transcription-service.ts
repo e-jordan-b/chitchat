@@ -6,6 +6,7 @@ import { ITranscript } from '../models/transcription-model';
 class TranscriptionService {
   private client: SpeechClient;
   private streams: Map<string, Pumpify>;
+  private transcripts: Map<string, ITranscript[]>
 
   constructor() {
     this.client = new SpeechClient({
@@ -15,6 +16,8 @@ class TranscriptionService {
       },
     });
     this.streams = new Map();
+    this.transcripts = new Map();
+
   }
 
   private mergeIds = (roomId: string, userId: string): string => {
@@ -53,6 +56,7 @@ class TranscriptionService {
       console.log(`${speaker}: ${text}`);
 
       // TODO: Add transcription to memory
+      this.saveTranscript(roomId, transcription);
     });
 
     this.streams.set(streamId, stream);
@@ -103,6 +107,22 @@ class TranscriptionService {
     } else {
       return false;
     }
+  }
+
+  saveTranscript(roomId :string, transcript: ITranscript) {
+    if (this.transcripts.has(roomId)) {
+      this.transcripts.get(roomId)!.push(transcript);
+    } else {
+      this.transcripts.set(roomId, [transcript])
+    }
+
+    return true;
+  }
+
+  popTranscripts(roomId: string) {
+    const transcripts = this.transcripts.get(roomId);
+    this.transcripts.delete(roomId);
+    return transcripts;
   }
 }
 

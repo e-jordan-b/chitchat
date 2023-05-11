@@ -1,8 +1,8 @@
-import { ITranscript } from '../models/transcription-model';
-import { popFromMemoryByRoom } from '../services/memory-service';
 import { Configuration, OpenAIApi } from "openai";
 import { createSummary } from '../models/summary-model';
-import { ObjectId } from 'mongoose';
+import TranscriptionService from '../services/transcription-service';
+import { Room } from "../models/room-model";
+import { Schema } from "mongoose";
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -13,11 +13,11 @@ const openai = new OpenAIApi(configuration);
 class SummaryScheduler {
   intervalId: NodeJS.Timeout | null;
   taskInterval: number;
-  roomId: ObjectId | string;
+  roomId: string;
   roomUUID: string;
   agenda: string[];
 
-  constructor(interval: number, roomId: ObjectId | string, roomUUID: string, agenda: string[]) {
+  constructor(interval: number, roomId: string, roomUUID: string, agenda: string[]) {
     this.intervalId = null;
     this.taskInterval = interval;
     this.roomId = roomId;
@@ -25,22 +25,22 @@ class SummaryScheduler {
     this.agenda = agenda;
   }
 
-  start() {
+  start(transcriptionService: TranscriptionService, IDRoom: string | Schema.Types.ObjectId) {
     if (!this.intervalId) {
       this.intervalId = setInterval(() => {
-        this.getSummaries(this.roomUUID);
+        this.getSummaries(this.roomUUID, transcriptionService, IDRoom);
       }, this.taskInterval);
     }
   }
 
-  async getSummaries (roomUUID: string)  {
+  async getSummaries (roomUUID: string, transcriptionService: TranscriptionService, IDRoom: string | Schema.Types.ObjectId)  {
     //test
     console.log('INSIDE SCHEDULER CB: ', this.roomId)
     //fetch and delete transcripts from local memory
-    const transcripts = popFromMemoryByRoom(roomUUID);
+    const transcripts = transcriptionService.popTranscripts(this.roomId); ;
 
     //base case - no transcripts in local memory
-    if (transcripts === undefined) return;
+    if (!transcripts) return;
 
     let allFormattedTranscripts: string = '';
     transcripts?.forEach((transcript) => {
@@ -55,7 +55,7 @@ class SummaryScheduler {
     const prompt = `The following are transcript from a meeting between 2 speakers where the agenda is ${this.agenda}. Please summarise them : \n\n ${allFormattedTranscripts}`
     console.log(prompt);
     //req openai
-    await openai.createChatCompletion({
+    const response = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
      {"role": "system", "content": 'You are meeting summary assistant'},
@@ -64,20 +64,30 @@ class SummaryScheduler {
       max_tokens: 900,
       temperature: 0.1,
     })
-    .then((response) => {
+
+    if ( response.data && response.data.choices && response.data.choices.length && response.data.choices[0].message) {
+
       const summaryText = response.data.choices[0].message?.content;
 
       console.log(summaryText);
 
       const summary = {
         timestamp: new Date().getTime(),
-        room: this.roomId,
+        room: IDRoom,
         text: summaryText!,
       }
 
       //update mongoDB with new summaries
-      createSummary(summary)
-    })
+      const { summary: savedSummary, error } = await createSummary(summary);
+      if ( error || !savedSummary) {
+        console.log('SAVING SUMMARY ERROR: ', error);
+      } else {
+
+        Room.findByIdAndUpdate(IDRoom, { $push: { summaries: savedSummary._id}}, { new: true});
+      }
+
+
+    }
 
   }
 
