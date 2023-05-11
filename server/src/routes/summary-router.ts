@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import { createRoom } from '../controllers/room-controller';
+import { editSummary, fetchSummaries } from '../controllers/summary-controller';
 
 const router = Router();
 
-router.post('/create', createRoom);
+router.get('/', fetchSummaries);
+
+router.post('/edit', editSummary);
 
 export { router as summaryRouter };

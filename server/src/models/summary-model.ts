@@ -30,3 +30,22 @@ export const createSummary = async (
     return { error: mongooseError };
   }
 };
+
+export const editSummaryById = async (
+  summaryId: string,
+  text: string
+): Promise<{ summary?: ISummary; error?: MongooseError }> => {
+  try {
+    const summary = await Summary.findByIdAndUpdate(
+      summaryId,
+      {
+        text,
+      },
+      { new: true }
+    ).orFail();
+    return { summary };
+  } catch (error) {
+    const mongooseError = error as MongooseError;
+    return { error: mongooseError };
+  }
+};

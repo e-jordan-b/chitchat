@@ -8,7 +8,12 @@ const authMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  const unrestrictedRoutes: string[] = ['/auth/signin', '/auth/signup'];
+  const unrestrictedRoutes: string[] = [
+    '/auth/signin',
+    '/auth/signup',
+    '/summary',
+    '/summary/edit',
+  ];
   const unrestrictedRoute = unrestrictedRoutes.findIndex(
     (route) => req.path === route
   );
