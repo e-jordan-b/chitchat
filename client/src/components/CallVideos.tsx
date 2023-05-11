@@ -1,26 +1,17 @@
 import React, { useState, useRef } from "react"
-import { initializeApp } from "firebase/app";
+import { useParams } from "react-router-dom";
+import useFirebase from "../hooks/useFirebase";
+// import useWebRtc from "../hooks/useWebRtc";
 import { getFirestore, collection, getDoc, doc, setDoc, addDoc, onSnapshot, updateDoc, getDocs, deleteDoc } from 'firebase/firestore'
 import '../call.css'
-
-const firebaseConfig = {
-  //TODO export into .env file
-  apiKey: "AIzaSyCCtVo2gU7eBFsW4RqhMnoC6_qghEaahRI",
-  authDomain: "test2-876c9.firebaseapp.com",
-  projectId: "test2-876c9",
-  storageBucket: "test2-876c9.appspot.com",
-  messagingSenderId: "720642594094",
-  appId: "1:720642594094:web:c1acb8640d990c64ac56bf"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+import  {useSelector} from "react-redux"
 
 const servers = {
   iceServers: [
     {
-      urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302']
+      urls: [
+        'stun:stun1.l.google.com:19302',
+        'stun:stun2.l.google.com:19302']
     }
   ],
   iceCandidatePoolSize: 10,
@@ -28,35 +19,46 @@ const servers = {
 
 const peerConnection = new RTCPeerConnection(servers)
 
+
 interface videoProps {
   mode: string,
   callId: string,
-  setPage: React.Dispatch<React.SetStateAction<string>>,
+  // setPage: React.Dispatch<React.SetStateAction<string>>,
 }
 
-const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
+// Missing set Page
+
+const Videos: React.FC<videoProps> = ({mode, callId}: videoProps) => {
+  const isHost = useSelector((state: any) => state.videoCall.isHost)
   const [webcamActive, setWebcamActive] = useState(false);
-  const [roomId, setRoomId] = useState(callId);
-  console.log(roomId)
+  const { db } = useFirebase()
+  alert(isHost.toString())
+
   const localRef = useRef<HTMLVideoElement>(null);
   const remoteRef = useRef<HTMLVideoElement>(null);
 
+  // UseEffect [] to run only once
   const setupSources = async () => {
     const  localStream = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true
     })
+
+  // ##############################
+
     const remoteStream = new MediaStream();
 
     localStream.getTracks().forEach(track => {
       peerConnection.addTrack(track, localStream);
     })
 
-    peerConnection.ontrack = (event) => {
+    peerConnection.ontrack = (event) => { // event is a MediaStreamTrackEvent? ReadonlyArray<MediaStream>?
       console.log('im HHEEEEERE')
         event.streams[0].getTracks().forEach((track) => {
             remoteStream.addTrack(track);
         })
+
+        //remoteRef.current.srcObject = remoteStream;
     }
 
     if(localRef.current) localRef.current.srcObject = localStream;
@@ -64,12 +66,15 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
 
     setWebcamActive(true);
 
+    // &role=host from url? const { role } = useParams()
     if(mode === "create") {
+      // could this be extracted to the useFirebase hook?
       const callDoc = doc(collection(db, "calls"));
+      // const {id} = doc(collection(db, "calls"));
       const offerCandidates = collection(callDoc, 'offerCandidates');
       const answerCandidates = collection(callDoc, 'answerCandidates');
 
-      setRoomId(callDoc.id);
+       // ask federico wtf the roomurl is
 
       peerConnection.onicecandidate = (event) => {
         event.candidate &&
@@ -80,7 +85,7 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
       await peerConnection.setLocalDescription(offerDescription);
 
       const offer = {
-        sdp: offerDescription.sdp,
+        sdp: offerDescription.sdp, //RTCSessionDescription
         type: offerDescription.type
       };
 
@@ -102,6 +107,8 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
           }
         })
       })
+
+
     } else if (mode === 'join') {
       const callDoc = doc(collection(db, 'calls'), callId);
       const answerCandidates = collection(callDoc, 'answerCandidates');
@@ -138,6 +145,8 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
     }
 
     peerConnection.onconnectionstatechange = (event) => {
+      // kill the media recorder here?
+
       if (peerConnection.connectionState === 'disconnected') {
         hangUp()
       }
@@ -147,8 +156,8 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
   const hangUp = async () => {
     peerConnection.close();
 
-    if(roomId) {
-      const roomRef = doc(db, 'calls', roomId);
+    if(callId) {
+      const roomRef = doc(db, 'calls', callId);
       const answerCandidatesRef = collection(roomRef, 'answerCandidates');
       const offerCandidatesRef = collection(roomRef, 'offerCandidates');
 
@@ -162,10 +171,11 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
         deleteDoc(doc.ref);
       });
 
+
       await deleteDoc(roomRef);
     }
 
-    window.location.reload()
+    window.location.reload() // redirect to start call page?
   }
 
   return (
@@ -192,7 +202,7 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
                 <div className="popover">
                     <button
                         onClick={() => {
-                            navigator.clipboard.writeText(roomId);
+                            navigator.clipboard.writeText(callId);
                         }}
                     >
                         {/* <CopyIcon />  */}
@@ -210,12 +220,12 @@ const Videos: React.FC<videoProps> = ({mode, callId, setPage}: videoProps) => {
                         call
                     </h3>
                     <div className="container">
-                        <button
+                        {/* <button
                             onClick={() => setPage("home")}
                             className="secondary"
                         >
                             Cancel
-                        </button>
+                        </button> */}
                         <button onClick={setupSources}>Start</button>
                     </div>
                 </div>
