@@ -1,4 +1,4 @@
-import mongoose, { MongooseError, ObjectId } from 'mongoose';
+import mongoose, { MongooseError, ObjectId, Schema } from 'mongoose';
 import uuid4 from 'uuid4';
 
 export interface IRoom {
@@ -33,7 +33,8 @@ const RoomSchema = new mongoose.Schema<IRoom>({
     default: [],
   },
   summaries: {
-    type: [String],
+    type: [Schema.Types.ObjectId],
+    ref: 'Summary',
     default: [],
   },
   callSummary: {
@@ -66,6 +67,21 @@ export const create = async (
     const mongooseError = error as MongooseError;
     console.log(mongooseError.message);
     return { error: mongooseError };
+  }
+};
+
+export const updateWithSummary = async (
+  roomId: string,
+  summaryId: string
+): Promise<{ success: boolean; error?: MongooseError }> => {
+  try {
+    await Room.findByIdAndUpdate(roomId, {
+      $push: { summaries: summaryId },
+    }).orFail();
+    return { success: true };
+  } catch (error) {
+    const mongooseError = error as MongooseError;
+    return { success: false, error: mongooseError };
   }
 };
 

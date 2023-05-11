@@ -4,7 +4,6 @@ export interface ISummary {
   _id?: ObjectId | string,
   timestamp: number,
   room: ObjectId | string,
-  //! possibly with markdown
   text: string
 }
 
