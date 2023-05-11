@@ -50,6 +50,8 @@ class TranscriptionService {
       const text = data.results[0].alternatives[0].transcript;
       const transcription: ITranscript = { speaker, text, timestamp };
 
+      console.log(`${speaker}: ${text}`);
+
       // TODO: Add transcription to memory
     });
 
@@ -66,7 +68,8 @@ class TranscriptionService {
    */
   getStream(roomId: string, userId: string): Pumpify | undefined {
     const streamId = this.mergeIds(roomId, userId);
-    return this.streams.get(streamId);
+    const stream = this.streams.get(streamId);
+    return stream;
   }
 
   resumeStream(roomId: string, userId: string): boolean {
@@ -83,6 +86,19 @@ class TranscriptionService {
     const streamId = this.mergeIds(roomId, userId);
     if (this.streams.has(streamId)) {
       this.streams.get(streamId)!.pause();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  cleanStream(roomId: string, userId: string): boolean {
+    const streamId = this.mergeIds(roomId, userId);
+    if (this.streams.has(streamId)) {
+      const stream = this.streams.get(streamId)!;
+      stream.removeAllListeners();
+      stream.destroy();
+      this.streams.delete(streamId);
       return true;
     } else {
       return false;

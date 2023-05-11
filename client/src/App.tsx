@@ -3,14 +3,14 @@ import './App.css';
 
 export default function App() {
   const [socket, _] = useState<WebSocket>(
-    new WebSocket('ws://localhost:3002/')
+    new WebSocket(
+      `ws://localhost:3002/?room=93917803-f90e-452f-b872-65092d470fe1&speaker=Federico`
+    )
   );
   const audioRef1 = useRef<HTMLAudioElement>(null);
 
   socket.onopen = () => {
     setupStreaming(socket);
-
-    socket.send(JSON.stringify({ callStarted: true }));
   };
 
   /**
