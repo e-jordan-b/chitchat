@@ -61,6 +61,12 @@ class RoomService {
     return true;
   }
 
+  getCallersForRoom(roomId: string): string[] {
+    if (!this.roomsMap.has(roomId)) return [];
+
+    return this.roomsMap.get(roomId)!.participants;
+  }
+
   /**
    * Removes a caller from the room.
    * @param roomId
@@ -90,7 +96,7 @@ class RoomService {
   shouldPauseStream(roomId: string): boolean {
     if (!this.roomsMap.has(roomId)) return true;
 
-    return this.roomsMap.get(roomId)!.participants.length === 0;
+    return this.roomsMap.get(roomId)!.participants.length < 2;
   }
 }
 
