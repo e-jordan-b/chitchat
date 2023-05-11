@@ -1,8 +1,12 @@
-import { Configuration, OpenAIApi } from "openai";
+import { Configuration, OpenAIApi } from 'openai';
 import { createSummary } from '../models/summary-model';
 import TranscriptionService from '../services/transcription-service';
-import { Room } from "../models/room-model";
-import { Schema } from "mongoose";
+import { updateRoomWithSummary } from '../models/room-model';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
+console.log('OPEN AI KEY', process.env.OPENAI_API_KEY);
 
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
@@ -12,32 +16,42 @@ const openai = new OpenAIApi(configuration);
 
 class SummaryScheduler {
   intervalId: NodeJS.Timeout | null;
-  taskInterval: number;
+  timeInterval: number;
   roomId: string;
-  roomUUID: string;
   agenda: string[];
 
-  constructor(interval: number, roomId: string, roomUUID: string, agenda: string[]) {
+  constructor(
+    roomId: string,
+    agenda: string[] = [],
+    timeInterval: number = 5 * 60 * 1000 // 5m * 60s * 1ms
+  ) {
     this.intervalId = null;
-    this.taskInterval = interval;
+    this.timeInterval = timeInterval;
     this.roomId = roomId;
-    this.roomUUID = roomUUID;
     this.agenda = agenda;
   }
 
-  start(transcriptionService: TranscriptionService, IDRoom: string | Schema.Types.ObjectId) {
+  start(transcriptionService: TranscriptionService) {
     if (!this.intervalId) {
       this.intervalId = setInterval(() => {
-        this.getSummaries(this.roomUUID, transcriptionService, IDRoom);
-      }, this.taskInterval);
+        console.log('GETTING SUMMARY');
+        this.getSummaries(transcriptionService);
+      }, this.timeInterval);
     }
   }
 
-  async getSummaries (roomUUID: string, transcriptionService: TranscriptionService, IDRoom: string | Schema.Types.ObjectId)  {
+  stop() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  }
+
+  private async getSummaries(transcriptionService: TranscriptionService) {
     //test
-    console.log('INSIDE SCHEDULER CB: ', this.roomId)
+    console.log('INSIDE SCHEDULER CB: ', this.roomId);
     //fetch and delete transcripts from local memory
-    const transcripts = transcriptionService.popTranscripts(this.roomId); ;
+    const transcripts = transcriptionService.popTranscripts(this.roomId);
 
     //base case - no transcripts in local memory
     if (!transcripts) return;
@@ -46,56 +60,73 @@ class SummaryScheduler {
     transcripts?.forEach((transcript) => {
       const formattedTranscript = `At ${transcript.timestamp} ${transcript.speaker} said: ${transcript.text} \n\n`;
 
-      allFormattedTranscripts = allFormattedTranscripts.concat(formattedTranscript);
-    })
-    console.log(allFormattedTranscripts)
-
+      allFormattedTranscripts =
+        allFormattedTranscripts.concat(formattedTranscript);
+    });
+    console.log(allFormattedTranscripts);
 
     //create openai prompt
-    const prompt = `The following are transcript from a meeting between 2 speakers where the agenda is ${this.agenda}. Please summarise them : \n\n ${allFormattedTranscripts}`
+    const prompt = `The following are transcript from a meeting between 2 speakers where the agenda is ${this.agenda}. Please summarise them : \n\n ${allFormattedTranscripts}`;
+    const tokens = (prompt.split(' ').length / 100) * 75;
+    // HOW TO compute for response???
+    console.log('TOKENS', tokens);
     console.log(prompt);
     //req openai
-    const response = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: [
-     {"role": "system", "content": 'You are meeting summary assistant'},
-     {"role": "user", "content": prompt},
-    ],
-      max_tokens: 900,
-      temperature: 0.1,
-    })
+    try {
+      const response = await openai.createChatCompletion({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: 'You are meeting summary assistant' },
+          { role: 'user', content: prompt },
+        ],
+        max_tokens: 900,
+        temperature: 0.1,
+      });
 
-    if ( response.data && response.data.choices && response.data.choices.length && response.data.choices[0].message) {
+      if (
+        response.data &&
+        response.data.choices &&
+        response.data.choices.length &&
+        response.data.choices[0].message
+      ) {
+        const summaryText = response.data.choices[0].message?.content;
 
-      const summaryText = response.data.choices[0].message?.content;
+        console.log(summaryText);
+        console.log(response.data.usage)
 
-      console.log(summaryText);
+        const summary = {
+          timestamp: new Date().getTime(),
+          text: summaryText!,
+        };
 
-      const summary = {
-        timestamp: new Date().getTime(),
-        room: IDRoom,
-        text: summaryText!,
+        //update mongoDB with new summaries
+        const { summary: savedSummary, error: createSummaryError } =
+          await createSummary(summary);
+        if (createSummaryError || !savedSummary || !savedSummary._id) {
+          console.log('SAVING SUMMARY ERROR: ', createSummaryError);
+          return;
+        }
+
+        console.log('IS SUMMARY ID', typeof savedSummary._id);
+
+        const { success, error: updateRoomError } = await updateRoomWithSummary(
+          this.roomId,
+          savedSummary._id
+        );
+
+        if (!success || updateRoomError) {
+          console.log('UPDATING ROOM ERROR', updateRoomError);
+          return;
+        }
+
+        // ALL GOOD
+        console.log('SUMMARY SAVED');
       }
-
-      //update mongoDB with new summaries
-      const { summary: savedSummary, error } = await createSummary(summary);
-      if ( error || !savedSummary) {
-        console.log('SAVING SUMMARY ERROR: ', error);
-      } else {
-
-        Room.findByIdAndUpdate(IDRoom, { $push: { summaries: savedSummary._id}}, { new: true});
-      }
-
-
+    } catch (error) {
+      console.log('OPENAI ERROR', error);
     }
 
-  }
-
-  stop () {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-      this.intervalId = null;
-    }
+    return;
   }
 }
 

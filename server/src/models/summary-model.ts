@@ -1,10 +1,9 @@
-import mongoose, { MongooseError, ObjectId } from "mongoose";
+import mongoose, { MongooseError, ObjectId } from 'mongoose';
 
 export interface ISummary {
-  _id?: ObjectId | string,
-  timestamp: number,
-  room: ObjectId | string,
-  text: string
+  _id?: ObjectId | string;
+  timestamp: number;
+  text: string;
 }
 
 const SummarySchema = new mongoose.Schema<ISummary>({
@@ -12,24 +11,22 @@ const SummarySchema = new mongoose.Schema<ISummary>({
     type: Number,
     required: true,
   },
-  room: {
-    type: String,
-    required: true,
-  },
   text: {
     type: String,
     required: true,
-  }
-})
+  },
+});
 
 export const Summary = mongoose.model<ISummary>('Summary', SummarySchema);
 
-export const createSummary = async (data: ISummary): Promise<{ summary?: ISummary; error?: MongooseError}> => {
+export const createSummary = async (
+  data: ISummary
+): Promise<{ summary?: ISummary; error?: MongooseError }> => {
   try {
     const summary = await Summary.create(data);
-    return {summary};
+    return { summary };
   } catch (error) {
     const mongooseError = error as MongooseError;
     return { error: mongooseError };
   }
-}
+};

@@ -70,9 +70,9 @@ export const create = async (
   }
 };
 
-export const updateWithSummary = async (
+export const updateRoomWithSummary = async (
   roomId: string,
-  summaryId: string
+  summaryId: ObjectId | string
 ): Promise<{ success: boolean; error?: MongooseError }> => {
   try {
     await Room.findByIdAndUpdate(roomId, {

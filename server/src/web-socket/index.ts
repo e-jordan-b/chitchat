@@ -1,7 +1,6 @@
 import { WebSocketServer, WebSocket } from 'ws';
+import { SocketClient } from '../models/socket-client-model';
 import { onConnection } from './on-connection';
-import { CustomWebSocket } from '../models/socket-client-model';
-
 
 // Create instance of WS Server
 export const createSocketServer = (): WebSocketServer => {
@@ -9,7 +8,7 @@ export const createSocketServer = (): WebSocketServer => {
     port: Number(process.env.PORT_SOCKET) || 3002,
   });
 
-  socketServer.on('connection', (client: CustomWebSocket, request) =>
+  socketServer.on('connection', (client: SocketClient, request) =>
     onConnection(socketServer, client, request)
   );
 

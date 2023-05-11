@@ -1,10 +1,41 @@
-import SummaryScheduler from "../scheduler/scheduler";
+import SummaryScheduler from '../scheduler/scheduler';
+import TranscriptionService from './transcription-service';
 
-class SummarySchedulerService {
+class SchedulerService {
   private schedulersMap: Map<string, SummaryScheduler>;
+  private transcrtiptionService: TranscriptionService;
 
-  constructor() {
+  constructor(transcrtiptionService: TranscriptionService) {
     this.schedulersMap = new Map();
+    this.transcrtiptionService = transcrtiptionService;
+  }
+
+  add(roomId: string, agenda: string[]): boolean {
+    if (this.schedulersMap.has(roomId)) return true;
+
+    const summaryScheduler = new SummaryScheduler(
+      roomId,
+      agenda,
+      1 * 60 * 1000
+    );
+    this.schedulersMap.set(roomId, summaryScheduler);
+
+    return true;
+  }
+
+  start(roomId: string): boolean {
+    if (!this.schedulersMap.has(roomId)) return false;
+
+    this.schedulersMap.get(roomId)!.start(this.transcrtiptionService);
+    return true;
+  }
+
+  stop(roomId: string): boolean {
+    if (!this.schedulersMap.has(roomId)) return false;
+
+    this.schedulersMap.get(roomId)!.stop();
+    this.schedulersMap.delete(roomId);
+    return true;
   }
 
   /**
@@ -31,9 +62,9 @@ class SummarySchedulerService {
    */
   deleteScheduler(roomId: string) {
     if (this.schedulersMap.has(roomId)) {
-    this.schedulersMap.delete(roomId);
-  }
+      this.schedulersMap.delete(roomId);
+    }
   }
 }
 
-export default SummarySchedulerService;
+export default SchedulerService;

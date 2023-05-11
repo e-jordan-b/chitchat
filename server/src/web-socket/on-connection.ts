@@ -3,17 +3,16 @@ import { SocketClient } from '../models/socket-client-model';
 import TranscriptionService from '../services/transcription-service';
 import { IncomingMessage } from 'http';
 import { onMessage } from './on-message';
-import SummarySchedulerService from '../services/scheduler-service';
 import { fetchRoomByUrl } from '../models/room-model';
 import { parse } from 'url';
 import RoomService from '../services/room-service';
 import uuid4 from 'uuid4';
 
-import SummaryScheduler from '../scheduler/scheduler';
+import SchedulerService from '../services/scheduler-service';
 
 const transcriptionService = new TranscriptionService();
 const roomService = new RoomService();
-const summarySchedulerService = new SummarySchedulerService();
+const schedulerService = new SchedulerService(transcriptionService);
 
 export const onConnection = async (
   socketServer: WebSocketServer,
@@ -87,12 +86,7 @@ export const onConnection = async (
       transcriptionService.cleanStream(roomId, userId);
 
       // TODO: Call to STOP the scheduler
-      let scheduler = summarySchedulerService.getSchedulerByUrl(socketClient.roomId)
-      scheduler?.stop();
-      // TODO: Call to REMOVE the scheduler
-      summarySchedulerService.deleteScheduler(socketClient.roomId)
-      // TODO: Tell FE to Stop MediaRecording
-      // TODO: Stop the mediarecording for all clients
+      schedulerService.stop(roomId);
     }
   });
 
@@ -115,9 +109,8 @@ export const onConnection = async (
 
       // TODO: Call to INSTANTIATE? scheduler
       // TODO: Call to START scheduler
-      const scheduler = new SummaryScheduler(300000, roomId, roomUrl, roomAgenda);
-      scheduler.start(transcriptionService, room._id);
-      summarySchedulerService.addSchedulerByUrl(socketClient.roomId, scheduler);
+      schedulerService.add(roomId, roomAgenda);
+      schedulerService.start(roomId);
 
       socketServer.clients.forEach((client) => {
         const socketClient = client as SocketClient;
