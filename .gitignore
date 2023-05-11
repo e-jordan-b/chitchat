@@ -9,6 +9,7 @@ lerna-debug.log*
 
 # Google
 gcloud-service-account.json
+server/src/services/gcloud-service-account.json
 server/src/web-socket/gcloud-service-account.json
 
 # Diagnostic reports (https://nodejs.org/api/report.html)

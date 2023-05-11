@@ -1,14 +1,11 @@
 import { WebSocket, WebSocketServer } from 'ws';
 import { SocketClient } from '../models/socket-client-model';
-import { CustomWebSocket } from '../models/socket-client-model';
 import TranscriptionService from '../services/transcription-service';
 import { IncomingMessage } from 'http';
 import { onMessage } from './on-message';
-import { setSchedulerInMemoryByUrl } from '../services/scheduler-service';
-import { ITranscript } from '../models/transcription-model';
-import { IRoom, Room, fetchRoomByUrl } from '../models/room-model';
+import SummarySchedulerService from '../services/scheduler-service';
+import { fetchRoomByUrl } from '../models/room-model';
 import { parse } from 'url';
-import { addToMemory } from '../services/memory-service';
 import RoomService from '../services/room-service';
 import uuid4 from 'uuid4';
 
@@ -16,10 +13,11 @@ import SummaryScheduler from '../scheduler/scheduler';
 
 const transcriptionService = new TranscriptionService();
 const roomService = new RoomService();
+const summarySchedulerService = new SummarySchedulerService();
 
 export const onConnection = async (
   socketServer: WebSocketServer,
-  socketClient: CustomWebSocket,
+  socketClient: SocketClient,
   request: IncomingMessage
 ) => {
   console.log('new connection');
@@ -43,8 +41,6 @@ export const onConnection = async (
     socketClient.close();
     return;
   }
-
-  socketClient.schedulerId = roomUrl;
 
   const userId = uuid4();
   const roomId = room._id.toString();
@@ -81,7 +77,10 @@ export const onConnection = async (
       // stream.removeAllListeners();
       // stream.destroy();
       // TODO: Call to STOP the scheduler
+      let scheduler = summarySchedulerService.getSchedulerByUrl(socketClient.roomId)
+      scheduler?.stop();
       // TODO: Call to REMOVE the scheduler
+      summarySchedulerService.deleteScheduler(socketClient.roomId)
       // TODO: Tell FE to Stop MediaRecording
       // TODO: Stop the mediarecording for all clients
     }
@@ -100,6 +99,9 @@ export const onConnection = async (
   ) {
     // TODO: Call to INSTANTIATE? scheduler
     // TODO: Call to START scheduler
+    const scheduler = new SummaryScheduler(300000, roomId, roomUrl, roomAgenda);
+    scheduler.start();
+    summarySchedulerService.addSchedulerByUrl(socketClient.roomId, scheduler);
 
     socketServer.clients.forEach((client) => {
       const socketClient = client as SocketClient;

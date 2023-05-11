@@ -1,17 +1,39 @@
 import SummaryScheduler from "../scheduler/scheduler";
 
-export const schedulers: Map<string, SummaryScheduler> = new Map();
+class SummarySchedulerService {
+  private schedulersMap: Map<string, SummaryScheduler>;
 
-export const setSchedulerInMemoryByUrl = (schedulerId: string, scheduler: SummaryScheduler) => {
-  schedulers.set(schedulerId, scheduler)
-}
+  constructor() {
+    this.schedulersMap = new Map();
+  }
 
-export const getSchedulerByUrl = (schedulerId: string) => {
-  return schedulers.get(schedulerId);
-}
+  /**
+   *
+   * @param roomId
+   * @param scheduler
+   */
+  addSchedulerByUrl(roomId: string, scheduler: SummaryScheduler) {
+    this.schedulersMap.set(roomId, scheduler);
+  }
 
-export const deleteSchedulerFromMemory = (schedulerId: string) => {
-  if (schedulers.has(schedulerId)) {
-    schedulers.delete(schedulerId);
+  /**
+   *
+   * @param roomId
+   * @returns
+   */
+  getSchedulerByUrl(roomId: string) {
+    return this.schedulersMap.get(roomId);
+  }
+
+  /**
+   *
+   * @param roomId
+   */
+  deleteScheduler(roomId: string) {
+    if (this.schedulersMap.has(roomId)) {
+    this.schedulersMap.delete(roomId);
+  }
   }
 }
+
+export default SummarySchedulerService;

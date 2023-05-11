@@ -1,10 +1,6 @@
 import { WebSocket } from 'ws';
 
-export interface CustomWebSocket extends WebSocket {
-  schedulerId: string | null;
-}
-
-export interface SocketClient extends CustomWebSocket {
+export interface SocketClient extends WebSocket {
   roomId: string;
   userId: string;
 }
