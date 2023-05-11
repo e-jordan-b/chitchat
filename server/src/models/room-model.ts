@@ -1,5 +1,6 @@
 import mongoose, { MongooseError, ObjectId, Schema } from 'mongoose';
 import uuid4 from 'uuid4';
+import { ISummary } from './summary-model';
 
 export interface IRoom {
   _id: ObjectId | string;
@@ -8,7 +9,7 @@ export interface IRoom {
   endedAt?: number;
   participants: string[] | ObjectId[];
   transcriptions: string[] | ObjectId[];
-  summaries: ObjectId[] | string[];
+  summaries: ObjectId[] | string[] | ISummary[];
   callSummary: ObjectId | string;
   agenda: string[];
 }
@@ -91,6 +92,20 @@ export const fetchRoomByUrl = async (
   try {
     const room = await Room.findOne({ urlUUID: url }).orFail();
     return { room };
+  } catch (error) {
+    const mongooseError = error as MongooseError;
+    return { error: mongooseError };
+  }
+};
+
+export const fetchRoomSummariesFromUrl = async (
+  url: string
+): Promise<{ summaries?: ISummary[]; error?: MongooseError }> => {
+  try {
+    const room = await Room.findOne({ urlUUID: url })
+      .populate('summaries')
+      .select('summaries');
+    return { summaries: room?.summaries as ISummary[] };
   } catch (error) {
     const mongooseError = error as MongooseError;
     return { error: mongooseError };

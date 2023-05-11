@@ -1,3 +1,47 @@
+import { Request, Response } from 'express';
+import { fetchRoomSummariesFromUrl } from '../models/room-model';
+import { ErrorMessage } from '../models/error-message';
+import { editSummaryById } from '../models/summary-model';
+
 // Fetch
+export const fetchSummaries = async (req: Request, res: Response) => {
+  const { url } = req.query;
+
+  if (!url || typeof url !== 'string') {
+    res.status(500).send(ErrorMessage.Error500);
+    return;
+  }
+
+  const { summaries, error } = await fetchRoomSummariesFromUrl(url);
+
+  if (!summaries || error) {
+    res.status(500).send(ErrorMessage.Error500);
+    return;
+  }
+
+  res.status(200).json(summaries);
+};
 
 // Edit
+export const editSummary = async (req: Request, res: Response) => {
+  const { summaryId, text } = req.body;
+
+  if (
+    !summaryId ||
+    !text ||
+    typeof summaryId !== 'string' ||
+    typeof text !== 'string'
+  ) {
+    res.status(500).send(ErrorMessage.Error500);
+    return;
+  }
+
+  const { summary, error } = await editSummaryById(summaryId, text);
+
+  if (!summary || error) {
+    res.status(500).send(ErrorMessage.Error500);
+    return;
+  }
+
+  res.status(200).json(summary);
+};
