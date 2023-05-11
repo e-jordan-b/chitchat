@@ -12,10 +12,12 @@ export const addToMemory = (transcript: ITranscript): boolean => {
   return true;
 };
 
-export const getFromMemoryByRoom = (
+export const popFromMemoryByRoom = (
   roomId: string
 ): ITranscript[] | undefined => {
-  return roomsMap.get(roomId);
+  const transcripts = roomsMap.get(roomId);
+  roomsMap.delete(roomId);
+  return transcripts;
 };
 
 export const clearFromMemoryByRoom = (roomId: string) => {

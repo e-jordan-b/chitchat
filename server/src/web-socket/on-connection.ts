@@ -3,20 +3,21 @@ import { SocketClient } from '../models/socket-client-model';
 import TranscriptionService from '../services/transcription-service';
 import { IncomingMessage } from 'http';
 import { onMessage } from './on-message';
-
-import { ITranscript } from '../models/transcription-model';
-import { IRoom, Room, fetchRoomByUrl } from '../models/room-model';
+import SummarySchedulerService from '../services/scheduler-service';
+import { fetchRoomByUrl } from '../models/room-model';
 import { parse } from 'url';
-import { addToMemory } from '../services/memory-service';
 import RoomService from '../services/room-service';
 import uuid4 from 'uuid4';
 
+import SummaryScheduler from '../scheduler/scheduler';
+
 const transcriptionService = new TranscriptionService();
 const roomService = new RoomService();
+const summarySchedulerService = new SummarySchedulerService();
 
 export const onConnection = async (
   socketServer: WebSocketServer,
-  socketClient: WebSocket,
+  socketClient: SocketClient,
   request: IncomingMessage
 ) => {
   console.log('new connection');
@@ -86,7 +87,12 @@ export const onConnection = async (
       transcriptionService.cleanStream(roomId, userId);
 
       // TODO: Call to STOP the scheduler
+      let scheduler = summarySchedulerService.getSchedulerByUrl(socketClient.roomId)
+      scheduler?.stop();
       // TODO: Call to REMOVE the scheduler
+      summarySchedulerService.deleteScheduler(socketClient.roomId)
+      // TODO: Tell FE to Stop MediaRecording
+      // TODO: Stop the mediarecording for all clients
     }
   });
 
@@ -109,6 +115,7 @@ export const onConnection = async (
 
       // TODO: Call to INSTANTIATE? scheduler
       // TODO: Call to START scheduler
+
 
       socketServer.clients.forEach((client) => {
         const socketClient = client as SocketClient;
