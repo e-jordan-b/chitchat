@@ -5,6 +5,7 @@ import { useSelector, useDispatch,  } from 'react-redux'
 import { setAudioInputDevices, setVideoInputDevices, setSelectedAudioDevice, setSelectedVideoDevice } from '../store/slices/mediaDeviceSlice';
 import  { toggleHasJoined } from '../store/slices/videoCallSlice';
 import type { RootState } from '../store/index'
+import { AiOutlineAudio, AiOutlineVideoCamera } from "react-icons/ai"
 
 export default function  CallNew() {
   const { callId } = useParams()
@@ -15,7 +16,7 @@ export default function  CallNew() {
   const videoRef = useRef<HTMLVideoElement>(undefined!);
 
   let hasJoined = useSelector( (state: RootState) => state.videoCall.hasJoined)
-  alert(hasJoined)
+  // alert(hasJoined)
   let audioInputDevices: MediaDeviceInfo[] = useSelector((state: RootState) => state.mediaDevices.audioInputDevices)
   let videoInputDevices: MediaDeviceInfo[] = useSelector((state: RootState) => state.mediaDevices.videoInputDevices)
   let selectedAudioDevice: MediaDeviceInfo | null = useSelector((state: RootState) => state.mediaDevices.selectedAudioDevice)
@@ -102,25 +103,26 @@ export default function  CallNew() {
   return (
 
 <>
-    <div>
-        <div className={`${hasJoined ? "hidden" : null } flex items-center justify-around border rounded-md mb-2 h-[500px] w-[750px] `}>
+    <div className="h-screen w-screen flex justify-center items-center">
+      <div className="flex flex-col">
+        <div className={`${hasJoined ? "hidden" : null } flex items-center justify-around rounded-md mb-2 h-[500px] w-[750px]`}>
 
           {/* <canvas className='w-5/12 h-auto rounded-md border' ref={canvasRef}/> */}
 
           <video
-            className={ `w-5/12 h-auto rounded-md border-3 `}
+            className={ `w-screen h-5/6 rounded-md border-3 `}
             ref={videoRef}
             autoPlay
             muted
             playsInline></video>
         </div>
-
-        <div className={`${hasJoined ? "hidden" : null }border border-zinc-400 rounded-lg flex justify-center `}>
+        <div className={`${hasJoined ? "hidden" : null }border border-zinc-400 rounded-lg flex justify-center items-center`}>
           <div className={`${hasJoined ? "hidden" : null } flex m-2`}>
-            <label className="border border-zinc-950 bg-zinc-300 rounded-full p-1 mr-2" htmlFor="audio">
+            {/* <label className="bg-gray-500 flex justify-center items-center w-12 h-8 text-white rounded-2xl" htmlFor="audio"> */}
+            <AiOutlineAudio size={'20'}/>
               {/* <MicrophoneIcon className='w-6'/> */}
-               Mic
-              </label>
+               {/* Mic */}
+              {/* </label> */}
             <select
               className='w-48 rounded-md'
               id="audio"
@@ -135,14 +137,15 @@ export default function  CallNew() {
             </select>
           </div>
 
-          <div className={`${hasJoined ? "hidden" : null } flex m-2`}>
+          <div className={`${hasJoined ? "hidden" : null } flex m-2 ml-20`}>
 
           {/* <button className="border border-zinc-950 bg-zinc-300 rounded-md p-1 mr-2" onClick={toggleFlip}>Toggle Flip</button> */}
 
-            <label className="border border-zinc-950 bg-zinc-300 rounded-full p-1 mr-2" htmlFor="video">
+            {/* <label className="bg-gray-500 flex justify-center items-center w-12 h-8 text-white rounded-2xl" htmlFor="video"> */}
               {/* <VideoCameraIcon className='w-6'/> */}
-              Cam
-              </label>
+              {/* Cam */}
+              {/* </label> */}
+              <AiOutlineVideoCamera size={20} className="mt-0.5 mr-1"/>
             <select
               className='w-48 rounded-md'
               id="video"
@@ -157,10 +160,15 @@ export default function  CallNew() {
             ))}
             </select>
           </div>
-
+          </div>
             </div>
-              <button onClick={() => dispatch(toggleHasJoined())}className={`${hasJoined ? "hidden" : null } w-24 bg-cyan-400 rounded-md`}>Join</button>
+        <div className="flex flex-col justify-center items-center w-1/3">
+          <h1 className="text-6xl mb-7">Lorem Ipsum</h1>
+          <p className="text-lg mb-5">Sollicitudin tortor tempus,
+</p>
+          <button onClick={() => dispatch(toggleHasJoined())}className={`${hasJoined ? "hidden" : null } w-32 h-12 bg-gray-500 text-white rounded-3xl`}>Join</button>
         </div>
+    </div>
 
 
           <div className={`${!hasJoined ? "hidden" : null } flex flex-col items-center justify-center h-screen`}>

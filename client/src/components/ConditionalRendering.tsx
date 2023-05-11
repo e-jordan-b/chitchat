@@ -10,10 +10,10 @@ import type { RootState } from '../store/index'
 import CallNew from './CallNew';
 
 const ConditionalRendering = () => {
-  alert("cond rend")
+  // alert("cond rend")
   let hasJoined = useSelector((state: RootState) => state.videoCall.hasJoined)
   let isHost = useSelector((state: RootState) => state.videoCall.isHost)
-  alert("hasJoined: " + hasJoined)
+  // alert("hasJoined: " + hasJoined)
   // Federicos original code within APP component
   // return (
   //   <div className="App">
