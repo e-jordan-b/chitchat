@@ -1,14 +1,18 @@
-import { RawData, WebSocketServer } from 'ws';
+import { RawData } from 'ws';
 import { SocketClient } from '../models/socket-client-model';
-import Pumpify from 'pumpify';
+import TranscriptionService from '../services/transcription-service';
 
 export const onMessage = (
-  socketServer: WebSocketServer,
   socketClient: SocketClient,
-  recognize: Pumpify,
+  transcriptionService: TranscriptionService,
   data: RawData
 ) => {
+  const stream = transcriptionService.getStream(
+    socketClient.roomId,
+    socketClient.userId
+  );
 
-
-  // recognize.write(data);
+  if (stream && !stream.isPaused()) {
+    stream?.write(data);
+  }
 };

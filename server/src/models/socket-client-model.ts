@@ -1,6 +1,7 @@
 import { WebSocket } from 'ws';
 
 export interface SocketClient extends WebSocket {
-  roomId: string;
+  roomUrl: string;
+  roomId: string; // ObjectID
   userId: string;
 }
