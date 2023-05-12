@@ -1,47 +1,40 @@
-
 import { useParams } from "react-router-dom"
 import { useEffect, useState, useRef} from "react"
 import { useSelector, useDispatch,  } from 'react-redux'
-import { setAudioInputDevices, setVideoInputDevices, setSelectedAudioDevice, setSelectedVideoDevice } from '../store/slices/mediaDeviceSlice';
+import { setAudioInputDeviceIds, setVideoInputDeviceIds, setSelectedAudioDeviceId, setSelectedVideoDeviceId } from '../store/slices/mediaDeviceSlice';
 import  { toggleHasJoined } from '../store/slices/videoCallSlice';
 import type { RootState } from '../store/index'
 import { AiOutlineAudio, AiOutlineVideoCamera } from "react-icons/ai"
 
 export default function  CallNew() {
   const { callId } = useParams()
-  // const callId = '645a205090d5f0e0b2b99689'
   const dispatch = useDispatch()
+
+  // const callId = '645a205090d5f0e0b2b99689'
 
   const [ localMediaStream, setLocalMediaStream ] = useState<MediaStream | null>(null);
   const videoRef = useRef<HTMLVideoElement>(undefined!);
 
-  let hasJoined = useSelector( (state: RootState) => state.videoCall.hasJoined)
-  // alert(hasJoined)
-  let audioInputDevices: MediaDeviceInfo[] = useSelector((state: RootState) => state.mediaDevices.audioInputDevices)
-  let videoInputDevices: MediaDeviceInfo[] = useSelector((state: RootState) => state.mediaDevices.videoInputDevices)
-  let selectedAudioDevice: MediaDeviceInfo | null = useSelector((state: RootState) => state.mediaDevices.selectedAudioDevice)
-  let selectedVideoDevice: MediaDeviceInfo | null = useSelector((state: RootState) => state.mediaDevices.selectedVideoDevice)
+  const hasJoined = useSelector( (state: RootState) => state.videoCall.hasJoined)
+
+  const audioInputDevices: MediaDeviceInfo[] = useSelector((state: RootState) => state.mediaDevices.audioInputDevices)
+  const videoInputDevices: MediaDeviceInfo[] = useSelector((state: RootState) => state.mediaDevices.videoInputDevices)
+  const selectedAudioDevice: MediaDeviceInfo | null = useSelector((state: RootState) => state.mediaDevices.selectedAudioDevice)
+  const selectedVideoDevice: MediaDeviceInfo | null = useSelector((state: RootState) => state.mediaDevices.selectedVideoDevice)
 
   useEffect(() => {
     const localSetup = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true }, video: true });
 
-        // muted stream for cam preview
-        stream.getAudioTracks()[0].enabled = false;
         videoRef.current.srcObject = stream
 
         const devices = await navigator.mediaDevices.enumerateDevices();
+
         const audioDevices = devices.filter((device) => device.kind === 'audioinput');
         const videoDevices = devices.filter((device) => device.kind === 'videoinput');
 
-        console.log("before", selectedAudioDevice)
-        console.log(selectedVideoDevice)
-
-
-
         dispatch(setAudioInputDevices(audioDevices))
-        console.log("Mimi");
         dispatch(setVideoInputDevices(videoDevices))
         dispatch(setSelectedAudioDevice(audioDevices[0]))
         dispatch(setSelectedVideoDevice(videoDevices[0]))
@@ -96,6 +89,8 @@ export default function  CallNew() {
     dispatch(setSelectedVideoDevice(device))
     console.log(selectedAudioDevice);
   };
+
+
 
 
 
