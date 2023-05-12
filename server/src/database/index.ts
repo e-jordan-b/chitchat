@@ -10,6 +10,7 @@ const connectDB = async (): Promise<{
 
   const uri = `mongodb+srv://${user}:${pass}@cluster0.yd5d7rf.mongodb.net/?retryWrites=true&w=majority`;
 
+
   try {
     await mongoose.connect(uri, { dbName: 'mainDB' }); // mainDB -> This is the name of the DB
     console.log('🚀 Connected to DB');

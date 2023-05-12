@@ -4,9 +4,9 @@ import { connect } from 'react-redux'
 import { useDispatch, useSelector } from 'react-redux';
 import useFirebase from '../hooks/useFirebase';
 import useAuth from '../hooks/useAuth';
-
-
 import  { setIsHostTrue, setIsHostFalse, setHasJoinedFalse, setRefreshedFalse } from '../store/slices/videoCallSlice';
+// import { useQuery } from '@tanstack/query';
+
 
 const LandingPage = () => {
   const {user} = useAuth()
@@ -19,32 +19,16 @@ const LandingPage = () => {
     dispatch(setRefreshedFalse())
   }, [])
 
-
-
-
   const handleCreateCall = () => {
-
-
     dispatch(setIsHostTrue())
     dispatch(setHasJoinedFalse())
+    navigation(`/call/agenda/`)
+  }
 
-    //TODO post agenda
-    //TODO generate room id from firebase (or uuid? still unclear)
-    // const { db } = useFirebase() //TODO: use this to generate room id?
-    //!make post request to localhost:3001/room
-    //? should roomid come back from db as source of truth?
-    //? have to wait for green light from backend anyways for the agenda
-    // wait for response
-    // fail gracefully if needed
-    // navigate to /call/:callId
-
-    navigation(`/call/agenda/${joinCode}`)
-   }
-
-   const handleJoinCall = () => {
-     dispatch(setIsHostFalse())
+  const handleJoinCall = () => {
+    dispatch(setIsHostFalse())
     dispatch(setHasJoinedFalse())
-
+    // might be redundant at this point
     if(!joinCode) return
     navigation(`/call/${joinCode}`)
   }

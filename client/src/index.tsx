@@ -1,11 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-
 import App from './App';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from "./store/index"
+
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,7 +19,9 @@ const root = ReactDOM.createRoot(
 root.render(
   // <React.StrictMode>
   <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
        <App/>
+    </QueryClientProvider>
   </Provider>
   // </React.StrictMode>
 );

@@ -24,11 +24,12 @@ import AgendaCreationScreen from '../components/AgendaCreationScreen'
 // import Call from '../components/CallOld'
 // import Con
 import ConditionalRendering from '../components/ConditionalRendering'
+import HomePage from '../pages/HomePage'
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-    {/* <Route path="/" element={<Landing/>} />
+    {/*
     <Route path="/terms" element={<TermsAndConditions/>} />
     <Route path="/privacy" element={<PrivacyPolicy/>} />
     <Route path='/login' element={<Login/>}/>
@@ -41,9 +42,10 @@ export const router = createBrowserRouter(
       <Route path="settings" element={<Settings/>} />
     </Route> */}
 
+    <Route path="/" element={<HomePage/>} />
     <Route path='/call' element={<LandingPage/>} />
+    <Route path='/call/agenda' element={<AgendaCreationScreen/>} />
     <Route path="/call/:callId" element={<ConditionalRendering/>} />
-    <Route path='/call/agenda/:callId' element={<AgendaCreationScreen/>} />
 
 
 

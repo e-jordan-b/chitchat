@@ -5,6 +5,8 @@ const initialState = {
   isHost: false,
   hasRefreshed: true,
   //TODO find earlies entry point to set false
+  callId: "",
+  agenda: [],
 };
 
 const videoCallSlice = createSlice({
@@ -21,6 +23,9 @@ const videoCallSlice = createSlice({
 
     setRefreshedTrue: (state) => { state.hasRefreshed = true },
     setRefreshedFalse: (state) => { state.hasRefreshed = false },
+
+    setCallId: (state, action) => { state.callId = action.payload },
+    setAgenda: (state, action) => { state.agenda = action.payload },
   },
 });
 
@@ -32,7 +37,9 @@ export const {
   setIsHostTrue,
   setIsHostFalse,
   setRefreshedTrue,
-  setRefreshedFalse
+  setRefreshedFalse,
+  setCallId,
+  setAgenda
 } = videoCallSlice.actions;
 
 export default videoCallSlice.reducer;

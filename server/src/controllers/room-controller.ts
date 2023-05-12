@@ -6,6 +6,13 @@ import { addRoomToUser } from '../models/user-model';
 
 export const createRoom = async (req: AuthenticatedRequest, res: Response) => {
   const { agenda } = req.body;
+  console.log({agenda});
+
+  // if (!agenda) {
+  //   // res.status(400).send(ErrorMessage.Error400);
+  //   res.status(400).json({message: "missing agenda"});
+  //   return;
+  // }
 
   const token = req.token;
 
