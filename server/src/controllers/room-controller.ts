@@ -42,5 +42,5 @@ export const validateRoom = async (req: Request, res: Response) => {
 
   const valid = await validateRoomUrl(url);
 
-  res.send(200).json(valid);
+  res.status(200).json(valid);
 };

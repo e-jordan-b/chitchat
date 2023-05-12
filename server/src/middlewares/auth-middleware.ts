@@ -13,6 +13,7 @@ const authMiddleware = (
     '/auth/signup',
     '/summary',
     '/summary/edit',
+    '/room/validate',
   ];
   const unrestrictedRoute = unrestrictedRoutes.findIndex(
     (route) => req.path === route

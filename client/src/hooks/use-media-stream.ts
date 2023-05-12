@@ -5,7 +5,7 @@ const useMediaStream = () => {
   const [stream, setStream] = useState<MediaStream>();
   const [error, setError] = useState<DOMException>();
 
-  const request = async () => {
+  const request = async (onCompletion?: () => {}) => {
     try {
       const avStream = await navigator.mediaDevices.getUserMedia({
         audio: { channelCount: 1, sampleRate: 16000 },
@@ -18,11 +18,11 @@ const useMediaStream = () => {
     }
   };
 
-  useEffect(() => {
-    request();
-  }, []);
+  // useEffect(() => {
+  //   request();
+  // }, []);
 
-  return { stream, error };
+  return { stream, error, requestPermissions: request };
 };
 
 export default useMediaStream;
