@@ -19,6 +19,7 @@ import { Route, createBrowserRouter, createRoutesFromElements, useParams } from 
 import PreCall from '../components/PreCall'
 // import CallNew from '../components/CallNew'
 import LandingPage from '../components/LandingPage'
+import AgendaCreationScreen from '../components/AgendaCreationScreen'
 
 // import Call from '../components/CallOld'
 // import Con
@@ -42,6 +43,7 @@ export const router = createBrowserRouter(
 
     <Route path='/call' element={<LandingPage/>} />
     <Route path="/call/:callId" element={<ConditionalRendering/>} />
+    <Route path='/call/agenda/:callId' element={<AgendaCreationScreen/>} />
 
 
 

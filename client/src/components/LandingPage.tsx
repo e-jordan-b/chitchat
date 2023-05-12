@@ -32,11 +32,13 @@ const LandingPage = () => {
     //TODO generate room id from firebase (or uuid? still unclear)
     // const { db } = useFirebase() //TODO: use this to generate room id?
     //!make post request to localhost:3001/room
+    //? should roomid come back from db as source of truth?
+    //? have to wait for green light from backend anyways for the agenda
     // wait for response
     // fail gracefully if needed
     // navigate to /call/:callId
 
-    navigation(`/call/${joinCode}`)
+    navigation(`/call/agenda/${joinCode}`)
    }
 
    const handleJoinCall = () => {
@@ -81,14 +83,14 @@ const LandingPage = () => {
 
 
 
-        <div className="flex justify-center items-center border-2 border-gray-300 rounded">
+        <div className="flex justify-between items-center border-2 border-gray-300 rounded">
             <input
                 className="px-2 py-4 text-left appearance-none"
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value)}
                 placeholder="Join with code"
             />
-            <button onClick={handleJoinCall} className="flex justify-center items-center rounded-xl whitespace-nowrap border-l border-gray-600 mr-4 h-14 ">Join Call</button>
+            <button onClick={handleJoinCall} className=" ml-2 flex justify-center items-center rounded-xl  border-l border-gray-600 mr-4 h-14 ">Join Call</button>
         </div>
       </div>
     </div>
