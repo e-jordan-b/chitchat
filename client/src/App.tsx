@@ -1,29 +1,21 @@
 import { RouterProvider } from "react-router-dom";
 import './App.css';
 import useAuth from './hooks/useAuth';
-import { useDispatch, useSelector } from 'react-redux'
-import { setRefreshedFalse } from './store/slices/videoCallSlice';
+
 
 // import { blob } from 'stream/consumers';
 
 import { router } from "./router";
 export default function App() {
-  const refresh = useSelector((state: any) => state.videoCall.hasRefreshed)
-  console.log("hasRefreshed", refresh)
-  const dispatch = useDispatch()
-  dispatch(setRefreshedFalse())
-  console.log("hasRefreshed", refresh)
+
   const { user } = useAuth()
-  console.log(user)
+  console.log( {user})
 
   return (
       <RouterProvider router={router} />
   );
 
 }
-
-
-
 
 
 

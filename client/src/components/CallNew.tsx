@@ -1,10 +1,10 @@
 // import { useParams } from "react-router-dom"
 import { useEffect, useState, useRef} from "react"
-
 import { useSelector, useDispatch,  } from 'react-redux'
 import { setAudioInputDeviceIds, setVideoInputDeviceIds, setSelectedAudioDeviceId, setSelectedVideoDeviceId } from '../store/slices/mediaDeviceSlice';
-import  { toggleHasJoined, setHasJoinedFalse, setHasJoinedTrue } from '../store/slices/videoCallSlice';
+import  { toggleHasJoined, setHasJoinedFalse } from '../store/slices/videoCallSlice';
 import type { RootState } from '../store/index'
+import { AiOutlineAudio, AiOutlineVideoCamera } from "react-icons/ai"
 
 export default function CallSettings() {
   // const { callId } = useParams()
@@ -14,16 +14,9 @@ export default function CallSettings() {
   const [ availableAudioDevices, setAvailableAudioDevices ] = useState<MediaDeviceInfo[]>([]);
   const [ availableVideoDevices, setAvailableVideoDevices ] = useState<MediaDeviceInfo[]>([]);
   const [ localMediaStream, setLocalMediaStream ] = useState<MediaStream | null>(null);
-  const [ isLoading, setIsLoading ] = useState(true);
-
-
+  const [ isLoading, setIsLoading ] = useState(true); //TODO use this for spinner while devices are being fetched
   const videoRef = useRef<HTMLVideoElement>(undefined!);
-
   const hasJoined = useSelector((state: RootState) => state.videoCall.hasJoined)
-  const isHost = useSelector((state: RootState) => state.videoCall.isHost)
-
-  const selectedAudioDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedAudioDeviceId)
-  const selectedVideoDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedVideoDeviceId)
 
   useEffect(() => {
     const localSetup = async () => {
@@ -31,10 +24,10 @@ export default function CallSettings() {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true }, video: true });
         videoRef.current.srcObject = stream
 
-        const devices = await navigator.mediaDevices.enumerateDevices(); // could both devices inside one array?
-
-        const audioDevices = devices.filter((device) => device.kind === 'audioinput'); // seperate audio and video devices
-        const videoDevices = devices.filter((device) => device.kind === 'videoinput');
+        let devices = await navigator.mediaDevices.enumerateDevices();
+        console.log({devices});
+        let audioDevices = devices.filter((device) => device.kind === 'audioinput'); // seperate audio and video devices
+        let videoDevices = devices.filter((device) => device.kind === 'videoinput');
 
         setAvailableAudioDevices(audioDevices); //populate useState array for html dropdown with devices
         setAvailableVideoDevices(videoDevices);
@@ -56,6 +49,7 @@ export default function CallSettings() {
         console.error("An error occured during the media device setup", error)
       }
     }
+
     localSetup();
 
   },[]);
@@ -65,9 +59,9 @@ export default function CallSettings() {
   }, [])
 
 
-
   const handleAudioDeviceChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const device = availableAudioDevices.find((device: MediaDeviceInfo) => device.deviceId  === event.target.value); // find the device that matches the id
+    console.log("new audio device id:", device?.deviceId);
 
     if(!device) return console.error("could not find that device") // if no device is found log an error
 
@@ -81,11 +75,12 @@ export default function CallSettings() {
     } else {
       setLocalMediaStream(newStream) // if there is no stream set the new stream
     }
-    dispatch(setSelectedAudioDeviceId(device.deviceId)) // set the selected device in the redux store
+    dispatch(setSelectedAudioDeviceId(device.deviceId)) // set the selected device id in the store
   };
 
   const handleVideoDeviceChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const device = availableVideoDevices.find((device: MediaDeviceInfo) => device.deviceId === event.target.value);
+    console.log("new video device id:", device?.deviceId);
 
     if(!device) return console.error("could not find that device")
 
@@ -113,7 +108,7 @@ export default function CallSettings() {
           {/* <canvas className='w-5/12 h-auto rounded-md border' ref={canvasRef}/> */}
 
           <video
-            className={ `w-screen h-5/6 rounded-md border-3 `}
+            className={ ` ${isLoading ? "animate-pulse bg-zinc-500" : null} w-screen h-5/6 rounded-md border-3 drop-shadow-lg `}
             ref={videoRef}
             autoPlay
             muted
@@ -122,7 +117,7 @@ export default function CallSettings() {
         <div className={`${hasJoined ? "hidden" : null }border border-zinc-400 rounded-lg flex justify-center items-center`}>
           <div className={`${hasJoined ? "hidden" : null } flex m-2`}>
             {/* <label className="bg-gray-500 flex justify-center items-center w-12 h-8 text-white rounded-2xl" htmlFor="audio"> */}
-            {/* <AiOutlineAudio size={'20'}/> */}
+            <AiOutlineAudio size={'20'}/>
               {/* <MicrophoneIcon className='w-6'/> */}
                {/* Mic */}
               {/* </label> */}
@@ -148,7 +143,7 @@ export default function CallSettings() {
               {/* <VideoCameraIcon className='w-6'/> */}
               {/* Cam */}
               {/* </label> */}
-              {/* <AiOutlineVideoCamera size={20} className="mt-0.5 mr-1"/> */}
+              <AiOutlineVideoCamera size={20} className="mt-0.5 mr-1"/>
             <select
               className='w-48 rounded-md'
               id="video"
