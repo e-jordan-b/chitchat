@@ -1,6 +1,8 @@
+
+// import { useParams } from "react-router-dom"
+
 // import { useParams } from "react-router-dom"
 import { useEffect, useState, useRef} from "react"
-
 import { useSelector, useDispatch,  } from 'react-redux'
 import { setAudioInputDeviceIds, setVideoInputDeviceIds, setSelectedAudioDeviceId, setSelectedVideoDeviceId } from '../store/slices/mediaDeviceSlice';
 import  { toggleHasJoined, setHasJoinedFalse, setHasJoinedTrue } from '../store/slices/videoCallSlice';
@@ -15,13 +17,9 @@ export default function CallSettings() {
   const [ availableVideoDevices, setAvailableVideoDevices ] = useState<MediaDeviceInfo[]>([]);
   const [ localMediaStream, setLocalMediaStream ] = useState<MediaStream | null>(null);
   const [ isLoading, setIsLoading ] = useState(true);
-
-
   const videoRef = useRef<HTMLVideoElement>(undefined!);
-
   const hasJoined = useSelector((state: RootState) => state.videoCall.hasJoined)
   const isHost = useSelector((state: RootState) => state.videoCall.isHost)
-
   const selectedAudioDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedAudioDeviceId)
   const selectedVideoDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedVideoDeviceId)
 
@@ -29,12 +27,14 @@ export default function CallSettings() {
     const localSetup = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true }, video: true });
+
+        stream.getAudioTracks()[0].enabled = false;
         videoRef.current.srcObject = stream
 
-        const devices = await navigator.mediaDevices.enumerateDevices(); // could both devices inside one array?
-
-        const audioDevices = devices.filter((device) => device.kind === 'audioinput'); // seperate audio and video devices
-        const videoDevices = devices.filter((device) => device.kind === 'videoinput');
+        let devices = await navigator.mediaDevices.enumerateDevices();
+        console.log({devices});
+        let audioDevices = devices.filter((device) => device.kind === 'audioinput'); // seperate audio and video devices
+        let videoDevices = devices.filter((device) => device.kind === 'videoinput');
 
         setAvailableAudioDevices(audioDevices); //populate useState array for html dropdown with devices
         setAvailableVideoDevices(videoDevices);
@@ -56,7 +56,10 @@ export default function CallSettings() {
         console.error("An error occured during the media device setup", error)
       }
     }
+
+
     localSetup();
+
 
   },[]);
 
@@ -105,27 +108,34 @@ export default function CallSettings() {
 
   return (
 
-<>
-    <div className="h-screen w-screen flex justify-center items-center">
-      <div className="flex flex-col">
-        <div className={`${hasJoined ? "hidden" : null } flex items-center justify-around rounded-md mb-2 h-[500px] w-[750px]`}>
+    <>
+      <div>
+        <div className={`${isHost ? "bg-green-300" : "bg-red-300"}`}>{isHost ? "Host" : "Not Host"}</div>
+        <div className={`${isLoading ? "bg-red-300" : "bg-green-300"}`}>loading state for spinner</div>
+
+        <div>
+          <div className="text-white text-2xl">micid: {selectedAudioDeviceId}</div>
+          <div className="text-white text-2xl">camid: {selectedVideoDeviceId}</div>
+        </div>
+
+        <div className={`${hasJoined ? "hidden" : null } flex items-center justify-around border rounded-md mb-2 h-[500px] w-[750px] `}>
 
           {/* <canvas className='w-5/12 h-auto rounded-md border' ref={canvasRef}/> */}
 
           <video
-            className={ `w-screen h-5/6 rounded-md border-3 `}
+            className={ `w-5/12 h-auto rounded-md border-3 `}
             ref={videoRef}
             autoPlay
             muted
             playsInline></video>
         </div>
-        <div className={`${hasJoined ? "hidden" : null }border border-zinc-400 rounded-lg flex justify-center items-center`}>
+
+        <div className={`${hasJoined ? "hidden" : null }border border-zinc-400 rounded-lg flex justify-center `}>
           <div className={`${hasJoined ? "hidden" : null } flex m-2`}>
-            {/* <label className="bg-gray-500 flex justify-center items-center w-12 h-8 text-white rounded-2xl" htmlFor="audio"> */}
-            {/* <AiOutlineAudio size={'20'}/> */}
+            <label className="border border-zinc-950 bg-zinc-300 rounded-full p-1 mr-2" htmlFor="audio">
               {/* <MicrophoneIcon className='w-6'/> */}
-               {/* Mic */}
-              {/* </label> */}
+               Mic
+              </label>
             <select
               className='w-48 rounded-md'
               id="audio"
@@ -140,15 +150,14 @@ export default function CallSettings() {
             </select>
           </div>
 
-          <div className={`${hasJoined ? "hidden" : null } flex m-2 ml-20`}>
+          <div className={`${hasJoined ? "hidden" : null } flex m-2`}>
 
           {/* <button className="border border-zinc-950 bg-zinc-300 rounded-md p-1 mr-2" onClick={toggleFlip}>Toggle Flip</button> */}
 
-            {/* <label className="bg-gray-500 flex justify-center items-center w-12 h-8 text-white rounded-2xl" htmlFor="video"> */}
+            <label className="border border-zinc-950 bg-zinc-300 rounded-full p-1 mr-2" htmlFor="video">
               {/* <VideoCameraIcon className='w-6'/> */}
-              {/* Cam */}
-              {/* </label> */}
-              {/* <AiOutlineVideoCamera size={20} className="mt-0.5 mr-1"/> */}
+              Cam
+              </label>
             <select
               className='w-48 rounded-md'
               id="video"
@@ -163,22 +172,17 @@ export default function CallSettings() {
             ))}
             </select>
           </div>
-          </div>
+
             </div>
-        <div className="flex flex-col justify-center items-center w-1/3">
-          <h1 className="text-6xl mb-7">Lorem Ipsum</h1>
-          <p className="text-lg mb-5">Sollicitudin tortor tempus,
-</p>
-          <button onClick={() => dispatch(toggleHasJoined())}className={`${hasJoined ? "hidden" : null } w-32 h-12 bg-gray-500 text-white rounded-3xl`}>Join</button>
+              <button onClick={() => dispatch(setHasJoinedTrue())}className={`${hasJoined ? "hidden" : null } w-24 bg-cyan-400 rounded-md`}>Join</button>
         </div>
-    </div>
 
 
           <div className={`${!hasJoined ? "hidden" : null } flex flex-col items-center justify-center h-screen`}>
             has joined the call
             <button
              className={`${!hasJoined ? "hidden" : null } bg-cyan-400 rounded-md w-24`}
-              onClick={() => dispatch(toggleHasJoined())}>
+              onClick={() => dispatch(setHasJoinedTrue())}>
               settings screen
               </button>
             </div>

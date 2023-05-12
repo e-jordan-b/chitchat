@@ -1,22 +1,23 @@
-import React , { useEffect, useRef, useState } from 'react';
 import { RouterProvider } from "react-router-dom";
 import './App.css';
 import useAuth from './hooks/useAuth';
-// import { blob } from 'stream/consumers';
-// import Call from './Call3';
-import Login from './components/Login';
-import Call from './components/CallOld';
-import { router } from "./router";
-// import CreateCall from './components/Create-call';
-export default function App() {
+import { useDispatch, useSelector } from 'react-redux'
+import { setRefreshedFalse } from './store/slices/videoCallSlice';
 
+// import { blob } from 'stream/consumers';
+
+import { router } from "./router";
+export default function App() {
+  const refresh = useSelector((state: any) => state.videoCall.hasRefreshed)
+  console.log("hasRefreshed", refresh)
+  const dispatch = useDispatch()
+  dispatch(setRefreshedFalse())
+  console.log("hasRefreshed", refresh)
   const { user } = useAuth()
   console.log(user)
 
   return (
       <RouterProvider router={router} />
-      // <Call/>
-      // <CreateCall/>
   );
 
 }

@@ -14,7 +14,7 @@ const mediaDevicesSlice = createSlice({
     setAudioInputDeviceIds: (state, action) => {
       state.audioInputDeviceIds = action.payload;
     },
-    setVideoInputDevicesIds: (state, action) => {
+    setVideoInputDeviceIds: (state, action) => {
       state.videoInputDeviceIds = action.payload;
     },
     setSelectedAudioDeviceId: (state, action) => {
@@ -29,7 +29,7 @@ const mediaDevicesSlice = createSlice({
 
 export const {
   setAudioInputDeviceIds,
-  setVideoInputDevicesIds,
+  setVideoInputDeviceIds,
   setSelectedAudioDeviceId,
   setSelectedVideoDeviceId
 } = mediaDevicesSlice.actions;

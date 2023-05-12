@@ -1,42 +1,38 @@
-import { Navigate, useParams, useNavigate} from "react-router-dom"
-import { useEffect, useState } from "react"
+import { useNavigate} from "react-router-dom"
+import { useState } from "react"
 import { connect } from 'react-redux'
 import useFirebase from '../hooks/useFirebase';
 import { useDispatch } from 'react-redux';
 
-import  { toggleIsHost } from '../store/slices/videoCallSlice';
+import  { setIsHostTrue, setIsHostFalse, setHasJoinedFalse } from '../store/slices/videoCallSlice';
 
-// const { roomId } = useParams()
-
-
-const LandingPage= () => {
-
-  // alert("landing page")
-  const [roomId, setRoomId] = useState('645a205090d5f0e0b2b99689');
-  // const { db } = useFirebase()
+const LandingPage = () => {
   const dispatch = useDispatch()
-  const [joinCode, setJoinCode] = useState('645a205090d5f0e0b2b99689');
   const navigation = useNavigate();
+  const [joinCode, setJoinCode] = useState('645a205090d5f0e0b2b99689');
+
+  // const { db } = useFirebase()
 
   const handleCreateCall = () => {
-    dispatch(toggleIsHost())
-    // const { id } = doc(collection(db, "calls"));
-    // setJoinId(id)
-    //  const id = '645a205090d5f0e0b2b99689'
+    dispatch(setIsHostTrue())
+    dispatch(setHasJoinedFalse())
+
+    //TODO generate room id from firebase (or uuid? still unclear)
+    //!make post request to localhost:3001/room
+    // wait for response
+    // fail gracefully if needed
+    // navigate to /call/:callId
+
     navigation(`/call/${joinCode}`)
    }
 
-
    const handleJoinCall = () => {
+     dispatch(setIsHostFalse())
+    dispatch(setHasJoinedFalse())
 
     if(!joinCode) return
     navigation(`/call/${joinCode}`)
   }
-
-  // const handleClick = () => {
-  //   // Missing saving code into store / REDUX
-  //   navigation(`/room/${roomId}`);
-  // };
 
   return (
     <div className="flex flex-col justify-center items-center h-screen w-screen">

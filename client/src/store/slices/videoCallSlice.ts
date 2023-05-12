@@ -18,6 +18,9 @@ const videoCallSlice = createSlice({
     toggleIsHost: (state) => { state.isHost = !state.isHost },
     setIsHostTrue: (state) => { state.isHost = true },
     setIsHostFalse: (state) => { state.isHost = false },
+
+    setRefreshedTrue: (state) => { state.hasRefreshed = true },
+    setRefreshedFalse: (state) => { state.hasRefreshed = false },
   },
 });
 
@@ -27,7 +30,9 @@ export const {
   setHasJoinedFalse,
   toggleIsHost,
   setIsHostTrue,
-  setIsHostFalse
+  setIsHostFalse,
+  setRefreshedTrue,
+  setRefreshedFalse
 } = videoCallSlice.actions;
 
 export default videoCallSlice.reducer;
