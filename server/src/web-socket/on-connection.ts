@@ -97,6 +97,7 @@ export const onConnection = async (
 
       // Clean up the stream
       //removes listeners, destroys the dtream and deletes ref in store
+      // TODO: SHOULD CLEAN STREAMS FOR ALL USERS
       transcriptionService.cleanStream(roomId, userId);
 
       //stops the scheduler
