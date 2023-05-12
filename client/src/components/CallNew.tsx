@@ -1,90 +1,92 @@
-
-import { useParams } from "react-router-dom"
+// import { useParams } from "react-router-dom"
 import { useEffect, useState, useRef} from "react"
 import { useSelector, useDispatch,  } from 'react-redux'
-import { setAudioInputDevices, setVideoInputDevices, setSelectedAudioDevice, setSelectedVideoDevice } from '../store/slices/mediaDeviceSlice';
-import  { toggleHasJoined } from '../store/slices/videoCallSlice';
+import { setAudioInputDeviceIds, setVideoInputDeviceIds, setSelectedAudioDeviceId, setSelectedVideoDeviceId } from '../store/slices/mediaDeviceSlice';
+import  { toggleHasJoined, setHasJoinedFalse } from '../store/slices/videoCallSlice';
 import type { RootState } from '../store/index'
 import { AiOutlineAudio, AiOutlineVideoCamera } from "react-icons/ai"
 
-export default function  CallNew() {
-  const { callId } = useParams()
+export default function CallSettings() {
+  // const { callId } = useParams()
   // const callId = '645a205090d5f0e0b2b99689'
   const dispatch = useDispatch()
 
+  const [ availableAudioDevices, setAvailableAudioDevices ] = useState<MediaDeviceInfo[]>([]);
+  const [ availableVideoDevices, setAvailableVideoDevices ] = useState<MediaDeviceInfo[]>([]);
   const [ localMediaStream, setLocalMediaStream ] = useState<MediaStream | null>(null);
+  const [ isLoading, setIsLoading ] = useState(true); //TODO use this for spinner while devices are being fetched
   const videoRef = useRef<HTMLVideoElement>(undefined!);
-
-  let hasJoined = useSelector( (state: RootState) => state.videoCall.hasJoined)
-  // alert(hasJoined)
-  let audioInputDevices: MediaDeviceInfo[] = useSelector((state: RootState) => state.mediaDevices.audioInputDevices)
-  let videoInputDevices: MediaDeviceInfo[] = useSelector((state: RootState) => state.mediaDevices.videoInputDevices)
-  let selectedAudioDevice: MediaDeviceInfo | null = useSelector((state: RootState) => state.mediaDevices.selectedAudioDevice)
-  let selectedVideoDevice: MediaDeviceInfo | null = useSelector((state: RootState) => state.mediaDevices.selectedVideoDevice)
+  const hasJoined = useSelector((state: RootState) => state.videoCall.hasJoined)
 
   useEffect(() => {
     const localSetup = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true }, video: true });
-
-        // muted stream for cam preview
-        stream.getAudioTracks()[0].enabled = false;
         videoRef.current.srcObject = stream
 
-        const devices = await navigator.mediaDevices.enumerateDevices();
-        const audioDevices = devices.filter((device) => device.kind === 'audioinput');
-        const videoDevices = devices.filter((device) => device.kind === 'videoinput');
+        let devices = await navigator.mediaDevices.enumerateDevices();
+        console.log({devices});
+        let audioDevices = devices.filter((device) => device.kind === 'audioinput'); // seperate audio and video devices
+        let videoDevices = devices.filter((device) => device.kind === 'videoinput');
 
-        console.log("before", selectedAudioDevice)
-        console.log(selectedVideoDevice)
+        setAvailableAudioDevices(audioDevices); //populate useState array for html dropdown with devices
+        setAvailableVideoDevices(videoDevices);
 
+        const audioDeviceIds = audioDevices.map((device) => device.deviceId) // grab device ids
+        const videoDeviceIds = videoDevices.map((device) => device.deviceId)
 
+        dispatch(setAudioInputDeviceIds(audioDeviceIds)) // populate redux store with device ids
+        dispatch(setVideoInputDeviceIds(videoDeviceIds))
 
-        dispatch(setAudioInputDevices(audioDevices))
-        console.log("Mimi");
-        dispatch(setVideoInputDevices(videoDevices))
-        dispatch(setSelectedAudioDevice(audioDevices[0]))
-        dispatch(setSelectedVideoDevice(videoDevices[0]))
+        console.log({audioDeviceIds}); // log them for the joy of it
+        console.log({videoDeviceIds});
 
-        console.log("after dispatch", selectedAudioDevice)
-        console.log(selectedVideoDevice)
+        dispatch(setSelectedAudioDeviceId(audioDevices[0].deviceId)) // set the default device to the first one in the array
+        dispatch(setSelectedVideoDeviceId(videoDevices[0].deviceId))
+        setIsLoading(false) // disable loading state
 
       } catch (error) {
         console.error("An error occured during the media device setup", error)
       }
-  }
+    }
+
     localSetup();
+
   },[]);
 
+  useEffect(() => {
+    dispatch(setHasJoinedFalse())
+  }, [])
+
+
   const handleAudioDeviceChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const device = audioInputDevices.find((device: MediaDeviceInfo) => device.deviceId  === event.target.value);
-    if(!device) return console.error("could not find that device")
-    const newStream = await navigator.mediaDevices.getUserMedia({
+    const device = availableAudioDevices.find((device: MediaDeviceInfo) => device.deviceId  === event.target.value); // find the device that matches the id
+    console.log("new audio device id:", device?.deviceId);
+
+    if(!device) return console.error("could not find that device") // if no device is found log an error
+
+    const newStream = await navigator.mediaDevices.getUserMedia({ // get a new stream with the new device
       audio: { deviceId: { exact: device.deviceId } }
     })
 
-    if(localMediaStream){
-      localMediaStream.removeTrack(localMediaStream.getAudioTracks()[0]);
-      localMediaStream.addTrack(newStream.getAudioTracks()[0])
+    if(localMediaStream){ // if there is a stream already
+      localMediaStream.removeTrack(localMediaStream.getAudioTracks()[0]); // remove the old track
+      localMediaStream.addTrack(newStream.getAudioTracks()[0]) // add the new track
     } else {
-      setLocalMediaStream(newStream)
+      setLocalMediaStream(newStream) // if there is no stream set the new stream
     }
-
-    dispatch(setSelectedAudioDevice(device))
-
+    dispatch(setSelectedAudioDeviceId(device.deviceId)) // set the selected device id in the store
   };
 
   const handleVideoDeviceChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const device = availableVideoDevices.find((device: MediaDeviceInfo) => device.deviceId === event.target.value);
+    console.log("new video device id:", device?.deviceId);
 
-    console.log(selectedAudioDevice);
-    const device = videoInputDevices.find((device: MediaDeviceInfo) => device.deviceId === event.target.value);
-;
     if(!device) return console.error("could not find that device")
+
     const newStream = await navigator.mediaDevices.getUserMedia({
         video: { deviceId: { exact: device.deviceId } }
     })
-
-    console.log(newStream.getTracks());
 
     if(localMediaStream){
       localMediaStream.removeTrack(localMediaStream.getVideoTracks()[0]);
@@ -93,12 +95,8 @@ export default function  CallNew() {
       videoRef.current.srcObject = newStream
     }
 
-    dispatch(setSelectedVideoDevice(device))
-    console.log(selectedAudioDevice);
+    dispatch(setSelectedVideoDeviceId(device.deviceId))
   };
-
-
-
 
   return (
 
@@ -110,7 +108,7 @@ export default function  CallNew() {
           {/* <canvas className='w-5/12 h-auto rounded-md border' ref={canvasRef}/> */}
 
           <video
-            className={ `w-screen h-5/6 rounded-md border-3 `}
+            className={ ` ${isLoading ? "animate-pulse bg-zinc-500" : null} w-screen h-5/6 rounded-md border-3 drop-shadow-lg `}
             ref={videoRef}
             autoPlay
             muted
@@ -129,7 +127,7 @@ export default function  CallNew() {
               onChange={handleAudioDeviceChange}
               >
 
-              {audioInputDevices.map((device) => (
+              {availableAudioDevices.map((device) => (
                 <option key={device.deviceId} value={device.deviceId}>
                   {device.label}
                 </option>
@@ -152,7 +150,7 @@ export default function  CallNew() {
               onChange={handleVideoDeviceChange}
               >
 
-            {videoInputDevices.map((device) => (
+            {availableVideoDevices.map((device) => (
 
               <option key={device.deviceId} value={device.deviceId}>
                 {device.label}

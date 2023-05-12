@@ -1,39 +1,37 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  audioInputDevices: [],
-  videoInputDevices: [],
-  selectedAudioDevice: null,
-  selectedVideoDevice: null,
+  audioInputDeviceIds: [],
+  videoInputDeviceIds: [],
+  selectedAudioDeviceId: null,
+  selectedVideoDeviceId: null,
 };
-
-// fk typescript
 
 const mediaDevicesSlice = createSlice({
   name: 'mediaDevices',
   initialState,
   reducers: {
-    setAudioInputDevices: (state, action) => {
-      state.audioInputDevices = action.payload;
+    setAudioInputDeviceIds: (state, action) => {
+      state.audioInputDeviceIds = action.payload;
     },
-    setVideoInputDevices: (state, action) => {
-      state.videoInputDevices = action.payload;
+    setVideoInputDeviceIds: (state, action) => {
+      state.videoInputDeviceIds = action.payload;
     },
-    setSelectedAudioDevice: (state, action) => {
-      state.selectedAudioDevice = action.payload;
+    setSelectedAudioDeviceId: (state, action) => {
+      state.selectedAudioDeviceId = action.payload;
     },
-    setSelectedVideoDevice: (state, action) => {
-      state.selectedVideoDevice = action.payload;
+    setSelectedVideoDeviceId: (state, action) => {
+      state.selectedVideoDeviceId = action.payload;
     },
 
   },
 });
 
 export const {
-  setAudioInputDevices,
-  setVideoInputDevices,
-  setSelectedAudioDevice,
-  setSelectedVideoDevice
+  setAudioInputDeviceIds,
+  setVideoInputDeviceIds,
+  setSelectedAudioDeviceId,
+  setSelectedVideoDeviceId
 } = mediaDevicesSlice.actions;
 
 export default mediaDevicesSlice.reducer;

@@ -30,9 +30,11 @@ interface videoProps {
 
 const Videos: React.FC<videoProps> = ({mode, callId}: videoProps) => {
   const isHost = useSelector((state: any) => state.videoCall.isHost)
+  //TODO use isHost for the if elese below
+
   const [webcamActive, setWebcamActive] = useState(false);
   const { db } = useFirebase()
-  alert(isHost.toString())
+
 
   const localRef = useRef<HTMLVideoElement>(null);
   const remoteRef = useRef<HTMLVideoElement>(null);
