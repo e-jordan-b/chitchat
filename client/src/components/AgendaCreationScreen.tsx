@@ -1,14 +1,12 @@
 import { useNavigate, useParams} from "react-router-dom"
 import { useState } from 'react';
 import { CgRemove } from 'react-icons/cg'
-
+import axios from 'axios';
 export default function AgendaCreationScreen() {
-    const { callId } = useParams()
-    console.log(callId)
     const navigation = useNavigate();
 
 
-    const [items, setItems] = useState<string[] | []>([]);
+    const [agenda, setAgenda] = useState<string[] | []>([]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(true);
 
@@ -16,34 +14,30 @@ export default function AgendaCreationScreen() {
     const handleItemSubmit = async (e: React.FormEvent<HTMLFormElement>)  => {
       e.preventDefault();
       if(!input) return;
-      const newItems = [...items];
+      const newItems = [...agenda];
       newItems.push(input);
-      setItems(newItems);
+      setAgenda(newItems);
       setInput('');
 
     };
 
     const handleFinalSubmit = async () => {
-      // const response = await fetch('/api/submit', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   },
-      //   body: JSON.stringify({ items })
-      // });
-      // const data = await response.json();
-      // console.log(data);
+      const res = await axios('http://localhost:3001/room/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: JSON.stringify({agenda}),
+        withCredentials: true,
+      });
 
-      console.log(items);
-
-      setItems([]);
-      navigation(`/call/${callId}`)
+      navigation(`/call/${res.data.url}`)
     };
 
     const handleRemoveItem  = (index: number) => {
-      const newItems = [...items];
+      const newItems = [...agenda];
       newItems.splice(index, 1);
-      setItems(newItems);
+      setAgenda(newItems);
     };
 
 
@@ -54,7 +48,7 @@ export default function AgendaCreationScreen() {
         <button
           onClick={handleFinalSubmit}
           className="px-2 py-2 border rounded-md bg-green-500 text-white absolute top-3 right-3 w-24"
-          >{items && items.length ? "Continue" : "Skip"}
+          >{agenda && agenda.length ? "Continue" : "Skip"}
           </button>
 
         <h3 className='mt-6 font-semibold text-4xl'>Agenda</h3>
@@ -72,12 +66,12 @@ export default function AgendaCreationScreen() {
         </form>
 
 
-        {items && items.length ?  <ul className='mt-5 flex flex-col items-start justify-start overflow-auto w-[475px] list-disc [&>*:nth-child(odd)]:bg-zinc-100 [&>*:nth-child(even)]:bg-zinc-300'>
-          {items.map((item, index) => (
+        {agenda && agenda.length ?  <ul className='mt-5 flex flex-col items-start justify-start overflow-auto w-[475px] list-disc [&>*:nth-child(odd)]:bg-zinc-100 [&>*:nth-child(even)]:bg-zinc-300'>
+          {agenda.map((agenda, index) => (
             <li
             className="text-blue-500 py-1 px-2 mb-2  rounded flex items-center "
 
-            key={index}>{item} <button className="text-red-500 ml-2" onClick={() => handleRemoveItem(index)}><CgRemove/></button></li>
+            key={index}>{agenda} <button className="text-red-500 ml-2" onClick={() => handleRemoveItem(index)}><CgRemove/></button></li>
             ))}
         </ul> : <p className="absolute bottom-5">Tipp: providing an agenda can lead to better summary results.</p>}
 

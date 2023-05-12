@@ -13,7 +13,7 @@ dotenv.config();
 const httpServer = createHttpServer();
 
 // SocketServer
-const socketServer = createSocketServer();
+// const socketServer = createSocketServer();
 
 (async () => {
   const { success, error } = await connectDB();

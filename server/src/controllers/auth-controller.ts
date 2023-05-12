@@ -36,6 +36,8 @@ export const signup = async (req: Request, res: Response) => {
 export const signin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
+  console.log({email, password});
+
   if (!email || !password) {
     res.status(400).send('BadData');
     return;

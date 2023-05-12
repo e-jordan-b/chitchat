@@ -4,9 +4,9 @@ import { connect } from 'react-redux'
 import { useDispatch, useSelector } from 'react-redux';
 import useFirebase from '../hooks/useFirebase';
 import useAuth from '../hooks/useAuth';
-
-
 import  { setIsHostTrue, setIsHostFalse, setHasJoinedFalse, setRefreshedFalse } from '../store/slices/videoCallSlice';
+// import { useQuery } from '@tanstack/query';
+
 
 const LandingPage = () => {
   const {user} = useAuth()
@@ -24,7 +24,6 @@ const LandingPage = () => {
 
   const handleCreateCall = () => {
 
-
     dispatch(setIsHostTrue())
     dispatch(setHasJoinedFalse())
 
@@ -37,12 +36,12 @@ const LandingPage = () => {
     // wait for response
     // fail gracefully if needed
     // navigate to /call/:callId
+    navigation(`/call/agenda/`)
+  }
 
-    navigation(`/call/agenda/${joinCode}`)
-   }
 
-   const handleJoinCall = () => {
-     dispatch(setIsHostFalse())
+  const handleJoinCall = () => {
+    dispatch(setIsHostFalse())
     dispatch(setHasJoinedFalse())
 
     if(!joinCode) return

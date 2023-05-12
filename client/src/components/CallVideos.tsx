@@ -111,7 +111,11 @@ const Videos: React.FC<videoProps> = ({mode, callId}: videoProps) => {
       })
 
 
-    } else if (mode === 'join') {
+    }
+
+
+
+    else if (mode === 'join') {
       const callDoc = doc(collection(db, 'calls'), callId);
       const answerCandidates = collection(callDoc, 'answerCandidates');
       const offerCandidates = collection(callDoc, 'offerCandidates');
