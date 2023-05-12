@@ -71,15 +71,15 @@ export default function AgendaCreationScreen() {
         </form>
 
 
-
-        <ul className='mt-5 flex flex-col items-start justify-start overflow-auto w-[475px] list-disc [&>*:nth-child(odd)]:bg-zinc-100 [&>*:nth-child(even)]:bg-zinc-300'>
+        {items && items.length ?  <ul className='mt-5 flex flex-col items-start justify-start overflow-auto w-[475px] list-disc [&>*:nth-child(odd)]:bg-zinc-100 [&>*:nth-child(even)]:bg-zinc-300'>
           {items.map((item, index) => (
             <li
             className="text-blue-500 py-1 px-2 mb-2  rounded "
 
             key={index}>{item} <button className="text-red-500 ml-2" onClick={() => handleRemoveItem(index)}>X</button></li>
             ))}
-        </ul>
+        </ul> : <p className="absolute bottom-5">Tipp: providing an agenda can lead to better summary results.</p>}
+
 
 
             </div>
