@@ -18,9 +18,8 @@ const Room: React.FC = () => {
   const [roomState, setRoomState] = useState<RoomState>(RoomState.VALIDATE);
   const { stream, error, requestPermissions } = useMediaStream();
   const { socket, connectSocket } = useMediaSocket();
+  const audioRecorder = useRef<MediaRecorder>();
   const renderCount = useRef<number>(0);
-  // const [audioStream, setAudioStream] = useState<MediaStream>();
-  // const [videoStream, setVideoStream] = useState<MediaStream>();
   const [searchParams, _] = useSearchParams();
   const roomService = new RoomService();
 
@@ -46,7 +45,7 @@ const Room: React.FC = () => {
       case RoomState.CALL: {
         console.log('Create WebSocketConnection');
         const url = searchParams.get('url');
-        connectSocket(url!, 'Federico', socketOnMessage);
+        connectSocket(url!, 'Federico', startMediaRecorder, stopMediaRecorder);
         break;
       }
     }
@@ -71,18 +70,52 @@ const Room: React.FC = () => {
     }
   };
 
-  const socketOnMessage = async (ev: MessageEvent) => {
-    const { callUpdate } = JSON.parse(ev.data) as {
-      callUpdate: { status: string };
+  // Spuns out a new mediarecorder object
+  const startMediaRecorder = (socket: WebSocket) => {
+    console.log('entered start media recorder');
+    console.log(socket);
+    if (!stream) return;
+
+    console.log('passed first check');
+
+    if (audioRecorder.current) {
+      audioRecorder.current.stop();
+    }
+
+    console.log('passed second check');
+    const audioTracks = stream.getAudioTracks();
+    if (audioTracks.length === 0) return;
+
+    console.log('passed third check');
+
+    const audioStream = new MediaStream();
+    audioStream.addTrack(audioTracks[0]);
+
+    const options: MediaRecorderOptions = {
+      mimeType: 'audio/webm; codecs=opus',
     };
+    const recorder = new MediaRecorder(audioStream, options);
+    recorder.addEventListener('dataavailable', (event) => {
+      if (event.data && event.data.size > 0) {
+        socket?.send(event.data);
+      }
+    });
 
-    if (callUpdate.status === 'STARTED') {
-      console.log('START MEDIA RECORDER');
-    }
+    recorder.addEventListener('start', () => {
+      console.log('room/audioRecorder: Recorder STARTED');
+    });
 
-    if (callUpdate.status === 'PAUSED') {
-      console.log('STOP MEDIA RECORDER');
-    }
+    recorder.addEventListener('stop', () => {
+      console.log('room/audioRecorder: Recorder STOPPED');
+    });
+
+    audioRecorder.current = recorder;
+    audioRecorder.current.start(1000);
+  };
+
+  const stopMediaRecorder = () => {
+    audioRecorder.current?.stop();
+    audioRecorder.current = undefined;
   };
 
   // [ END RoomState Handling ]
