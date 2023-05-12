@@ -1,12 +1,28 @@
 class ApiService {
-  baseUrl: string = 'http://localhost:3000/';
+  baseUrl: string = 'http://localhost:3001/';
 
   async fetch<T>(
     endpoint: string,
-    withCredentials: boolean
+    options?: {
+      body?: any;
+      method?: string;
+      withCredentials?: boolean;
+    }
   ): Promise<{ result?: T; error?: string }> {
+    const { body, method, withCredentials } = options || {
+      body: undefined,
+      method: 'GET',
+      withCredentials: true,
+    };
+
     const response = await fetch(this.baseUrl + endpoint, {
+      method: method,
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       credentials: withCredentials ? 'include' : undefined,
+      body: body && JSON.stringify(body),
     });
 
     if (!response.ok) {

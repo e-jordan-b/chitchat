@@ -11,23 +11,10 @@
 
 // export default RoomCall;
 
-import React, { useState, useRef, useEffect, useCallback } from "react"
-import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDoc, doc, setDoc, addDoc, onSnapshot, updateDoc, getDocs, deleteDoc } from 'firebase/firestore'
+import React, { useRef, useEffect, useCallback } from "react"
+import { db } from '../../firebase';
+import { collection, getDoc, doc, setDoc, addDoc, onSnapshot, updateDoc, getDocs, deleteDoc } from 'firebase/firestore'
 import './room-call.css';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCCtVo2gU7eBFsW4RqhMnoC6_qghEaahRI",
-  authDomain: "test2-876c9.firebaseapp.com",
-  projectId: "test2-876c9",
-  storageBucket: "test2-876c9.appspot.com",
-  messagingSenderId: "720642594094",
-  appId: "1:720642594094:web:c1acb8640d990c64ac56bf"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 const servers = {
   iceServers: [
