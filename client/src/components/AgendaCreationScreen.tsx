@@ -1,54 +1,74 @@
-import { useNavigate, useParams} from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useState } from 'react';
 import { CgRemove } from 'react-icons/cg'
+import { useDispatch } from 'react-redux';
+import { setAgenda, setCallId } from '../store/slices/videoCallSlice';
 import axios from 'axios';
+
+
+
 export default function AgendaCreationScreen() {
     const navigation = useNavigate();
+    const dispatch = useDispatch();
 
-
-    const [agenda, setAgenda] = useState<string[] | []>([]);
+    const [agendaItems, setAgendaItems] = useState<string[] | []>([]);
     const [input, setInput] = useState('');
-    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
 
     const handleItemSubmit = async (e: React.FormEvent<HTMLFormElement>)  => {
       e.preventDefault();
       if(!input) return;
-      const newItems = [...agenda];
+      const newItems = [...agendaItems];
       newItems.push(input);
-      setAgenda(newItems);
+      setAgendaItems(newItems);
       setInput('');
-
     };
 
     const handleFinalSubmit = async () => {
-      const res = await axios('http://localhost:3001/room/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        data: JSON.stringify({agenda}),
-        withCredentials: true,
-      });
 
-      navigation(`/call/${res.data.url}`)
+      try {
+        setIsLoading(true)
+
+        console.log(agendaItems);
+        const payload = JSON.stringify({agendaItems});
+        const res = await axios('http://localhost:3001/room/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          data: payload,
+          withCredentials: true,
+        });
+
+        console.log({res});
+        dispatch(setAgenda(agendaItems))
+        dispatch(setCallId(res.data.url))
+        setIsLoading(false);
+        navigation(`/call/${res.data.url}`)
+
+      } catch (error) {
+        console.error(error);
+        setIsLoading(false);
+      }
+
     };
 
     const handleRemoveItem  = (index: number) => {
-      const newItems = [...agenda];
+      const newItems = [...agendaItems];
       newItems.splice(index, 1);
-      setAgenda(newItems);
+      setAgendaItems(newItems);
     };
 
 
     return (
       <div className='w-screen h-screen flex justify-center items-center'>
-        <div className="relative h-[512px] flex flex-col justify-start items-center rounded-md border border-zinc-600 w-[600px]">
+        <div className={`${isLoading ? "animate-pulse" : null} relative h-[512px] flex flex-col justify-start items-center rounded-md border border-zinc-600 w-[600px]`}>
 
         <button
           onClick={handleFinalSubmit}
           className="px-2 py-2 border rounded-md bg-green-500 text-white absolute top-3 right-3 w-24"
-          >{agenda && agenda.length ? "Continue" : "Skip"}
+          >{agendaItems && agendaItems.length ? "Continue" : "Skip"}
           </button>
 
         <h3 className='mt-6 font-semibold text-4xl'>Agenda</h3>
@@ -66,12 +86,12 @@ export default function AgendaCreationScreen() {
         </form>
 
 
-        {agenda && agenda.length ?  <ul className='mt-5 flex flex-col items-start justify-start overflow-auto w-[475px] list-disc [&>*:nth-child(odd)]:bg-zinc-100 [&>*:nth-child(even)]:bg-zinc-300'>
-          {agenda.map((agenda, index) => (
+        {agendaItems && agendaItems.length ?  <ul className='mt-5 flex flex-col items-start justify-start overflow-auto w-[475px] list-disc [&>*:nth-child(odd)]:bg-zinc-100 [&>*:nth-child(even)]:bg-zinc-300'>
+          {agendaItems.map((agendaItems, index) => (
             <li
             className="text-blue-500 py-1 px-2 mb-2  rounded flex items-center "
 
-            key={index}>{agenda} <button className="text-red-500 ml-2" onClick={() => handleRemoveItem(index)}><CgRemove/></button></li>
+            key={index}>{agendaItems} <button className="text-red-500 ml-2" onClick={() => handleRemoveItem(index)}><CgRemove/></button></li>
             ))}
         </ul> : <p className="absolute bottom-5">Tipp: providing an agenda can lead to better summary results.</p>}
 
