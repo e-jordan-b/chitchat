@@ -144,6 +144,7 @@ const Room: React.FC = () => {
         return <div>LOADING</div>;
       }
       case RoomState.PRECALL: {
+        // return <RoomPrecall onJoin={() => setRoomState(RoomState.CALL)} mediaStream={stream} />
         return (
           <div>
             <button onClick={() => setRoomState(RoomState.CALL)}>
