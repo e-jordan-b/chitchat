@@ -1,8 +1,9 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../models/authenticated-request';
 import { ErrorMessage } from '../models/error-message';
-import { create } from '../models/room-model';
+import { create, validateRoomUrl } from '../models/room-model';
 import { addRoomToUser } from '../models/user-model';
+import { Request } from 'express-serve-static-core';
 
 export const createRoom = async (req: AuthenticatedRequest, res: Response) => {
   const { agenda } = req.body;
@@ -29,4 +30,17 @@ export const createRoom = async (req: AuthenticatedRequest, res: Response) => {
   }
 
   res.status(200).json({ url: room.urlUUID });
+};
+
+export const validateRoom = async (req: Request, res: Response) => {
+  const { url } = req.body;
+
+  if (!url || typeof url !== 'string') {
+    res.status(500).send(ErrorMessage.Error500);
+    return;
+  }
+
+  const valid = await validateRoomUrl(url);
+
+  res.send(200).json(valid);
 };

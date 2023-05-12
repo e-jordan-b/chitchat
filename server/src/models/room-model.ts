@@ -111,3 +111,14 @@ export const fetchRoomSummariesFromUrl = async (
     return { error: mongooseError };
   }
 };
+
+export const validateRoomUrl = async (
+  url: string
+): Promise<{ valid: boolean }> => {
+  try {
+    await Room.findOne({ urlUUID: url }).orFail();
+    return { valid: true };
+  } catch (_) {
+    return { valid: false };
+  }
+};
