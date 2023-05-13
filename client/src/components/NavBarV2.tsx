@@ -1,84 +1,72 @@
 import { MdOutlineDashboard, MdOutlineSettings, MdOutlineSummarize, MdOutlineMessage, MdOutlineLogout, MdAddIcCall } from 'react-icons/md'
+import {BiConversation} from 'react-icons/bi'
 import { CgProfile } from 'react-icons/cg'
 import { RiMessageLine } from 'react-icons/ri'
 import { TbMessages } from 'react-icons/tb'
 import {  NavLink } from 'react-router-dom'
 import logo from "./../assets/cc-logo-v2.svg"
 
+
+//TODO store expanded state in store and create tollge dispatch
 export default function NavBarV2() {
   return (
     <>
-    <div className="flex flex-col items-center w-16 h-screen overflow-hidden text-gray-400 bg-zinc-900">
-		  <div className="flex items-center justify-center mt-3 ">
-        Logo
-		  </div>
+   <div className="flex flex-col items-center w-16 h-screen overflow-hidden text-gray-400 bg-gray-900">
+    <div className="flex items-center justify-center mt-3">
+      Logo
+    </div>
 
-		  <div className="flex flex-col items-center mt-3 border-t border-zinc-700 border-b ">
+		<div className="flex flex-col items-center mt-3 border-t border-gray-700">
+    <NavLink
+      to={"/app/dashboard"}
+      className="flex items-center justify-center w-12 h-12 mt-2 rounded hover:bg-gray-700 hover:text-gray-300" >
+				<MdOutlineDashboard size={30}/>
+    </NavLink>
 
-    {/* //Dashboard Icon */}
-      <NavLink to="/app/dashboard"
-         className={({ isActive }) =>
-          isActive
-          ? "side-nav-icon text-gray-200 bg-gray-700"
-          : " side-nav-icon hover:bg-gray-700 hover:text-gray-300"
-      }>
-        <MdOutlineDashboard size={30}/>
-      </NavLink>
+    <NavLink
+      to={"/app/call"}
+      className="flex items-center justify-center w-12 h-12 mt-2 rounded hover:bg-gray-700 hover:text-gray-300" >
+				<MdAddIcCall size={30}/>
+    </NavLink>
 
-     {/* //Conversations Icon */}
-      <NavLink to="/app/conversations"
-         className={({ isActive }) =>
-         isActive
-         ? "side-nav-icon text-gray-200 bg-gray-700"
-         : " side-nav-icon hover:bg-gray-700 hover:text-gray-300"
-      }>
-        <TbMessages size={30}/>
-         {/* <MdOutlineSummarize size={30}/> */}
-      </NavLink>
+		 <NavLink
+      to={"/app/conversations"}
+      className="flex items-center justify-center w-12 h-12 mt-2 rounded hover:bg-gray-700 hover:text-gray-300" >
+				<BiConversation size={30}/>
+    </NavLink>
 
-      {/* //Chat Icon */}
-      <NavLink to="/app/chat"
-         className={({ isActive }) =>
-         isActive
-         ? "side-nav-icon relative text-gray-200 bg-gray-700"
-         : " relative side-nav-icon hover:bg-gray-700 hover:text-gray-300"
-      }>
-        <RiMessageLine size={30}/>
-        <span className="absolute top-0 left-0 w-2 h-2 mt-2 ml-2 bg-indigo-500 rounded-full"></span>
-      </NavLink>
+
+
+		</div>
+		<div className="flex flex-col items-center mt-2 border-t border-gray-700">
+
+
+    <NavLink to={"/app/chat"}className="relative flex items-center justify-center w-12 h-12 mt-2 rounded hover:bg-gray-700 hover:text-gray-300">
+
+
+				<svg className="w-6 h-6 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+				</svg>
+				<span className="absolute top-0 left-0 w-2 h-2 mt-2 ml-2 bg-indigo-500 rounded-full"></span>
+
+    </NavLink>
+
 		</div>
 
-    <div className="mt-auto">
-      <NavLink to="/app/settings"
-         className={({ isActive }) =>
-         isActive
-         ? "side-nav-icon w-16 h-16 mt-2 text-gray-200 bg-gray-700"
-         : "side-nav-icon hover:bg-gray-700 hover:text-gray-300 w-16 h-16 mt-2"
-      }>
-        <MdOutlineSettings size={30}/>
-      </NavLink>
+    <div className='flex flex-col justify-center mt-auto'>
 
-      <NavLink to="/"
-         className={({ isActive }) =>
-         isActive
-         ? "side-nav-icon w-16 h-16 mt-2 text-gray-200 bg-gray-700"
-         : "side-nav-icon hover:bg-gray-700 hover:text-gray-300 w-16 h-16 mt-2"
-      }>
-        <MdOutlineLogout size={30}/>
-      </NavLink>
+    <NavLink to={"/app/settings"} className="flex items-center justify-center w-16 h-16 mt-auto hover:bg-gray-700 hover:text-gray-300" >
+      <MdOutlineSettings size={30}/>
+    </NavLink>
 
-      <NavLink to="/app/me"
-         className={({ isActive }) =>
-         isActive
-         ? "side-nav-icon w-16 h-16 mt-2 text-gray-200 bg-gray-800"
-         : "side-nav-icon hover:bg-gray-600 bg-gray-800 hover:text-gray-300 w-16 h-16 mt-2"
-      }>
-        <CgProfile size={30}/>
-      </NavLink>
+    <NavLink to={"/app/profile"} className="flex items-center justify-center w-16 h-16 mt-auto bg-gray-800 hover:bg-gray-700 hover:text-gray-300">
+			<svg className="w-6 h-6 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+			</svg>
+		</NavLink>
 
     </div>
 	</div>
-
 
 
 {/* <div className="flex flex-col items-center w-40 h-screen ml-2 overflow-hidden text-gray-400 bg-gray-900">

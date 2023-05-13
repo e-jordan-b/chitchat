@@ -6,6 +6,7 @@ import { setAgenda, setCallId } from '../store/slices/videoCallSlice';
 import axios from 'axios';
 
 
+//TODO handle the user navigating away from the page before the call is created
 
 export default function AgendaCreationScreen() {
     const navigation = useNavigate();
@@ -62,7 +63,7 @@ export default function AgendaCreationScreen() {
 
 
     return (
-      <div className='w-screen h-screen flex justify-center items-center'>
+      <div className='w-full h-screen flex justify-center items-center'>
         <div className={`${isLoading ? "animate-pulse" : null} relative h-[512px] flex flex-col justify-start items-center rounded-md border border-zinc-600 w-[600px]`}>
 
         <button

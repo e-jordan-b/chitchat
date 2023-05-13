@@ -7,8 +7,8 @@ import useAuth from '../hooks/useAuth';
 import  { setIsHostTrue, setIsHostFalse, setHasJoinedFalse, setRefreshedFalse } from '../store/slices/videoCallSlice';
 // import { useQuery } from '@tanstack/query';
 
+export default function UserCallPage() {
 
-const LandingPage = () => {
   const {user} = useAuth()
   const dispatch = useDispatch()
   const navigation = useNavigate();
@@ -22,7 +22,7 @@ const LandingPage = () => {
   const handleCreateCall = () => {
     dispatch(setIsHostTrue())
     dispatch(setHasJoinedFalse())
-    navigation(`/call/agenda/`)
+    navigation(`/app/call/agenda/`)
   }
 
   const handleJoinCall = () => {
@@ -40,7 +40,8 @@ const LandingPage = () => {
 
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen w-screen">
+
+    <div className="flex flex-col justify-center items-center h-screen w-full">
       <div className="w-1/4">
         <div className='mb-5'>
           <h1 className="text-6xl">Lorem ipsum dolor sit amet</h1>
@@ -54,16 +55,10 @@ const LandingPage = () => {
       </div>
 
       <div className= "flex justify-between items-center w-[450px] mt-16">
-      {user
-      ?
-      (<div className="text-white flex justify-center items-center">
+
+      <div className="text-white flex justify-center items-center">
         <button className="bg-slate-600 px-7 py-4 " onClick={handleCreateCall}>Create Call</button>
-      </div>)
-      :
-      (<div className="text-white flex justify-center items-center">
-            <button className="bg-slate-600 px-7 py-4 " onClick={handleSignUp}>Sign up</button>
-        </div>)
-      }
+      </div>
 
 
 
@@ -98,4 +93,4 @@ const mapDispatchToProps = (dispatch:Function) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);
+// export default connect(mapStateToProps, mapDispatchToProps)(LandingPage);
