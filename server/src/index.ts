@@ -1,6 +1,4 @@
-import { WebSocket, WebSocketServer } from 'ws';
 import * as dotenv from 'dotenv';
-import { SpeechClient } from '@google-cloud/speech';
 import { createHttpServer } from './http';
 import connectDB from './database';
 import { createStreamSocketServer } from './web-socket';

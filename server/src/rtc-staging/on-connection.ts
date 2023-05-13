@@ -4,6 +4,8 @@ import { IncomingMessage } from 'http';
 import { parse } from 'url';
 import uuid4 from 'uuid4';
 import RTCStagingService from '../services/rtcstaging-service';
+import { socketOnClose } from './socket-on-close';
+import { socketOnMessage } from './socket-on-message';
 
 const rtcStagingService = new RTCStagingService();
 
@@ -20,6 +22,8 @@ export const onConnection = (
     return;
   }
 
+  // VALIDATE ROOM + ADD ROOM ID AS ID
+
   socketClient.roomId = roomUrl;
   socketClient.userId = userId;
 
@@ -35,8 +39,24 @@ export const onConnection = (
     return;
   }
 
+  // Removes the client from either the HOST or GUEST roles.
+  socketClient.on('close', () =>
+    socketOnClose(socketClient, rtcStagingService)
+  );
+
   // TODO: Setup onMessage
+  socketClient.on('message', (data) =>
+    socketOnMessage(socketServer, socketClient, data, rtcStagingService)
+  );
 
   // Communicate client its role
-  socketClient.send(JSON.stringify({ rtcUpdate: { role: clientRole } }));
+  // socketClient.send(JSON.stringify({ rtcUpdate: { role: clientRole } }));
+  socketServer.clients.forEach((socketClient) => {
+    if (
+      (socketClient as SocketClient).roomId === roomUrl &&
+      (socketClient as SocketClient).userId !== userId
+    ) {
+      socketClient.send(JSON.stringify({ type: 'PeerHasJoined' }));
+    }
+  });
 };

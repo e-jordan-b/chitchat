@@ -46,6 +46,25 @@ class RCTStaging {
     return -1;
   }
 
+  /**
+   * Removes the client from either the host or guest role.
+   * @param clientId
+   * @returns 0 for host, 1 for guest, -1 for error
+   */
+  removeClient(clientId: string): number {
+    if (this.host === clientId) {
+      this.host = undefined;
+      return 0;
+    }
+
+    if (this.guest === clientId) {
+      this.guest = undefined;
+      return 1;
+    }
+
+    return -1;
+  }
+
   addHostSDP(sdp: string) {
     this.hostSDP = sdp;
   }
