@@ -98,6 +98,7 @@ export const onConnection = async (
       // Clean up the stream
       //removes listeners, destroys the dtream and deletes ref in store
       // TODO: SHOULD CLEAN STREAMS FOR ALL USERS
+      // TODO: Pause for other user, but make sure new media recorder does not create problems
       transcriptionService.cleanStream(roomId, userId);
 
       //stops the scheduler
@@ -121,6 +122,7 @@ export const onConnection = async (
     if (participants.length === 2) {
       participants.forEach((userId) =>
         transcriptionService.resumeStream(roomId, userId)
+        // Check if stream was destroyed, if it was refresh it...
       );
 
       //Scheduler is only instantiated and started here on purpose
