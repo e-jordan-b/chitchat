@@ -3,9 +3,9 @@ import { SocketClient } from '../models/socket-client-model';
 import { onConnection } from './on-connection';
 
 // Create instance of WS Server
-export const createStreamSocketServer = (): WebSocketServer => {
+export const createRTCSocketServer = (): WebSocketServer => {
   const socketServer = new WebSocketServer({
-    port: Number(process.env.PORT_SOCKET) || 3002,
+    port: Number(process.env.PORT_SOCKET) || 3003,
   });
 
   socketServer.on('connection', (client: SocketClient, request) =>

@@ -1,9 +1,8 @@
-import { WebSocket, WebSocketServer } from 'ws';
 import * as dotenv from 'dotenv';
-import { SpeechClient } from '@google-cloud/speech';
 import { createHttpServer } from './http';
 import connectDB from './database';
-import { createSocketServer } from './web-socket';
+import { createStreamSocketServer } from './web-socket';
+import { createRTCSocketServer } from './rtc-staging';
 
 dotenv.config();
 
@@ -12,8 +11,9 @@ dotenv.config();
 // HttpServer
 const httpServer = createHttpServer();
 
-// SocketServer
-const socketServer = createSocketServer();
+// SocketServers
+const streamSocketServer = createStreamSocketServer();
+const rtcSocketServer = createRTCSocketServer();
 
 (async () => {
   const { success, error } = await connectDB();
