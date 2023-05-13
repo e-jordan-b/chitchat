@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import useMediaStream from '../../hooks/use-media-stream';
+import useMediaSocket from '../../hooks/use-media-socket';
 import './room.css';
 
 import RoomPreCall from './room-precall';
 import RoomCall from './room-call';
 import RoomService from '../../services/room-service';
-import useMediaSocket from '../../hooks/use-media-socket';
-import useRTCSocket from '../../hooks/use-rtc-socket';
+import RoomSummary from './room-summary';
 
 enum RoomState {
   VALIDATE,
@@ -121,24 +121,6 @@ const Room: React.FC = () => {
 
   // [ END RoomState Handling ]
 
-  // Check if searchParams are good
-  // VALIDATE SEARCH PARAMS
-
-  // Stream ERROR
-  // USER CANNOT JOIN STREAM
-
-  // SOCKET CONNECTION
-  // We listen here for updates
-  // IF STARTED => We record and push the audio stream
-  // IF PAUSED => We stop the media strea
-
-  // Call the permission at this point
-
-  // Once we receive STARTED from BE
-  // We have to push the audio stream, through the recorder
-
-  // Connection To Web
-
   const RenderSwitch: React.FC = () => {
     switch (roomState) {
       case RoomState.VALIDATE: {
@@ -162,7 +144,12 @@ const Room: React.FC = () => {
         const url = searchParams.get('url');
         if (!url) return null;
 
-        return <RoomCall url={url} mediaStream={stream} />;
+        return (
+          <>
+            <RoomCall url={url} mediaStream={stream} />
+            <RoomSummary url={url} />
+          </>
+        );
       }
     }
   };
