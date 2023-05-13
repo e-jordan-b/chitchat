@@ -7,6 +7,7 @@ import RoomPreCall from './room-precall';
 import RoomCall from './room-call';
 import RoomService from '../../services/room-service';
 import useMediaSocket from '../../hooks/use-media-socket';
+import useRTCSocket from '../../hooks/use-rtc-socket';
 
 enum RoomState {
   VALIDATE,
@@ -147,14 +148,21 @@ const Room: React.FC = () => {
         // return <RoomPrecall onJoin={() => setRoomState(RoomState.CALL)} mediaStream={stream} />
         return (
           <div>
-            <button onClick={() => setRoomState(RoomState.CALL)}>
+            <button
+              onClick={() => {
+                setRoomState(RoomState.CALL);
+              }}
+            >
               START CALL
             </button>
           </div>
         );
       }
       case RoomState.CALL: {
-        return null;
+        const url = searchParams.get('url');
+        if (!url) return null;
+
+        return <RoomCall url={url} mediaStream={stream} />;
       }
     }
   };
