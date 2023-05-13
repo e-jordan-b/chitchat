@@ -10,7 +10,7 @@ export interface IRoom {
   participants: string[] | ObjectId[];
   transcriptions: string[] | ObjectId[];
   summaries: ObjectId[] | string[] | ISummary[];
-  callSummary: ObjectId | string;
+  callSummary: string;
   agenda: string[];
 }
 
@@ -86,6 +86,21 @@ export const updateRoomWithSummary = async (
   }
 };
 
+export const updateRoomWithCallSummary = async (
+  roomUrl: string,
+  summaryText: string
+): Promise<{ success: boolean; error?: MongooseError }> => {
+  try {
+    await Room.findOneAndUpdate({urlUUID: roomUrl}, {
+      $set: { callSummary: summaryText }
+    }).orFail();
+    return { success: true };
+  } catch (error) {
+    const mongooseError = error as MongooseError;
+    return { success: false, error: mongooseError };
+  }
+};
+
 export const fetchRoomByUrl = async (
   url: string
 ): Promise<{ room?: IRoom; error?: MongooseError }> => {
@@ -111,6 +126,21 @@ export const fetchRoomSummariesFromUrl = async (
     return { error: mongooseError };
   }
 };
+
+export const fetchRoomCallSummary = async (
+  url: string
+): Promise<{ callSummary?: string, error?: MongooseError }> => {
+  try {
+    const room = await Room.findOne({urlUUID: url});
+
+    const callSummary = room?.callSummary;
+    return { callSummary: callSummary as string };
+
+  } catch (error) {
+    const mongooseError = error as MongooseError;
+    return { error: mongooseError };
+  }
+}
 
 export const validateRoomUrl = async (
   url: string
