@@ -18,13 +18,12 @@ const peerConnection = new RTCPeerConnection(servers);
 const RoomPreCall: React.FC<{
   mediaStream: MediaStream | undefined;
 }> = ({ mediaStream }) => {
-
   // Deal with audio stream and video stream
   // Maybe you dont need the audio stream
   const mediaRef = useRef<HTMLVideoElement>(null);
   if (mediaRef.current && mediaStream) mediaRef.current.srcObject = mediaStream;
 
-  
+
 
 
   return (

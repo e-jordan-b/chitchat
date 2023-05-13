@@ -31,13 +31,13 @@ export const onConnection = (
   const rtcStaging = rtcStagingService.safelyAddStaging(roomUrl);
   const clientRole = rtcStaging.addClient(userId);
 
-  if (clientRole === -1) {
-    console.log(
-      'RTCStaging/onConnection error: Tried adding a client to a full room!'
-    );
-    socketClient.close();
-    return;
-  }
+  // if (clientRole === -1) {
+  //   console.log(
+  //     'RTCStaging/onConnection error: Tried adding a client to a full room!'
+  //   );
+  //   socketClient.close();
+  //   return;
+  // }
 
   // Removes the client from either the HOST or GUEST roles.
   socketClient.on('close', () =>
