@@ -9,6 +9,7 @@ const Protected = ({ children } : {children: JSX.Element}) => {
     children
   ) : (
     <Navigate to={"/login"} state={{ from: location }} replace />
+
   );
 };
 

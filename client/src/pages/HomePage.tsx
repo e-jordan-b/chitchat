@@ -22,9 +22,8 @@ const userData = {
 
     console.log(res);
 
-    navigation('/call')
+    navigation('/app')
  }
-
 
 
   return (
@@ -32,9 +31,11 @@ const userData = {
       <h1>
         Landing Page
       </h1>
-    <p>should handle login and signup then redicret to OAuth consent screen which redirects to /dashboard</p>
 
+  <div className="flex justify-between w-40">
     <button onClick={handleLogin}>Login</button>
+    <button onClick={() => alert("does not do anything yet")}>Sign Up</button>
+  </div>
     </div>
 
   )

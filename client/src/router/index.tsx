@@ -1,5 +1,5 @@
 /*
-// import Protected from '../components/Protected';
+
 // import Landing from '../pages/Landing';
 // //public routes
 // import PrivacyPolicy from '../pages/PrivacyPolicy';
@@ -8,14 +8,17 @@
 // // protected routes
 // import RootLayout from '../layouts/RootLayout';
 // import Call from '../components/Call';
-// import Dashboard from '../routes/Dashboard';
-// import Settings from '../routes/Settings';
-// import Conversations from '../routes/Conversations';
+
+
 // import Login from '../components/Login';
 
 */
-
-import { Route, createBrowserRouter, createRoutesFromElements, useParams } from 'react-router-dom'
+import Conversations from '../routes/Conversations';
+import Settings from '../routes/Settings';
+import RootLayout from '../layouts/RootLayout';
+import Dashboard from '../routes/Dashboard';
+import Protected from '../components/Protected';
+import { Route, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
 import PreCall from '../components/PreCall'
 // import CallNew from '../components/CallNew'
 import LandingPage from '../components/LandingPage'
@@ -34,25 +37,30 @@ export const router = createBrowserRouter(
     <Route path="/privacy" element={<PrivacyPolicy/>} />
     <Route path='/login' element={<Login/>}/>
 
-    <Route path="/app" element={<Protected><RootLayout/></Protected>} >
-      <Route index element={<Dashboard/>} />
-      <Route path="dashboard" element={<Dashboard/>} />
-      <Route path="call" element={<PreCallScreen/>} />
-      <Route path="conversations" element={<Conversations/>} />
-      <Route path="settings" element={<Settings/>} />
-    </Route> */}
+
+
+    */}
 
     <Route path="/" element={<HomePage/>} />
     <Route path='/call' element={<LandingPage/>} />
-    <Route path='/call/agenda' element={<AgendaCreationScreen/>} />
     <Route path="/call/:callId" element={<ConditionalRendering/>} />
 
+    <Route path='/call/agenda' element={<AgendaCreationScreen/>} />
 
+    <Route path="/app" element={
+      <Protected>
+        <RootLayout/>
+      </Protected>
+    } >
 
-    {/* <Route path='/call' element={<PreCall/>} /> */}
-    {/* <Route path="/room/:roomId" element={<Call/>} /> */}
+      <Route index element={<Dashboard/>} />
+      <Route path="dashboard" element={<Dashboard/>} />
+
+      <Route path="conversations" element={<Conversations/>} />
+      <Route path="settings" element={<Settings/>} />
+    </Route>
+
     <Route path="*" element={<h1>Not Found</h1>} />
-
-    </>
+  </>
 )
 )
