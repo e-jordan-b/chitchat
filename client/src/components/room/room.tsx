@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import useMediaStream from '../../hooks/use-media-stream';
 import useMediaSocket from '../../hooks/use-media-socket';
+import useDeviceStore from '../../store';
 
 import RoomPreCall from './room-precall';
 import RoomCall from './room-call';
@@ -23,10 +24,12 @@ const Room: React.FC = () => {
   const [searchParams, _] = useSearchParams();
   const roomService = new RoomService();
 
+  const { audioDeviceId, videoDeviceId } = useDeviceStore();
+
   renderCount.current++;
 
   console.log('RENDERED', renderCount.current);
-  console.log(roomState);
+  console.log('roomState', roomState);
   console.log('url', searchParams.get('url'));
   console.log('ERROR', error);
   console.log('STREAM', stream?.getTracks().length);
@@ -39,7 +42,9 @@ const Room: React.FC = () => {
         break;
       }
       case RoomState.PRECALL: {
-        requestPermissions();
+        // requestPermissions();
+        requestPermissions(audioDeviceId, videoDeviceId);
+
         break;
       }
       case RoomState.CALL: {
@@ -59,7 +64,8 @@ const Room: React.FC = () => {
       return;
     }
 
-    const isValid = await roomService.isUrlValid(url);
+    // const isValid = await roomService.isUrlValid(url);
+    const isValid = true;
 
     if (isValid) {
       setRoomState(RoomState.PRECALL);
@@ -127,21 +133,21 @@ const Room: React.FC = () => {
   const RenderSwitch: React.FC = () => {
     switch (roomState) {
       case RoomState.VALIDATE: {
-        return <div>LOADING</div>;
+        return <div className='animate-pulse'>LOADING</div>;
       }
       case RoomState.PRECALL: {
-        // return <RoomPrecall onJoin={() => setRoomState(RoomState.CALL)} mediaStream={stream} />
-        return (
-          <div>
-            <button
-              onClick={() => {
-                setRoomState(RoomState.CALL);
-              }}
-            >
-              START CALL
-            </button>
-          </div>
-        );
+        return <RoomPreCall onJoin={() => setRoomState(RoomState.CALL)} />
+        // return (
+        //   <div>
+        //     <button
+        //       onClick={() => {
+        //         setRoomState(RoomState.CALL);
+        //       }}
+        //     >
+        //       START CALL
+        //     </button>
+        //   </div>
+        // );
       }
       case RoomState.CALL: {
         const url = searchParams.get('url');

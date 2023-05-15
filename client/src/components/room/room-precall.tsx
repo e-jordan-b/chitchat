@@ -1,13 +1,19 @@
-import React from 'react';
-import './room-precall.css';
+import { useEffect, useState } from 'react'
+import useMediaStream from '../../hooks/use-media-stream';
 
-const RoomPreCall: React.FC<{
-  onJoin: () => void;
-  mediaStream: MediaStream | undefined;
-}> = ({ mediaStream }) => {
+const RoomPreCall = ({onJoin}: {onJoin: () => void}) => {
+
+  const { stream, error, requestPermissions } = useMediaStream();
+
+  useEffect(() => {
+    requestPermissions();
+  }, []);
+
   // Deal with audio stream and video stream
   // Maybe you dont need the audio stream
-  return <div className="roomprecall"></div>;
+  return (
+  <div className=""><button onClick={onJoin}>join</button></div>
+  )
 };
 
 export default RoomPreCall;

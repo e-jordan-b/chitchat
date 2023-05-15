@@ -14,7 +14,7 @@ class RoomService extends ApiService {
       console.log(error);
       return false;
     }
-
+    console.log("result.valid", result.valid);
     return result.valid;
   }
 }

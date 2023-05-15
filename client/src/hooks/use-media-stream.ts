@@ -5,11 +5,17 @@ const useMediaStream = () => {
   const [stream, setStream] = useState<MediaStream>();
   const [error, setError] = useState<DOMException>();
 
-  const request = async (onCompletion?: () => {}) => {
+  const request = async (audioDeviceId?: string, videoDeviceId?: string, onCompletion?: () => {}) => {
     try {
       const avStream = await navigator.mediaDevices.getUserMedia({
-        audio: { channelCount: 1, sampleRate: 16000 },
-        video: true,
+        audio: {
+          channelCount: 1,
+          sampleRate: 16000,
+          // deviceId: audioDeviceId
+        },
+        video: true
+
+        //{ deviceId: videoDeviceId},
       });
 
       setStream(avStream);
