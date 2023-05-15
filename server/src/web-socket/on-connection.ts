@@ -19,7 +19,6 @@ export const onConnection = async (
   socketClient: SocketClient,
   request: IncomingMessage
 ) => {
-
   //Handle Connection
   console.log('new connection');
 
@@ -117,11 +116,13 @@ export const onConnection = async (
   if (roomService.shouldResumeStream(roomId)) {
     const participants = roomService.getCallersForRoom(roomId);
 
+    console.log('RESUME STREAM');
+
     console.log(participants);
 
     if (participants.length === 2) {
-      participants.forEach((userId) =>
-        transcriptionService.resumeStream(roomId, userId)
+      participants.forEach(
+        (userId) => transcriptionService.resumeStream(roomId, userId)
         // Check if stream was destroyed, if it was refresh it...
       );
 
@@ -131,8 +132,7 @@ export const onConnection = async (
       schedulerService.add(roomId, roomAgenda);
       schedulerService.start(roomId);
 
-
-    //Inform FE that stream is on and audio should be recorded and sent
+      //Inform FE that stream is on and audio should be recorded and sent
       socketServer.clients.forEach((client) => {
         const socketClient = client as SocketClient;
         if (

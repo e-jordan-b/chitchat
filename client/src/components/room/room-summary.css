@@ -1,0 +1,28 @@
+.roomsummary {
+  position: relative;
+  width: 100%;
+}
+
+.roomsummary__timeindicator {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 60px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.roomsummary__summary {
+  margin-left: 65px;
+  padding: 8px;
+
+  border-radius: 8px;
+  background-color: #f3f3f3;
+
+  font-size: 14px;
+}

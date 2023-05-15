@@ -2,11 +2,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import useMediaStream from '../../hooks/use-media-stream';
 import useMediaSocket from '../../hooks/use-media-socket';
+import './room.css';
 
 import RoomPreCall from './room-precall';
 import RoomCall from './room-call';
 import RoomService from '../../services/room-service';
 import RoomSummary from './room-summary';
+import RoomLiveMenu from './room-live-menu';
 
 enum RoomState {
   VALIDATE,
@@ -15,7 +17,7 @@ enum RoomState {
 }
 
 const Room: React.FC = () => {
-  const [roomState, setRoomState] = useState<RoomState>(RoomState.VALIDATE);
+  const [roomState, setRoomState] = useState<RoomState>(RoomState.VALIDATE); // Switch back to VALIDATE
   const { stream, error, requestPermissions } = useMediaStream();
   const { socket, connectSocket } = useMediaSocket();
   const audioRecorder = useRef<MediaRecorder>();
@@ -150,7 +152,7 @@ const Room: React.FC = () => {
         return (
           <>
             <RoomCall url={url} mediaStream={stream} />
-            <RoomSummary url={url} />
+            <RoomLiveMenu url={url} />
           </>
         );
       }

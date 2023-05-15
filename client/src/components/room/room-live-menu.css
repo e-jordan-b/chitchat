@@ -1,0 +1,47 @@
+.roomlivemenu {
+  height: 100%;
+  width: 100%;
+  max-width: 400px;
+  background-color: white;
+}
+
+.roomlivemenu__switchcontainer {
+  height: 60px;
+  width: 100%;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+
+  border-bottom: 1.5px solid #e9e9e9;
+}
+
+.roomlivemenu__switch {
+  height: 100%;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  border-radius: 5px;
+
+  font-size: 14px;
+  font-weight: 600;
+  color: #a0a4aa;
+}
+
+.switch-selected {
+  font-size: 14px;
+  font-weight: 700;
+  color: #34383b;
+
+  background-color: #eeeeee;
+}
+
+.roomlivemenu__summary {
+  height: 100%;
+  width: 100%;
+
+  padding: 10px 10px 0px 10px;
+}

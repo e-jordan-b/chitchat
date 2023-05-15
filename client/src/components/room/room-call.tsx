@@ -128,12 +128,12 @@ const RoomCall: React.FC<{
     <div className="roomcall">
       <video
         className="h-[300px] w-full"
-        style={{ height: '300px', width: '100%' }}
+        style={{ height: '300px', width: '100%', scale: '-1 1 1' }}
         ref={localVideoRef}
         autoPlay
       />
       <video
-        style={{ height: '300px', width: '100%' }}
+        style={{ height: '300px', width: '100%', scale: '-1 1 1' }}
         ref={remoteVideoRef}
         autoPlay
       />

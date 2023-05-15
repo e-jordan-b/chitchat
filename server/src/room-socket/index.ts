@@ -4,7 +4,7 @@ import { SocketClient } from '../models/socket-client-model';
 // Create instance of WS Server
 export const createRoomSocketServer = (): WebSocketServer => {
   const socketServer = new WebSocketServer({
-    port: Number(process.env.PORT_SOCKET) || 3002,
+    port: Number(process.env.PORT_SOCKET) || 3004,
   });
 
   socketServer.on('connection', (client: SocketClient, request) =>

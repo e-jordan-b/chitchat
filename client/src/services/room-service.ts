@@ -17,6 +17,8 @@ class RoomService extends ApiService {
 
     return result.valid;
   }
+
+  // async fetchSummaries(url: string): Promise<{}
 }
 
 export default RoomService;

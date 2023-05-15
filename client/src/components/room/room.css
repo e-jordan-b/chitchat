@@ -1,0 +1,7 @@
+.room {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+
+  background-color: wheat;
+}
