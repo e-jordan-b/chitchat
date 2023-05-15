@@ -118,6 +118,10 @@ const Room: React.FC = () => {
     audioRecorder.current = undefined;
   };
 
+  const onJoin = () => {
+    setRoomState(RoomState.CALL);
+  };
+
   // [ END RoomState Handling ]
 
   const RenderSwitch: React.FC = () => {

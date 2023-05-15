@@ -2,6 +2,7 @@ import React from 'react';
 import './room-precall.css';
 
 const RoomPreCall: React.FC<{
+  onJoin: () => void;
   mediaStream: MediaStream | undefined;
 }> = ({ mediaStream }) => {
   // Deal with audio stream and video stream
