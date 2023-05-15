@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom';
 import { UserContext } from './user/user-context';
+
 
 import { Provider } from 'react-redux'
 import store from './store';
@@ -26,20 +27,38 @@ export default function App() {
       >
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/call" element={<Start />} />
 
-            <Route path="/settings" element={<UserCallSettings />} />
-            <Route path="/agenda" element={<AgendaCreation />} />
+            {/* <Route path="/" element={< Landing />} /> */}
+            <Route path="/" element={< CallFlowLayout />} />
+            <Route path="/call" element={< Start />} />
+
+            <Route path="/settings" element={< UserCallSettings />} />
+            <Route path="/agenda" element={< AgendaCreation />} />
 
 
-            <Route path="/settings/:url" element={<GuestCallSettings />} />
 
-            <Route path="/room/:url" element={<Room />} />
 
+            <Route path="/settings/:url" element={< GuestCallSettings />} />
+            <Route path="/room/:url(/:speaker)" element={< Room />} />
           </Routes>
         </BrowserRouter>
       </UserContext.Provider>
     </Provider>
   );
 }
+
+
+const CallFlowLayout = () => {
+    return (
+      <>
+      <header className="w-screen">
+        <img src="./assets/Vector.png" alt="chitchat-logo"
+        className="h-24 bg-red-200"
+        />
+      </header>
+      <main>
+        <Outlet />
+      </main>
+      </>
+    )
+  }
