@@ -5,7 +5,8 @@ import { setSelectedAudioDeviceId, setSelectedVideoDeviceId } from '../mediaDevi
 
 import type { RootState } from '../store';
 
-import { AiOutlineAudio, AiOutlineVideoCamera } from "react-icons/ai"
+import { AiOutlineAudio, AiFillAudio, AiFillPhone,
+   AiOutlineVideoCamera, AiFillVideoCamera } from "react-icons/ai"
 
 export default function UserCallSettings() {
   const dispatch = useDispatch()
@@ -45,10 +46,6 @@ export default function UserCallSettings() {
 
     localSetup();
   },[]);
-
-
-
-
 
   const handleAudioDeviceChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const device = availableAudioDevices.find((device: MediaDeviceInfo) => device.deviceId  === event.target.value); // find the device that matches the id
@@ -103,13 +100,11 @@ export default function UserCallSettings() {
   };
 
   return (
-
-<>
+  <>
     <div className="h-screen w-screen flex justify-center items-center">
       <div className="flex flex-col">
         <div className={`flex items-center justify-around rounded-md mb-2 h-[500px] w-[750px]`}>
 
-          {/* <canvas className='w-5/12 h-auto rounded-md border' ref={canvasRef}/> */}
 
           <video
             className={ `${isLoading ? "animate-pulse bg-zinc-500" : null} w-screen h-5/6 rounded-md border-3 drop-shadow-lg `}
@@ -120,8 +115,9 @@ export default function UserCallSettings() {
         </div>
         <div className={`border border-zinc-400 rounded-lg flex justify-center items-center`}>
           <div className={`flex m-2`}>
-            {/* <label className="bg-gray-500 flex justify-center items-center w-12 h-8 text-white rounded-2xl" htmlFor="audio"> */}
-            <AiOutlineAudio size={'20'}/>
+
+
+            <AiFillAudio size={'20'}/>
               {/* <MicrophoneIcon className='w-6'/> */}
                {/* Mic */}
               {/* </label> */}
@@ -147,7 +143,7 @@ export default function UserCallSettings() {
               {/* <VideoCameraIcon className='w-6'/> */}
               {/* Cam */}
               {/* </label> */}
-              <AiOutlineVideoCamera size={20} className="mt-0.5 mr-1"/>
+              <AiFillVideoCamera size={20} className="mt-0.5 mr-1"/>
             <select
               className='w-48 rounded-md'
               id="video"
@@ -167,7 +163,7 @@ export default function UserCallSettings() {
         <div className="flex flex-col justify-center items-center w-1/3">
           <h1 className="text-6xl mb-7">Lorem Ipsum</h1>
           <p className="text-lg mb-5">Sollicitudin tortor tempus</p>
-          <button onClick={goToAgenda}className={` w-32 h-12 bg-gray-500 text-white rounded-3xl`}>Create Agenda</button>
+          <button onClick={goToAgenda} className='h-14 w-52 bg-custom-purple-600 rounded-md text-slate-100 text-xl shadow-lg shadow-inner hover:bg-custom-purple-900'>Create Agenda</button>
         </div>
     </div>
 
