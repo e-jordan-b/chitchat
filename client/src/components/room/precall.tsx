@@ -8,54 +8,40 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import type { RootState } from '../../store'
 
+
 export default function CallSettings({onJoin}: {onJoin: () => void}) {
   const dispatch = useDispatch();
 
-  const videoRef = useRef<HTMLVideoElement>(undefined!);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const [ isLoading, setIsLoading ] = useState(true);
   const [ previewStream, setPreviewStream ] = useState<MediaStream | null>(null);
 
-  const currentAudioDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedAudioDeviceId);
-  const currentVideoDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedVideoDeviceId);
-
-  const [ selectedAudioDeviceId, setSelectedAudioDeviceId] = useState<string>(currentAudioDeviceId);
-  const [ selectedVideoDeviceId, setSelectedVideoDeviceId] = useState<string>(currentVideoDeviceId);
+  const [ selectedAudioDevice, setSelectedAudioDevice] = useState<MediaDeviceInfo | null>(null);
+  const [ selectedVideoDevice, setSelectedVideoDevice] = useState<MediaDeviceInfo | null>(null);
 
   const [ availableVideoDevices, setAvailableVideoDevices ] = useState<MediaDeviceInfo[]>([]);
   const [ availableAudioDevices, setAvailableAudioDevices ] = useState<MediaDeviceInfo[]>([]);
 
-
-
-
   useEffect(() => {
     const previewSetup = async () => {
       try {
-        const permission = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true }, video: true });
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+          channelCount: 1,
+          sampleRate: 16000,
+        }, video: true
+      });
+
+        videoRef.current!.srcObject = stream
+        setPreviewStream(stream)
 
         const devices = await navigator.mediaDevices.enumerateDevices();
 
         console.log({devices});
 
-        const audioDevices = devices.filter((device) => device.kind === 'audioinput');
-        const videoDevices = devices.filter((device) => device.kind === 'videoinput');
-
-        setAvailableAudioDevices(audioDevices);
-        setAvailableVideoDevices(videoDevices);
-
-        if(selectedAudioDeviceId && selectedVideoDeviceId){
-          const stream = await navigator.mediaDevices.getUserMedia({
-            audio: { deviceId: selectedAudioDeviceId},
-            video: { deviceId: selectedVideoDeviceId}
-          })
-
-          setPreviewStream(stream)
-        } else {
-          setPreviewStream(permission)
-        }
-
-
-        videoRef.current.srcObject = permission
+        setAvailableAudioDevices(devices.filter((device) => device.kind === 'audioinput'));
+        setAvailableVideoDevices(devices.filter((device) => device.kind === 'videoinput'));
 
         setIsLoading(false)
 
@@ -68,9 +54,6 @@ export default function CallSettings({onJoin}: {onJoin: () => void}) {
 
   },[]);
 
-
-
-
   const handleAudioDeviceChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     const device = availableAudioDevices.find((device: MediaDeviceInfo) => device.deviceId  === event.target.value); // find the device that matches the id
     console.log("new audio device id:", device?.deviceId);
@@ -79,7 +62,7 @@ export default function CallSettings({onJoin}: {onJoin: () => void}) {
 
     const newPreviewStream = await navigator.mediaDevices.getUserMedia({
       audio: { deviceId: device.deviceId},
-      // video: { deviceId: selectedVideoDeviceId}
+      video: { deviceId: selectedVideoDevice?.deviceId}
     }
       )
 
@@ -89,8 +72,8 @@ export default function CallSettings({onJoin}: {onJoin: () => void}) {
     } else {
       setPreviewStream(newPreviewStream) // if there is no stream set the new stream
     }
- ;
-    setSelectedAudioDeviceId(device.deviceId);
+
+    setSelectedAudioDevice(device)
     dispatch(updateAudioDeviceId(device.deviceId))
 
   };
@@ -102,7 +85,7 @@ export default function CallSettings({onJoin}: {onJoin: () => void}) {
     if(!device) return console.error("could not find that device")
 
     const newPreviewStream = await navigator.mediaDevices.getUserMedia({
-      audio: { deviceId: selectedAudioDeviceId},
+      audio: { deviceId: selectedAudioDevice?.deviceId },
       video: { deviceId: device.deviceId }
 
     })
@@ -111,10 +94,10 @@ export default function CallSettings({onJoin}: {onJoin: () => void}) {
       previewStream.removeTrack(previewStream.getVideoTracks()[0]);
       previewStream.addTrack(newPreviewStream.getVideoTracks()[0])
     } else {
-      videoRef.current.srcObject = newPreviewStream
+      videoRef.current!.srcObject = newPreviewStream
     }
 
-    setSelectedVideoDeviceId(device.deviceId);
+    setSelectedVideoDevice(device);
     dispatch(updateVideoDeviceId(device.deviceId))
 
   };

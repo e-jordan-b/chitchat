@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 const useMediaStream = () => {
   const [stream, setStream] = useState<MediaStream>();
   const [error, setError] = useState<DOMException>();
 
-  const request = async (audioDeviceId?: string, videoDeviceId?: string, onCompletion?: () => {}) => {
+  const audioDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedAudioDeviceId);
+  const videoDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedAudioDeviceId);
+
+  const request = async (onCompletion?: () => {}) => {
     try {
       const avStream = await navigator.mediaDevices.getUserMedia({
         audio: {
           channelCount: 1,
           sampleRate: 16000,
-          // deviceId: audioDeviceId
+          deviceId: audioDeviceId
         },
-        video: true
+        video: {
+          deviceId: videoDeviceId
+        }
 
-        //{ deviceId: videoDeviceId},
       });
 
       setStream(avStream);

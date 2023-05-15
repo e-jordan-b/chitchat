@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useParams } from 'react-router-dom';
 import useMediaStream from '../../hooks/use-media-stream';
 import useMediaSocket from '../../hooks/use-media-socket';
 
@@ -28,6 +28,8 @@ const Room: React.FC = () => {
   const [searchParams, _] = useSearchParams();
   const roomService = new RoomService();
 
+  const { roomId } = useParams()
+
   const audioDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedAudioDeviceId);
   const videoDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedVideoDeviceId);
 
@@ -48,8 +50,7 @@ const Room: React.FC = () => {
         break;
       }
       case RoomState.PRECALL: {
-        // requestPermissions();
-        requestPermissions(audioDeviceId, videoDeviceId); // start stream more appropriate
+        requestPermissions();
 
         break;
       }
