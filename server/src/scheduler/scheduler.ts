@@ -192,8 +192,5 @@ export const createFinalSummary = async (summaries: ISummary[], roomUrl: string)
   } catch (error) {
     console.log('OPENAI ERROR', error);
   }
-return;
-  // const finalSummary =
 
-  // return finalSummary;
 }
