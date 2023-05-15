@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { AuthenticatedRequest } from '../models/authenticated-request';
 import { ErrorMessage } from '../models/error-message';
 import { findUserById } from '../models/user-model';
+import { signToken } from '../services/token-service';
 
 export const getUser = async (req: AuthenticatedRequest, res: Response) => {
   const token = req.token;
@@ -18,7 +19,9 @@ export const getUser = async (req: AuthenticatedRequest, res: Response) => {
     return;
   }
 
-  res.cookie('authToken', token, {
+  const refreshedToken = signToken(user._id as string, user.email);
+
+  res.cookie('authToken', refreshedToken, {
     httpOnly: true,
   });
 

@@ -26,6 +26,8 @@ const authMiddleware = (
   // authToken is the name of the authentication cookie with JWT
   const { authToken } = req.cookies;
 
+  console.log(authToken);
+
   if (!authToken) {
     res.status(401).send('MissingAuthToken');
     return;

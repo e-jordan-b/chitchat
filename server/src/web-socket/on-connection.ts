@@ -117,11 +117,13 @@ export const onConnection = async (
   if (roomService.shouldResumeStream(roomId)) {
     const participants = roomService.getCallersForRoom(roomId);
 
+    console.log('RESUME STREAM');
+
     console.log(participants);
 
     if (participants.length === 2) {
-      participants.forEach((userId) =>
-        transcriptionService.resumeStream(roomId, userId)
+      participants.forEach(
+        (userId) => transcriptionService.resumeStream(roomId, userId)
         // Check if stream was destroyed, if it was refresh it...
       );
 

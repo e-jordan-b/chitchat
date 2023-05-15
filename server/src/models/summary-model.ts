@@ -6,6 +6,7 @@ export interface ISummary {
   text: string;
 }
 
+
 const SummarySchema = new mongoose.Schema<ISummary>({
   timestamp: {
     type: Number,
