@@ -2,7 +2,6 @@ import { Response } from 'express';
 import { AuthenticatedRequest } from '../models/authenticated-request';
 import { ErrorMessage } from '../models/error-message';
 import { findUserById } from '../models/user-model';
-import { signToken } from '../services/token-service';
 
 export const getUser = async (req: AuthenticatedRequest, res: Response) => {
   const token = req.token;

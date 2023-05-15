@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import useMediaStream from '../../hooks/use-media-stream';
 import useMediaSocket from '../../hooks/use-media-socket';
-import './room.css';
 
 import RoomPreCall from './room-precall';
 import RoomCall from './room-call';
