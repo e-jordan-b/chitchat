@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import mediaDevicesReducer from "./mediaDeviceSlice"
 
+
 const store = configureStore({
   reducer: {
     mediaDevices: mediaDevicesReducer,

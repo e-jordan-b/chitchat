@@ -130,6 +130,7 @@ const RoomCall: React.FC<{
         className="h-[300px] w-full"
         style={{ height: '300px', width: '100%' }}
         ref={localVideoRef}
+        muted
         autoPlay
       />
       <video

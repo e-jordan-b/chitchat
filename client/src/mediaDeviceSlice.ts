@@ -10,10 +10,12 @@ const mediaDevicesSlice = createSlice({
   name: 'mediaDevices',
   initialState,
   reducers: {
-    updateAudioDeviceId: (state, action) => {
+
+    setSelectedAudioDeviceId: (state, action) => {
       state.selectedAudioDeviceId = action.payload;
     },
-    updateVideoDeviceId: (state, action) => {
+    setSelectedVideoDeviceId: (state, action) => {
+      console.log("from store", action.payload);
       state.selectedVideoDeviceId = action.payload;
     },
 
@@ -21,8 +23,8 @@ const mediaDevicesSlice = createSlice({
 });
 
 export const {
-  updateAudioDeviceId,
-  updateVideoDeviceId
+  setSelectedAudioDeviceId,
+  setSelectedVideoDeviceId
 } = mediaDevicesSlice.actions;
 
 export default mediaDevicesSlice.reducer;

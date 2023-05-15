@@ -1,25 +1,30 @@
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { useEffect, useState, useRef} from "react"
 import { useSelector, useDispatch,  } from 'react-redux'
-import { setSelectedAudioDeviceId, setSelectedVideoDeviceId } from '../../mediaDeviceSlice';
+import { setSelectedAudioDeviceId, setSelectedVideoDeviceId } from '../mediaDeviceSlice';
 
-import type { RootState } from '../../store';
+import type { RootState } from '../store';
 import { AiOutlineAudio, AiOutlineVideoCamera } from "react-icons/ai"
 
-export default function UserCallSettings() {
+export default function GuestCallSettings() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
+  const {url} = useParams()
   const [ availableAudioDevices, setAvailableAudioDevices ] = useState<MediaDeviceInfo[]>([]);
   const [ availableVideoDevices, setAvailableVideoDevices ] = useState<MediaDeviceInfo[]>([]);
   const [ previewStream, setPreviewStream ] = useState<MediaStream | null>(null);
   const [ isLoading, setIsLoading ] = useState(true); //TODO use this for spinner while devices are being fetched
   const videoRef = useRef<HTMLVideoElement>(undefined!);
 
+  const audioDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedAudioDeviceId);
+  const videoDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedVideoDeviceId);
 
   useEffect(() => {
     const localSetup = async () => {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true }, video: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: {  channelCount: 1,
+        sampleRate: 16000, }, video: true });
         videoRef.current.srcObject = stream
 
         const devices = await navigator.mediaDevices.enumerateDevices();
@@ -30,8 +35,7 @@ export default function UserCallSettings() {
         setAvailableAudioDevices(audioDevices); //populate useState array for html dropdown with devices
         setAvailableVideoDevices(videoDevices);
 
-        dispatch(setSelectedAudioDeviceId(audioDevices[0].deviceId)) // set the default device to the first one in the array
-        dispatch(setSelectedVideoDeviceId(videoDevices[0].deviceId))
+
         setIsLoading(false) // disable loading state
 
       } catch (error) {
@@ -40,12 +44,9 @@ export default function UserCallSettings() {
     }
 
     localSetup();
-
   },[]);
 
-  const goToAgenda = () => {
-    navigate("/agenda")
-  };
+
 
 
   const handleAudioDeviceChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -88,7 +89,17 @@ export default function UserCallSettings() {
   };
 
 
+  const handleJoinClick = () => {
+    if(!audioDeviceId) {
+      dispatch(setSelectedAudioDeviceId(availableAudioDevices[0].deviceId))
+    }
 
+    if(!videoDeviceId) {
+      dispatch(setSelectedVideoDeviceId(availableVideoDevices[0].deviceId))
+    }
+
+    navigate(`/room/${url}`)
+  };
 
   return (
 
@@ -100,7 +111,7 @@ export default function UserCallSettings() {
           {/* <canvas className='w-5/12 h-auto rounded-md border' ref={canvasRef}/> */}
 
           <video
-            className={ ` ${isLoading ? "animate-pulse bg-zinc-500" : null} w-screen h-5/6 rounded-md border-3 drop-shadow-lg `}
+            className={ `${isLoading ? "animate-pulse bg-zinc-500" : null} w-screen h-5/6 rounded-md border-3 drop-shadow-lg `}
             ref={videoRef}
             autoPlay
             muted
@@ -154,11 +165,8 @@ export default function UserCallSettings() {
             </div>
         <div className="flex flex-col justify-center items-center w-1/3">
           <h1 className="text-6xl mb-7">Lorem Ipsum</h1>
-          <p className="text-lg mb-5">Sollicitudin tortor tempus,
-</p>
-          <button
-
-          className={` w-32 h-12 bg-gray-500 text-white rounded-3xl`}>Join</button>
+          <p className="text-lg mb-5">Sollicitudin tortor tempus</p>
+          <button onClick={handleJoinClick}className={` w-32 h-12 bg-gray-500 text-white rounded-3xl`}>Join</button>
         </div>
     </div>
 

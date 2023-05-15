@@ -9,6 +9,11 @@ import Room from './components/room/room';
 import { useAuth } from './hooks/use-auth';
 import Landing from './components/landing/landing';
 
+import UserCallSettings from './components/UserCallSettings';
+import GuestCallSettings from './components/GuestCallSettings';
+import AgendaCreation from './components/AgendaCreation';
+import Start from './components/Call';
+
 export default function App() {
   const { user, setUser, loading, error, fire } = useAuth();
 
@@ -16,16 +21,25 @@ export default function App() {
 
   return (
     <Provider store={store}>
-    <UserContext.Provider
-      value={{ user: user, update: (user) => setUser(user) }}
-    >
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/room" element={<Room />} />
-        </Routes>
-      </BrowserRouter>
-    </UserContext.Provider>
+      <UserContext.Provider
+        value={{ user: user, update: (user) => setUser(user) }}
+      >
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/call" element={<Start />} />
+
+            <Route path="/settings" element={<UserCallSettings />} />
+            <Route path="/agenda" element={<AgendaCreation />} />
+
+
+            <Route path="/settings/:url" element={<GuestCallSettings />} />
+
+            <Route path="/room/:url" element={<Room />} />
+
+          </Routes>
+        </BrowserRouter>
+      </UserContext.Provider>
     </Provider>
   );
 }

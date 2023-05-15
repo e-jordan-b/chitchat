@@ -9,17 +9,17 @@ import RoomCall from './room-call';
 import RoomService from '../../services/room-service';
 import RoomSummary from './room-summary';
 
-import { useSelector } from 'react-redux';
-import type { RootState } from '../../store';
+
 
 
 enum RoomState {
   VALIDATE,
-  PRECALL,
+  // PRECALL,
   CALL,
 }
 
 const Room: React.FC = () => {
+
   const [roomState, setRoomState] = useState<RoomState>(RoomState.VALIDATE);
   const { stream, error, requestPermissions } = useMediaStream();
   const { socket, connectSocket } = useMediaSocket();
@@ -28,10 +28,9 @@ const Room: React.FC = () => {
   const [searchParams, _] = useSearchParams();
   const roomService = new RoomService();
 
-  const { roomId } = useParams()
+  const {url} = useParams()
 
-  const audioDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedAudioDeviceId);
-  const videoDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedVideoDeviceId);
+
 
 
   renderCount.current++;
@@ -49,14 +48,10 @@ const Room: React.FC = () => {
         validateRoom();
         break;
       }
-      case RoomState.PRECALL: {
-        requestPermissions();
 
-        break;
-      }
       case RoomState.CALL: {
         console.log('Create WebSocketConnection');
-        const url = searchParams.get('url');
+        // const url = searchParams.get('url');
         connectSocket(url!, 'Federico', startMediaRecorder, stopMediaRecorder);
         break;
       }
@@ -64,7 +59,7 @@ const Room: React.FC = () => {
   }, [roomState]);
 
   const validateRoom = async () => {
-    const url = searchParams.get('url');
+    // const url = searchParams.get('url');
 
     if (!url) {
       console.log('URL is Not valid');
@@ -75,7 +70,8 @@ const Room: React.FC = () => {
     const isValid = true;
 
     if (isValid) {
-      setRoomState(RoomState.PRECALL);
+      await requestPermissions();
+      setRoomState(RoomState.CALL);
     } else {
       console.log('Room is not valid');
       console.log('REDIRECT');
@@ -142,23 +138,12 @@ const Room: React.FC = () => {
       case RoomState.VALIDATE: {
         return <div className='animate-pulse'>LOADING</div>;
       }
-      case RoomState.PRECALL: {
-        // return <RoomPreCall onJoin={() => setRoomState(RoomState.CALL)} />
-        return <CallSettings onJoin={() => setRoomState(RoomState.CALL)} />
-        // return (
-        //   <div>
-        //     <button
-        //       onClick={() => {
-        //         setRoomState(RoomState.CALL);
-        //       }}
-        //     >
-        //       START CALL
-        //     </button>
-        //   </div>
-        // );
-      }
+
       case RoomState.CALL: {
-        const url = searchParams.get('url');
+
+
+
+
         if (!url) return null;
 
         return (
