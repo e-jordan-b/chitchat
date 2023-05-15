@@ -37,6 +37,27 @@ class RoomService extends ApiService {
 
     return { summaries: result };
   }
+
+  async createRoom(
+    agenda: string[]
+  ): Promise<{ url?: string; error?: string}> {
+    const { result, error } = await this.fetch<{ url?: string }>(
+      'room/create',
+      {
+        body: { agenda },
+        method: 'POST',
+        withCredentials: true,
+      }
+    );
+
+    if (!result || error) {
+      console.log(error);
+      return { error };
+    }
+
+    console.log(result);
+    return { url: result.url }
+  }
 }
 
 export default RoomService;
