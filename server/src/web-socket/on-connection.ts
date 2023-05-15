@@ -20,7 +20,7 @@ export const onConnection = async (
   request: IncomingMessage
 ) => {
   //Handle Connection
-  console.log('new connection');
+  console.log('Stream connection');
 
   //Extract room url and speaker name from request url
   const { room: roomUrl, speaker } = parse(request.url || '', true).query;
