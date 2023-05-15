@@ -11,15 +11,16 @@ enum MenuState {
 }
 
 const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
-  const { socket, socketStatus } = useLiveMenuSocket(url);
+  const { socket, socketStatus, connect } = useLiveMenuSocket();
   const [menuState, setMenuState] = useState<MenuState>(MenuState.SUMMARY);
-  const [summaries, setSummaries] = useState<Summary[]>([
-    { _id: '215125215421', text: 'Loremipsum', timestamp: 21512 },
-  ]);
-  const roomService = new RoomService();
+  const [summaries, setSummaries] = useState<Summary[]>([]);
+  const [roomService, _] = useState<RoomService>(new RoomService());
   const intervalRef = useRef<NodeJS.Timer>();
+  const editingSummary = useRef<{ isEditing: boolean; id: string }>();
 
   useEffect(() => {
+    connect(url);
+
     fetchSummaries();
     const interval = setInterval(() => fetchSummaries(), 20000);
     intervalRef.current = interval;
@@ -39,25 +40,21 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
 
     if (summaries) {
       setSummaries(summaries);
-
     }
   };
 
-  const RenderSwitch: React.FC = () => {
-    switch (menuState) {
-      case MenuState.SUMMARY: {
-        return (
-          <div className="roomlivemenu__summary">
-            {summaries.map((summary) => (
-              <RoomSummary summary={summary} key={summary._id} />
-            ))}
-          </div>
-        );
-      }
-      case MenuState.CHAT: {
-        return <div></div>;
-      }
+  const handleSummaryEditing = (id: string, status: string) => {
+    const state = editingSummary.current;
+    if (state && state.isEditing && state.id !== id) {
+      socket?.send(
+        JSON.stringify({
+          type: 'Editing',
+          payload: { status: 'Ended', id: state.id },
+        })
+      );
     }
+    editingSummary.current = { isEditing: status === 'Started', id };
+    socket?.send(JSON.stringify({ type: 'Editing', payload: { status, id } }));
   };
 
   return (
@@ -81,7 +78,22 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
         </div>
       </div>
 
-      <RenderSwitch />
+      {/* Summary */}
+      {menuState === MenuState.SUMMARY && (
+        <div className="roomlivemenu__summary">
+          {summaries.map((summary) => {
+            console.log(summary._id);
+            return (
+              <RoomSummary
+                summary={summary}
+                key={summary._id}
+                onEditStart={() => handleSummaryEditing(summary._id, 'Started')}
+                onEditEnd={() => handleSummaryEditing(summary._id, 'Ended')}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

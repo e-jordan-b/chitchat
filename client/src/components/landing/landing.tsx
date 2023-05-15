@@ -45,20 +45,24 @@ const Landing: React.FC = () => {
       </div>
       <AuthModal isVisible={showAuth} onClose={() => setShowAuth(false)} />
     </nav>
+
     <div className='flex flex-row justify-around w-full font-semibold bg-slate-50'>
       <section className='flex flex-col w-2/6 mt-72 ml-14'>
         <div className='flex flex-col justify-around h-44'>
           <h1 className='text-6xl text-stone-900 font-semibold '>Effortless Communication</h1>
           <h1 className='text-4xl -mt-10'>Connect and Sumarize Your Calls with Ease</h1>
         </div>
+
         <div className='flex flex-col justify-between mt-14 h-60'>
           <p className='text-2xl text-slate-700 leading-8 text-justify'>Unlock the Power of Productive Conversations with Our Cutting-Edge Platform: Seamlessly Initiate Calls, Define Comprehensive Agendas, and Effortlessly Receive Live Summaries Every 5 Minutes, Allowing You to Make the Most of Every Conversation!</p>
+
           <div className='flex'>
             <button
             className='h-14 w-52 bg-custom-purple-600 rounded-md text-slate-100 text-xl shadow-lg shadow-inner hover:bg-custom-purple-900'
             >
               Start a Meeting
             </button>
+
             <label className='border-2 ml-12 rounded-md h-14 shadow-inner self-center shadow-lg shadow-inner'>
               <input
               className='text-lg text-center text-xl leading-[50px] shadow-inner'

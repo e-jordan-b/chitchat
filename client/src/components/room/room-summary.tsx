@@ -1,11 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ReactQuill from 'react-quill';
 import { Summary } from '../../models/summary-model';
 import 'react-quill/dist/quill.snow.css';
 
 import './room-summary.css';
+import useClickOutside from '../../hooks/use-clickoutside';
 
-const RoomSummary: React.FC<{ summary: Summary }> = ({ summary }) => {
+const RoomSummary: React.FC<{
+  summary: Summary;
+  onEditStart: () => void;
+  onEditEnd: () => void;
+}> = ({ summary, onEditStart, onEditEnd }) => {
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const summaryRef = useRef<HTMLDivElement>(null);
+  useClickOutside(summaryRef, () => {
+    console.log('CLICKED OUtsiDe');
+    if (isEditing) {
+      console.log('END EDITING for', summary._id);
+      onEditEnd();
+      setIsEditing(false);
+    }
+  });
+
+  const startEditing = () => {
+    if (!isEditing) {
+      onEditStart();
+      setIsEditing(true);
+    }
+  };
+
+  const endEditing = () => {};
+
   // const [texts, setTexts] = useState<string[]>([]);
   // const [currentTextIndex, setCurrentTextIndex] = useState<number>(0);
   // const [editingTextIndex, setEditiogTextIndex] = useState<number|null>(null)
@@ -33,7 +58,13 @@ const RoomSummary: React.FC<{ summary: Summary }> = ({ summary }) => {
   // };
   return (
     <div className="roomsummary">
-      <div className="roomsummary__summary">{summary.text}</div>
+      <div
+        className="roomsummary__summary"
+        onClick={startEditing}
+        ref={summaryRef}
+      >
+        {summary.text}
+      </div>
       <div className="roomsummary__timeindicator">11:20 AM</div>
       {/* {texts.map((text, index) => (
         <div key={index} onClick={() => handleTextClick(index)}>

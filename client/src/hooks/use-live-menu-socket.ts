@@ -1,15 +1,17 @@
 import { useState } from 'react';
 
-const useLiveMenuSocket = (url: string) => {
-  const [socket, _] = useState<WebSocket>(
-    new WebSocket(`ws://localhost:3002/?room=${url}`)
-  );
+const useLiveMenuSocket = () => {
+  const [socket, setSocket] = useState<WebSocket>();
   const [socketStatus, setSocketStatus] = useState<number>(3);
 
-  socket.addEventListener('open', () => setSocketStatus(WebSocket.OPEN));
-  socket.addEventListener('close', () => setSocketStatus(WebSocket.CLOSED));
+  const connect = (url: string) => {
+    const ws = new WebSocket(`ws://localhost:3004/?room=${url}`);
+    ws.addEventListener('open', () => setSocketStatus(WebSocket.OPEN));
+    ws.addEventListener('close', () => setSocketStatus(WebSocket.CLOSED));
+    setSocket(ws);
+  };
 
-  return { socket, socketStatus };
+  return { socket, socketStatus, connect };
 };
 
 export default useLiveMenuSocket;
