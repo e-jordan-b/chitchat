@@ -19,26 +19,10 @@ export const onConnection = (
     return;
   }
 
-  // VALIDATE ROOM + ADD ROOM ID AS ID
-
   socketClient.roomId = roomUrl;
   socketClient.userId = userId;
 
-  // TODO: Setup onMessage
   socketClient.on('message', (data) =>
     socketOnMessage(socketServer, socketClient, data)
   );
-
-  console.log('USER', userId, 'ROOM', roomUrl);
-
-  // Communicate client its role
-  // socketClient.send(JSON.stringify({ rtcUpdate: { role: clientRole } }));
-  socketServer.clients.forEach((socketClient) => {
-    if (
-      (socketClient as SocketClient).roomId === roomUrl &&
-      (socketClient as SocketClient).userId !== userId
-    ) {
-      socketClient.send(JSON.stringify({ type: 'PeerHasJoined' }));
-    }
-  });
 };

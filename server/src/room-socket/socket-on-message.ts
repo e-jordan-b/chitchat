@@ -6,6 +6,7 @@ export const socketOnMessage = (
   socketClient: SocketClient,
   data: RawData
 ) => {
+  console.log("HELLo")
   socketServer.clients.forEach((client) => {
     if (
       (client as SocketClient).roomId === socketClient.roomId &&
