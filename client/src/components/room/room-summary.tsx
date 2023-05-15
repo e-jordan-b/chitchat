@@ -33,8 +33,8 @@ const RoomSummary: React.FC<{ summary: Summary }> = ({ summary }) => {
   // };
   return (
     <div className="roomsummary">
-      <div className="roomsummary__summary">asfasfasfasfas</div>
-      <div className="roomsummary__timeindicator">11:20AM</div>
+      <div className="roomsummary__summary">{summary.text}</div>
+      <div className="roomsummary__timeindicator">11:20 AM</div>
       {/* {texts.map((text, index) => (
         <div key={index} onClick={() => handleTextClick(index)}>
           {editingTextIndex === index ? (

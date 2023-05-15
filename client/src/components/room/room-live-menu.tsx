@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useLiveMenuSocket from '../../hooks/use-live-menu-socket';
 import './room-live-menu.css';
 import { Summary } from '../../models/summary-model';
 import RoomSummary from './room-summary';
+import RoomService from '../../services/room-service';
 
 enum MenuState {
   SUMMARY,
@@ -15,10 +16,32 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
   const [summaries, setSummaries] = useState<Summary[]>([
     { _id: '215125215421', text: 'Loremipsum', timestamp: 21512 },
   ]);
+  const roomService = new RoomService();
+  const intervalRef = useRef<NodeJS.Timer>();
 
   useEffect(() => {
+    fetchSummaries();
+    const interval = setInterval(() => fetchSummaries(), 20000);
+    intervalRef.current = interval;
 
-  }, [])
+    return () => clearInterval(intervalRef.current);
+  }, []);
+
+  const fetchSummaries = async () => {
+    const { summaries, error } = await roomService.fetchSummaries(url);
+
+    console.log(summaries);
+
+    if (error) {
+      console.log('RoomLiveMenu/polling error:', error);
+      return;
+    }
+
+    if (summaries) {
+      setSummaries(summaries);
+
+    }
+  };
 
   const RenderSwitch: React.FC = () => {
     switch (menuState) {

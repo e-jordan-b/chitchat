@@ -1,3 +1,4 @@
+import { Summary } from '../models/summary-model';
 import ApiService from './api-service';
 
 class RoomService extends ApiService {
@@ -18,7 +19,24 @@ class RoomService extends ApiService {
     return result.valid;
   }
 
-  // async fetchSummaries(url: string): Promise<{}
+  async fetchSummaries(
+    url: string
+  ): Promise<{ summaries?: Summary[]; error?: string }> {
+    const { result, error } = await this.fetch<Summary[]>(
+      `summary/?url=${url}`,
+      {
+        method: 'GET',
+        withCredentials: true,
+      }
+    );
+
+    if (!result || error) {
+      console.log(error);
+      return { error };
+    }
+
+    return { summaries: result };
+  }
 }
 
 export default RoomService;

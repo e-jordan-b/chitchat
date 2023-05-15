@@ -40,8 +40,10 @@
 }
 
 .roomlivemenu__summary {
-  height: 100%;
+  height: calc(100% - 60px);
   width: 100%;
 
-  padding: 10px 10px 0px 10px;
+  padding: 10px 10px 10px 10px;
+
+  overflow-y: scroll;
 }
