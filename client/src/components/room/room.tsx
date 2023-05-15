@@ -2,12 +2,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import useMediaStream from '../../hooks/use-media-stream';
 import useMediaSocket from '../../hooks/use-media-socket';
-import useDeviceStore from '../../store';
 
+import CallSettings from './precall';
 import RoomPreCall from './room-precall';
 import RoomCall from './room-call';
 import RoomService from '../../services/room-service';
 import RoomSummary from './room-summary';
+
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../store';
+
 
 enum RoomState {
   VALIDATE,
@@ -24,15 +28,17 @@ const Room: React.FC = () => {
   const [searchParams, _] = useSearchParams();
   const roomService = new RoomService();
 
-  const { audioDeviceId, videoDeviceId } = useDeviceStore();
+  const audioDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedAudioDeviceId);
+  const videoDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedVideoDeviceId);
+
 
   renderCount.current++;
 
-  console.log('RENDERED', renderCount.current);
-  console.log('roomState', roomState);
-  console.log('url', searchParams.get('url'));
-  console.log('ERROR', error);
-  console.log('STREAM', stream?.getTracks().length);
+  // console.log('RENDERED', renderCount.current);
+  // console.log('roomState', roomState);
+  // console.log('url', searchParams.get('url'));
+  // console.log('ERROR', error);
+  // console.log('STREAM', stream?.getTracks().length);
 
   // [ START RoomState Handling ]
   useEffect(() => {
@@ -43,7 +49,7 @@ const Room: React.FC = () => {
       }
       case RoomState.PRECALL: {
         // requestPermissions();
-        requestPermissions(audioDeviceId, videoDeviceId);
+        requestPermissions(audioDeviceId, videoDeviceId); // start stream more appropriate
 
         break;
       }
@@ -136,7 +142,8 @@ const Room: React.FC = () => {
         return <div className='animate-pulse'>LOADING</div>;
       }
       case RoomState.PRECALL: {
-        return <RoomPreCall onJoin={() => setRoomState(RoomState.CALL)} />
+        // return <RoomPreCall onJoin={() => setRoomState(RoomState.CALL)} />
+        return <CallSettings onJoin={() => setRoomState(RoomState.CALL)} />
         // return (
         //   <div>
         //     <button

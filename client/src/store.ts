@@ -1,13 +1,15 @@
-import { create } from 'zustand'
-import { combine } from 'zustand/middleware'
+import { configureStore } from '@reduxjs/toolkit';
+import mediaDevicesReducer from "./mediaDeviceSlice"
 
-const useDeviceStore = create(
-  combine({
-    audioDeviceId: "",
-    videoDeviceId: "",
-  }, (set) => ({
-    setAudioDeviceId: (id: string) => set(() => ({ audioDeviceId: id })),
-    setVideoDeviceId: (id: string) => set(() => ({ videoDeviceId: id })),
-  }))
-  )
-  export default useDeviceStore;
+const store = configureStore({
+  reducer: {
+    mediaDevices: mediaDevicesReducer,
+
+  },
+});
+
+export type RootState = ReturnType<typeof store.getState>
+
+export type AppDispatch = typeof store.dispatch
+
+export default store;
