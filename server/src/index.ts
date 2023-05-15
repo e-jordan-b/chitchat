@@ -2,7 +2,8 @@ import * as dotenv from 'dotenv';
 import { createHttpServer } from './http';
 import connectDB from './database';
 import { createStreamSocketServer } from './web-socket';
-import { createRTCSocketServer } from './rtc-staging';
+import { createSignallingSocketServer } from './signalling-socket';
+import { createRoomSocketServer } from './room-socket';
 
 dotenv.config();
 
@@ -13,7 +14,8 @@ const httpServer = createHttpServer();
 
 // SocketServers
 const streamSocketServer = createStreamSocketServer();
-const rtcSocketServer = createRTCSocketServer();
+const signallingSocketServer = createSignallingSocketServer();
+const roomSocketServer = createRoomSocketServer();
 
 (async () => {
   const { success, error } = await connectDB();

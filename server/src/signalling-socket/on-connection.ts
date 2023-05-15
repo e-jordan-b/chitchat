@@ -3,11 +3,7 @@ import { SocketClient } from '../models/socket-client-model';
 import { IncomingMessage } from 'http';
 import { parse } from 'url';
 import uuid4 from 'uuid4';
-import RTCStagingService from '../services/rtcstaging-service';
-import { socketOnClose } from './socket-on-close';
 import { socketOnMessage } from './socket-on-message';
-
-const rtcStagingService = new RTCStagingService();
 
 export const onConnection = (
   socketServer: WebSocketServer,
@@ -27,26 +23,9 @@ export const onConnection = (
   socketClient.roomId = roomUrl;
   socketClient.userId = userId;
 
-  // Try and create a new room
-  const rtcStaging = rtcStagingService.safelyAddStaging(roomUrl);
-  const clientRole = rtcStaging.addClient(userId);
-
-  // if (clientRole === -1) {
-  //   console.log(
-  //     'RTCStaging/onConnection error: Tried adding a client to a full room!'
-  //   );
-  //   socketClient.close();
-  //   return;
-  // }
-
-  // Removes the client from either the HOST or GUEST roles.
-  socketClient.on('close', () =>
-    socketOnClose(socketClient, rtcStagingService)
-  );
-
   // TODO: Setup onMessage
   socketClient.on('message', (data) =>
-    socketOnMessage(socketServer, socketClient, data, rtcStagingService)
+    socketOnMessage(socketServer, socketClient, data)
   );
 
   console.log('USER', userId, 'ROOM', roomUrl);

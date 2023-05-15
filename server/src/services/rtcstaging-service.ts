@@ -1,4 +1,4 @@
-import RCTStaging from '../rtc-staging/rtc-staging';
+import RCTStaging from '../signalling-socket/rtc-staging';
 
 class RTCStagingService {
   private stagersMap: Map<string, RCTStaging> = new Map();
