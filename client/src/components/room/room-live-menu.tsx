@@ -53,7 +53,7 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
   const { sendEditUpdate, sendChatMessage, connect } = useLiveMenuSocket();
   const [menuState, setMenuState] = useState<MenuState>(MenuState.SUMMARY);
   const [summaries, setSummaries] = useState<Summary[]>([]);
-  const [messages, setMessages] = useState<ChatMessage[]>([mock, mock, mock, mock]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [roomService, _] = useState<RoomService>(new RoomService());
   const [localEditingState, setLocalEditingState] =
     useState<SummaryEditingState>({ isEditing: false });
