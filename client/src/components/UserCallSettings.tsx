@@ -165,7 +165,7 @@ export default function UserCallSettings() {
         </div>
 
     <section id="continue" className="flex justify-center items-center mb-5 md:mx-28 w-full lg:w-1/4 mg:w-1/4 max-w-[500px] h-full">
-      <div className="flex flex-col justify-center items-center rounded-lg drop-shadow-xl h-72 w-full lg:w-3/4 md:w-3/4 animate-skeleton bg-custom-purple-300">
+      <div className="flex flex-col justify-center items-center rounded-lg drop-shadow-xl h-72 w-full lg:w-3/4 md:w-3/4 bg-custom-purple-300">
         <h3 className="md:text-2xl text-4xl text-center font-semibold mb-10">What's your name?</h3>
         <input
           onFocus={handleFocus}

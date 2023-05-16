@@ -25,19 +25,7 @@ module.exports = {
 
         }
       },
-      screens: {
-        'custom': '900px',
-      },
-      keyframes: {
-        skeletonLoading: {
-          '0%': { backgroundColor: 'custom-purple-400' },
-          '50%': { backgroundColor: 'custom-purple-300' },
-          '100%': { backgroundColor: 'custom-purple-400' },
-        }
-      },
-      animation: {
-        skeleton: 'skeletonLoading 1.5s ease-in-out infinite',
-      },
+
     },
 
   },
