@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import ReactQuill from 'react-quill';
+import ReactQuill, { ReactQuillProps } from 'react-quill';
 import { Summary } from '../../models/summary-model';
 import 'react-quill/dist/quill.snow.css';
 
@@ -10,77 +10,86 @@ const RoomSummary: React.FC<{
   summary: Summary;
   isEditing: boolean;
   isLocked: boolean;
-  onEdit: (id: string) => void;
-}> = ({ summary }) => {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
+  onEdit: () => void;
+}> = ({ summary, onEdit, isEditing, isLocked }) => {
   const summaryRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<ReactQuill>(null);
+  // const [text, setText] = useState(summary.text);
+  const [isEditorClicked, setIsEditorClicked] = useState(false);
+  const [text, setText] = useState<string>(summary.text);
+  // console.log(text)
   // useClickOutside(summaryRef, () => {
+
   //   console.log('CLICKED OUtsiDe');
   //   if (isEditing) {
   //     console.log('END EDITING for', summary._id);
-  //     // onEditEnd();
+  //     onEditEnd();
   //     setIsEditing(false);
   //   }
   // });
 
-  // const startEditing = () => {
-  //   if (!isEditing) {
-  //     onEditStart(); // onEdit(id: string) => if id is currently stored it means that you were editing, and now you stopped
+  const handleClick = () => {
+    setIsEditorClicked(true);
 
-  //     setIsEditing(true);
-  //   }
-  // };
+    if (!isEditorClicked) {
+      onEdit();
+    }
+  };
 
-  const endEditing = () => {};
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        summaryRef.current &&
+        !summaryRef.current.contains(event.target as Node) &&
+        isEditing
+      ) {
+        onEdit();
+        setIsEditorClicked(false);
+      }
+    };
 
-  // const [texts, setTexts] = useState<string[]>([]);
-  // const [currentTextIndex, setCurrentTextIndex] = useState<number>(0);
-  // const [editingTextIndex, setEditiogTextIndex] = useState<number|null>(null)
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setTexts((prevTexts) => [...prevTexts, `Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum for use in a type specimen book. It usually begins with:
-  //     “Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.”`]);
-  //     setCurrentTextIndex((prevIndex) => prevIndex + 1);
-  //   }, 10000);
-  //   return () => clearInterval(interval);
-  // }, []);
-  // const handleTextClick = (index: number) => {
-  //   setEditiogTextIndex(index)
-  // }
-  // const handleTextChange = (value: string, index: number) => {
-  //   setTexts((prevTexts) => {
-  //     const updatedTexts = [...prevTexts];
-  //     updatedTexts[index] = value;
-  //     console.log(updatedTexts)
-  //     return updatedTexts;
-  //   });
-  // };
-  // const handleTextBlur = () => {
-  //   setEditiogTextIndex(null)
-  // };
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+      // setIsEditorClicked(false)
+    };
+  }, [isEditing, onEdit]);
+
+  const handleSubmit = () => {
+    const modifiedText = editorRef.current?.getEditor().root.innerHTML;
+
+    console.log(modifiedText);
+  };
+
   return (
     <div className="roomsummary">
       <div
         className="roomsummary__summary"
-        // onClick={startEditing}
+        onClick={handleClick}
         ref={summaryRef}
       >
-        {summary.text}
+        {isEditing ? (
+          <>
+            <div className="flex items-center">
+              <button className="bg-yellow" onClick={handleSubmit}>
+                save
+              </button>
+              <ReactQuill
+                value={summary.text}
+                // onChange={handleChange}
+                ref={editorRef}
+              />
+            </div>
+          </>
+        ) : (
+          <div>
+            {/* <div dangerouslySetInnerHTML={{ __html: summary.text}} /> */}
+            {summary.text}
+          </div>
+        )}
       </div>
       <div className="roomsummary__timeindicator">11:20 AM</div>
-      {/* {texts.map((text, index) => (
-        <div key={index} onClick={() => handleTextClick(index)}>
-          {editingTextIndex === index ? (
-            <ReactQuill
-              value={text}
-              onChange={(value) => handleTextChange(value, index)}
-              onBlur={handleTextBlur}
-            />
-          ) : (
-            <div dangerouslySetInnerHTML={{ __html: text }} />
-          )}
-        </div>
-      ))} */}
     </div>
   );
 };
