@@ -198,7 +198,7 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
 
       {/* Chat conditional rendering */}
       {menuState === MenuState.CHAT && (
-        <div className="flex flex-col">
+        <div className="flex flex-col mt-5">
           <div>
           {messages.map((message, idx) => {
             let isFirst = true;
@@ -211,7 +211,7 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
             );
           })}
           </div>
-          <div className='absolute bottom-0 my-6 ml-5'>
+          <div className='absolute bottom-0 my-6 ml-14 flex justify-center items-center '>
             <form onSubmit={handleFormSubmit} className='flex'>
             <input
               type='text'

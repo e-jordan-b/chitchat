@@ -142,12 +142,12 @@ const RoomCall: React.FC<{
 
   // Also have to handle polling for summaries
   return (
-    <div className="flex h-screen bg-green-500">
+    <div className="flex h-screen bg-green-500 w-full">
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex h-full">
-          <main className="w-screen h-full flex flex-col justify-center bg-background-black-call overflow-x-hidden overflow-y-auto mb-20">
+        <div className="flex h-full w-full">
+          <main className="w-full h-full flex flex-col justify-center bg-background-black-call overflow-x-hidden overflow-y-auto mb-20">
             <div className="flex w-full justify-center align-center bg-background-black-call">
-              <nav className=""></nav>
+              {/* <nav className=""></nav> */}
             </div>
             <div className="relative flex w-full h-5/6 mx-auto px-6 mt-6 bg-background-black-call">
               <video
@@ -155,7 +155,7 @@ const RoomCall: React.FC<{
                 autoPlay
                 className={
                   isOtherVideoLoaded
-                    ? 'transition-all h-56 duration-300 absolute bottom-5 right-10 text-gray-900 rounded-lg shadow-lg' //border-gray-900 border-dashed text-xl border-4
+                    ? 'transition-all h-56 duration-300 absolute bottom-5 right-10 text-gray-900 rounded-lg shadow-lg z-50' //border-gray-900 border-dashed text-xl border-4
                     : styles
                 }
                 style={{ scale: '-1 1 1' }}
@@ -175,12 +175,9 @@ const RoomCall: React.FC<{
               <RoomCallControls />
             </div>
           </main>
-          <nav className="w-full h-full bg-white">
-            <RoomLiveMenu url={urlMemo} />
-            {/* <div className="w-full flex mx-auto px-6 py-8">
-              <div className="w-full h-full flex items-center justify-center text-gray-900 text-xl border-4 border-gray-900 border-dashed"></div>
-            </div> */}
-          </nav>
+            <nav className="w-[500px] right-0 h-full">
+              <RoomLiveMenu url={urlMemo}/>
+            </nav>
         </div>
       </div>
     </div>
