@@ -10,16 +10,24 @@ enum MenuState {
   CHAT,
 }
 
+interface SummaryEditingState {
+  isEditing: boolean;
+  summaryId?: string;
+}
+
 const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
-  const { socket, socketStatus, connect } = useLiveMenuSocket();
+  const { sendEditUpdate, sendChatMessage, connect } = useLiveMenuSocket();
   const [menuState, setMenuState] = useState<MenuState>(MenuState.SUMMARY);
   const [summaries, setSummaries] = useState<Summary[]>([]);
   const [roomService, _] = useState<RoomService>(new RoomService());
+  const [localEditingState, setLocalEditingState] =
+    useState<SummaryEditingState>({ isEditing: false });
+  const [remoteEditingState, setRemoteEditingState] =
+    useState<SummaryEditingState>({ isEditing: false });
   const intervalRef = useRef<NodeJS.Timer>();
-  const editingSummary = useRef<{ isEditing: boolean; id: string }>();
 
   useEffect(() => {
-    connect(url);
+    connect(url, handleRemoteEditUpdate, handleChatMessage);
 
     fetchSummaries();
     const interval = setInterval(() => fetchSummaries(), 20000);
@@ -43,18 +51,46 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
     }
   };
 
-  const handleSummaryEditing = (id: string, status: string) => {
-    const state = editingSummary.current;
-    if (state && state.isEditing && state.id !== id) {
-      socket?.send(
-        JSON.stringify({
-          type: 'Editing',
-          payload: { status: 'Ended', id: state.id },
-        })
-      );
+  const handleRemoteEditUpdate = (summaryId: string, status: string) => {
+    if (status === 'Started') {
+      setRemoteEditingState({ isEditing: true, summaryId });
     }
-    editingSummary.current = { isEditing: status === 'Started', id };
-    socket?.send(JSON.stringify({ type: 'Editing', payload: { status, id } }));
+
+    if (status === 'Stopped') {
+      setRemoteEditingState({ isEditing: false });
+    }
+  };
+
+  const handleLocalEditUpdate = (summaryId: string) => {
+    if (
+      remoteEditingState.isEditing &&
+      remoteEditingState.summaryId === summaryId
+    ) {
+      return;
+    }
+
+    // Stop editing
+    if (
+      localEditingState.isEditing &&
+      localEditingState.summaryId === summaryId
+    ) {
+      setLocalEditingState({ isEditing: false });
+      sendEditUpdate(summaryId, 'Stopped');
+    }
+
+    // Start editing
+    if (!localEditingState.isEditing) {
+      setLocalEditingState({ isEditing: true, summaryId });
+      sendEditUpdate(summaryId, 'Started');
+    }
+  };
+
+  const handleChatMessage = (message: {
+    timestamp: number;
+    speaker: string;
+    message: string;
+  }) => {
+    console.log(message);
   };
 
   return (
@@ -87,8 +123,15 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
               <RoomSummary
                 summary={summary}
                 key={summary._id}
-                onEditStart={() => handleSummaryEditing(summary._id, 'Started')}
-                onEditEnd={() => handleSummaryEditing(summary._id, 'Ended')}
+                isEditing={
+                  localEditingState.isEditing &&
+                  localEditingState.summaryId === summary._id
+                }
+                isLocked={
+                  remoteEditingState.isEditing &&
+                  remoteEditingState.summaryId === summary._id
+                }
+                onEdit={() => handleLocalEditUpdate(summary._id)}
               />
             );
           })}

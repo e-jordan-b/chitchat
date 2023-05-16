@@ -36,6 +36,8 @@ export const editSummary = async (req: Request, res: Response) => {
     return;
   }
 
+  // PURIFY, SAVE
+
   const { summary, error } = await editSummaryById(summaryId, text);
 
   if (!summary || error) {
