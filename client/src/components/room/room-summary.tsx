@@ -8,9 +8,10 @@ import useClickOutside from '../../hooks/use-clickoutside';
 
 const RoomSummary: React.FC<{
   summary: Summary;
-  onEditStart: () => void;
-  onEditEnd: () => void;
-}> = ({ summary, onEditStart, onEditEnd }) => {
+  isEditing: boolean;
+  isLocked: boolean;
+  onEdit: (id: string) => void;
+}> = ({ summary }) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const summaryRef = useRef<HTMLDivElement>(null);
   useClickOutside(summaryRef, () => {
@@ -24,7 +25,8 @@ const RoomSummary: React.FC<{
 
   const startEditing = () => {
     if (!isEditing) {
-      onEditStart();
+      onEditStart(); // onEdit(id: string) => if id is currently stored it means that you were editing, and now you stopped
+
       setIsEditing(true);
     }
   };

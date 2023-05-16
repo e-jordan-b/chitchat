@@ -180,13 +180,11 @@ const RoomCall: React.FC<{
               <RoomCallControls />
             </div>
           </main>
-          <RoomLiveMenu url={url} />
-          <nav className="flex w-[550px] h-full bg-white">
-            <div className="w-full flex mx-auto px-6 py-8">
-              <div className="w-full h-full flex items-center justify-center text-gray-900 text-xl border-4 border-gray-900 border-dashed">
-                Rightbar
-              </div>
-            </div>
+          <nav className="w-full h-full bg-white">
+            <RoomLiveMenu url={url} />
+            {/* <div className="w-full flex mx-auto px-6 py-8">
+              <div className="w-full h-full flex items-center justify-center text-gray-900 text-xl border-4 border-gray-900 border-dashed"></div>
+            </div> */}
           </nav>
         </div>
       </div>
