@@ -5,7 +5,7 @@ import { onConnection } from './on-connection';
 // Create instance of WS Server
 export const createRoomSocketServer = (): WebSocketServer => {
   const socketServer = new WebSocketServer({
-    port: Number(process.env.PORT_SOCKET) || 3004,
+    port: Number(process.env.ROOM_SOCKET) || 3004,
   });
 
   socketServer.on('connection', (socketClient: SocketClient, request) =>
@@ -14,7 +14,7 @@ export const createRoomSocketServer = (): WebSocketServer => {
 
   socketServer.on('close', () => console.log('connection closed'));
 
-  socketServer.on('error', () => console.log('error'));
+  socketServer.on('error', (error) => console.log('error room socket', error));
 
   return socketServer;
 };

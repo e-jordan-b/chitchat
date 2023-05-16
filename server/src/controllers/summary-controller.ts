@@ -24,7 +24,7 @@ export const fetchSummaries = async (req: Request, res: Response) => {
 
 // Edit
 export const editSummary = async (req: Request, res: Response) => {
-  const { summaryId, text } = req.body;
+  const { summaryId, text } = req.body;                   
 
   if (
     !summaryId ||
