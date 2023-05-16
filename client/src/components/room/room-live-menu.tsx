@@ -48,17 +48,17 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
     useState<SummaryEditingState>({ isEditing: false });
   const intervalRef = useRef<NodeJS.Timer>();
   const renderRef = useRef<number>(0);
-  const [messageInput, setMessageInput] = useState('')
+  const [messageInput, setMessageInput] = useState('');
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMessageInput(event.target.value)
-  }
+    setMessageInput(event.target.value);
+  };
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    sendChatMessage('speaker', messageInput)
-    setMessageInput('')
-  }
+    event.preventDefault();
+    sendChatMessage('speaker', messageInput);
+    setMessageInput('');
+  };
 
   useEffect(() => {
     renderRef.current++;
@@ -195,30 +195,39 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
       {menuState === MenuState.CHAT && (
         <div className="flex flex-col mt-5">
           <div>
-          {messages.map((message, idx) => {
-            let isFirst = true;
-            if (idx > 0 && messages[idx - 1].speakerId === message.speakerId) {
-              isFirst = false;
-            }
+            {messages.map((message, idx) => {
+              let isFirst = true;
+              if (
+                idx > 0 &&
+                messages[idx - 1].speakerId === message.speakerId
+              ) {
+                isFirst = false;
+              }
 
-            return (
-              <RoomChatMessage message={message} isFirst={isFirst} key={idx} />
-            );
-          })}
+              return (
+                <RoomChatMessage
+                  message={message}
+                  isFirst={isFirst}
+                  key={idx}
+                />
+              );
+            })}
           </div>
-          <div className='absolute bottom-0 my-6 ml-14 flex justify-center items-center '>
-            <form onSubmit={handleFormSubmit} className='flex'>
-            <input
-              type='text'
-              value={messageInput}
-              onChange={handleInputChange}
-              placeholder='Type a message here...'
-              className="h-10 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          <div className="absolute bottom-0 my-6 ml-14 flex justify-center items-center ">
+            <form onSubmit={handleFormSubmit} className="flex">
+              <input
+                type="text"
+                value={messageInput}
+                onChange={handleInputChange}
+                placeholder="Type a message here..."
+                className="h-10 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              ></input>
+              <button
+                type="submit"
+                className="w-12 h-10 bg-slate-200 flex justify-center items-center rounded-md"
               >
-            </input>
-            <button type='submit' className='w-12 h-10 bg-slate-200 flex justify-center items-center rounded-md'>
-              <BsSend className='w-4 h-4 text-slate-600'/>
-            </button>
+                <BsSend className="w-4 h-4 text-slate-600" />
+              </button>
             </form>
           </div>
         </div>
