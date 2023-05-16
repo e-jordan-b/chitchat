@@ -93,6 +93,18 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
     console.log(message);
   };
 
+  const handleSummaryOnSave = (text: string): Promise<boolean> => {
+    // PUSH
+    // Success w/ summary
+    // setSummaries(...summary)
+    // isEditing false
+    // Failure
+    // setSummaries with latest summary
+    // isEditing false
+
+    return true
+  }
+
   return (
     <div className="roomlivemenu">
       <div className="roomlivemenu__switchcontainer">
@@ -132,6 +144,7 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
                   remoteEditingState.summaryId === summary._id
                 }
                 onEdit={() => handleLocalEditUpdate(summary._id)}
+                // onSave={(text: string) => }
               />
             );
           })}
