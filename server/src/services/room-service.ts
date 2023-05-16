@@ -1,6 +1,6 @@
 interface IRoomState {
   roomId: string;
-  participants: string[];
+  participants: { id: string; speaker: string }[];
   status: IRoomStatus;
 }
 
@@ -54,14 +54,20 @@ class RoomService {
    * @param participantId
    * @returns
    */
-  addCallerToRoom(roomId: string, participantId: string): boolean {
+  addCallerToRoom(
+    roomId: string,
+    participantId: string,
+    speaker: string
+  ): boolean {
     if (!this.roomsMap.has(roomId)) return false;
 
-    this.roomsMap.get(roomId)!.participants.push(participantId);
+    this.roomsMap
+      .get(roomId)!
+      .participants.push({ id: participantId, speaker });
     return true;
   }
 
-  getCallersForRoom(roomId: string): string[] {
+  getCallersForRoom(roomId: string): { id: string; speaker: string }[] {
     if (!this.roomsMap.has(roomId)) return [];
 
     return this.roomsMap.get(roomId)!.participants;
@@ -78,7 +84,7 @@ class RoomService {
 
     this.roomsMap.get(roomId)!.participants = this.roomsMap
       .get(roomId)!
-      .participants.filter((id) => id !== participantId);
+      .participants.filter((participant) => participant.id !== participantId);
     return true;
   }
 

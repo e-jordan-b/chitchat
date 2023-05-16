@@ -38,8 +38,6 @@ export const onConnection = async (
     return;
   }
 
-  // TODO: Get user id
-
   // Fetch room details based on room url
   const { room, error } = await fetchRoomByUrl(roomUrl);
 
@@ -57,7 +55,7 @@ export const onConnection = async (
   // [ START RoomService ]
   roomService.addRoom(roomId);
   //add this caller to the room
-  roomService.addCallerToRoom(roomId, userId);
+  roomService.addCallerToRoom(roomId, userId, speaker); // Also speaker name
 
   // [ START TranscriptionService ]
   //adds the stream and initiates the transcription
@@ -67,8 +65,6 @@ export const onConnection = async (
   // Assign the roomId and userId to the SocketClient
   (socketClient as SocketClient).roomId = roomId;
   (socketClient as SocketClient).userId = userId;
-
-  console.log('SOCKET CLIENT ROOMID', (socketClient as SocketClient).roomId);
 
   // Handle incoming messages from the socket client
   socketClient.on('message', (data) =>
@@ -91,13 +87,15 @@ export const onConnection = async (
         ) {
           const message = JSON.stringify({ callUpdate: { status: 'PAUSED' } });
           socketClient.send(message);
+
+          // Clean streams for other participants
+          transcriptionService.cleanStream(
+            socketClient.roomId,
+            socketClient.userId
+          );
         }
       });
 
-      // Clean up the stream
-      //removes listeners, destroys the dtream and deletes ref in store
-      // TODO: SHOULD CLEAN STREAMS FOR ALL USERS
-      // TODO: Pause for other user, but make sure new media recorder does not create problems
       transcriptionService.cleanStream(roomId, userId);
 
       //stops the scheduler
@@ -121,10 +119,23 @@ export const onConnection = async (
     console.log(participants);
 
     if (participants.length === 2) {
-      participants.forEach(
-        (userId) => transcriptionService.resumeStream(roomId, userId)
-        // Check if stream was destroyed, if it was refresh it...
-      );
+      participants.forEach((participant) => {
+        const didResumeStream = transcriptionService.resumeStream(
+          roomId,
+          participant.id
+        );
+
+        // Creates a new stream if could not resume
+        if (!didResumeStream) {
+          transcriptionService.addStream(
+            roomId,
+            participant.id,
+            participant.speaker
+          );
+
+          transcriptionService.resumeStream(roomId, participant.id);
+        }
+      });
 
       //Scheduler is only instantiated and started here on purpose
       //The stream is automatically paused upon creation and only here

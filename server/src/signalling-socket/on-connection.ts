@@ -28,8 +28,6 @@ export const onConnection = (
     socketOnMessage(socketServer, socketClient, data)
   );
 
-  console.log('USER', userId, 'ROOM', roomUrl);
-
   // Communicate client its role
   // socketClient.send(JSON.stringify({ rtcUpdate: { role: clientRole } }));
   socketServer.clients.forEach((socketClient) => {

@@ -109,6 +109,10 @@ class TranscriptionService {
     }
   }
 
+  // cleanStreams(roomId: string): boolean {
+  //   const
+  // }
+
   saveTranscript(roomId :string, transcript: ITranscript) {
     if (this.transcripts.has(roomId)) {
       this.transcripts.get(roomId)!.push(transcript);
