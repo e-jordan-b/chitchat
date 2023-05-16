@@ -20,6 +20,7 @@ export default function UserCallSettings() {
   const [inputFocus, setInputFocus] = useState(false);
   const audioDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedAudioDeviceId);
   const videoDeviceId = useSelector((state: RootState) => state.mediaDevices.selectedVideoDeviceId);
+  const [name, setName] = useState('');
 
   useEffect(() => {
     const localSetup = async () => {
@@ -88,6 +89,8 @@ export default function UserCallSettings() {
 
 
   const goToAgenda = () => {
+
+
     if(!audioDeviceId) {
       dispatch(setSelectedAudioDeviceId(availableAudioDevices[0].deviceId))
     }
@@ -168,6 +171,7 @@ export default function UserCallSettings() {
       <div className="flex flex-col justify-center items-center rounded-lg drop-shadow-xl h-72 w-full lg:w-3/4 md:w-3/4 bg-custom-purple-300">
         <h3 className="md:text-2xl text-4xl text-center font-semibold mb-10">What's your name?</h3>
         <input
+          onChange={(e) => setName(e.target.value)}
           onFocus={handleFocus}
           onBlur={handleBlur}
           onMouseEnter={handleMouseEnter}
