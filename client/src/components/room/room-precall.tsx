@@ -160,7 +160,7 @@ const RoomPreCall = ({onJoin}: {onJoin: () => void}) => {
     </section>
 
   </div>
-</section>
+</section>)
 
 };
 
