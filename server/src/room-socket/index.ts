@@ -8,6 +8,8 @@ export const createRoomSocketServer = (): WebSocketServer => {
     port: Number(process.env.ROOM_SOCKET) || 3004,
   });
 
+  console.log('ROOM SOCKET', process.env.ROOM_SOCKET);
+
   socketServer.on('connection', (socketClient: SocketClient, request) =>
     onConnection(socketServer, socketClient, request)
   );

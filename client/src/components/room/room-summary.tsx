@@ -14,22 +14,22 @@ const RoomSummary: React.FC<{
 }> = ({ summary }) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const summaryRef = useRef<HTMLDivElement>(null);
-  useClickOutside(summaryRef, () => {
-    console.log('CLICKED OUtsiDe');
-    if (isEditing) {
-      console.log('END EDITING for', summary._id);
-      onEditEnd();
-      setIsEditing(false);
-    }
-  });
+  // useClickOutside(summaryRef, () => {
+  //   console.log('CLICKED OUtsiDe');
+  //   if (isEditing) {
+  //     console.log('END EDITING for', summary._id);
+  //     // onEditEnd();
+  //     setIsEditing(false);
+  //   }
+  // });
 
-  const startEditing = () => {
-    if (!isEditing) {
-      onEditStart(); // onEdit(id: string) => if id is currently stored it means that you were editing, and now you stopped
+  // const startEditing = () => {
+  //   if (!isEditing) {
+  //     onEditStart(); // onEdit(id: string) => if id is currently stored it means that you were editing, and now you stopped
 
-      setIsEditing(true);
-    }
-  };
+  //     setIsEditing(true);
+  //   }
+  // };
 
   const endEditing = () => {};
 
@@ -62,7 +62,7 @@ const RoomSummary: React.FC<{
     <div className="roomsummary">
       <div
         className="roomsummary__summary"
-        onClick={startEditing}
+        // onClick={startEditing}
         ref={summaryRef}
       >
         {summary.text}

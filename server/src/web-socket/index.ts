@@ -5,7 +5,7 @@ import { onConnection } from './on-connection';
 // Create instance of WS Server
 export const createStreamSocketServer = (): WebSocketServer => {
   const socketServer = new WebSocketServer({
-    port: Number(process.env.PORT_SOCKET) || 3002,
+    port: Number(process.env.STREAM_SOCKET) || 3002,
   });
 
   socketServer.on('connection', (client: SocketClient, request) =>

@@ -6,7 +6,6 @@ import './room.css';
 
 import RoomCall from './room-call';
 import RoomService from '../../services/room-service';
-import RoomSummary from './room-summary';
 import RoomLiveMenu from './room-live-menu';
 import RoomPrecall from './room-precall';
 
@@ -144,8 +143,7 @@ const Room: React.FC = () => {
         const url = searchParams.get('url');
         if (!url) return null;
 
-        return <RoomCall url={url} mediaStream={stream} />
-
+        return <RoomCall url={url} mediaStream={stream} />;
       }
     }
   };

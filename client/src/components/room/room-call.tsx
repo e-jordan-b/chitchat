@@ -20,11 +20,10 @@ const RoomCall: React.FC<{
   const [peerConnection, _] = useState<RTCPeerConnection>(
     new RTCPeerConnection(SERVERS)
   );
-  const { socket, socketStatus, connectSocket } = useRTCSocket();
+  const { connectSocket } = useRTCSocket();
   const [remoteStream, setRemoteStream] = useState<MediaStream>(
     new MediaStream()
   );
-  const [offer, setOffer] = useState<string>('');
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const [isOtherVideoLoaded, setOtherVideoLoaded] = useState(false);
@@ -68,10 +67,6 @@ const RoomCall: React.FC<{
   useEffect(() => {
     console.log('PEER CONNECTION CREATED');
   }, [peerConnection]);
-
-  useEffect(() => {
-    console.log(offer);
-  }, [offer]);
 
   const setupPeerConnection = (socket: WebSocket) => {
     // We add tracks to the connection
@@ -181,7 +176,7 @@ const RoomCall: React.FC<{
             </div>
           </main>
           <nav className="w-full h-full bg-white">
-            <RoomLiveMenu url={url} />
+            <RoomLiveMenu url={urlMemo} />
             {/* <div className="w-full flex mx-auto px-6 py-8">
               <div className="w-full h-full flex items-center justify-center text-gray-900 text-xl border-4 border-gray-900 border-dashed"></div>
             </div> */}
