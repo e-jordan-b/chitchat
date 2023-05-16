@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AuthModal from '../auth/auth-modal';
 import title from '../../assets/ChitChat.png'
+import logo from "../../assets/logo512.png"
 import Lottie from 'lottie-react';
 import animation from '../../assets/animation.json';
 import CreateRoom from '../create-room/create-room';
@@ -42,13 +43,15 @@ const Landing: React.FC = () => {
 
 
 
-    <div id="landing-wrapper" className="h-full w-full flex-col justify-center items-center overflow-auto sm:overflow-auto md:overflow-auto lg:overflow-auto xl:overflow-auto 2xl:overflow-auto">
+    <div id="landing-wrapper" className="h-screen w-screen flex flex-col justify-center items-center overflow-auto">
 
-    <nav className='w-full h-20 flex items-center justify-between'>
+    <nav className='w-full h-20 flex items-center justify-between mt-auto'>
       <div>
-        <img src={title} alt='chitchat title' className=' h-8 self-center ml-7 '></img>
+        {window.innerWidth < 300 ? <img src={logo} alt='chitchat logo' className=' h-10 self-center ml-2 '></img> : <img src={title} alt='chitchat title' className=' h-8 self-center ml-7 '></img>}
+
       </div>
       <div className='flex '>
+
 
         <div className='self-center mr-7 hidden font-medium sm:hidden md:block lg:block xl:block 2xl:block'>{formattedDate}</div>
         <button
@@ -56,8 +59,10 @@ const Landing: React.FC = () => {
           className='h-12 w-12  sm:w-32 ml:w-48 lg:w-48 xl:w-48 2xl:w-48 bg-custom-purple-500 rounded-md text-white text-lg flex justify-center items-center mr-7 shadow-md transition-colors duration-150 hover:bg-custom-purple-600 hover:shadow-xl' ><BsFillPersonFill className='sm:mr-2 md:mr-2 lg:mr-2 xl:mr-2 2xl:mr-2'/>{window.innerWidth >= 640 ? "Login" : null}</button>
       </div>
     </nav>
-    <div id="sapcer" className="mt-16 sm:hidden md:block lg:block xl:block 2xl:block"></div>
-    <div className=' w-full h-full flex flex-col-reverse sm:flex-col-reverse md:flex-row lg:flex-row xl:flex-row 2xl:flex-row justify-center items-start md:items-center lg:items-center xl:items-center 2xl:items-center '>
+
+
+
+    <div className=' bg-red-700 w-full h-full flex flex-col-reverse sm:flex-col-reverse md:flex-row lg:flex-row xl:flex-row 2xl:flex-row justify-center items-start sm:items-center md:items-center lg:items-center xl:items-center 2xl:items-center '>
 
 
 
@@ -67,7 +72,7 @@ const Landing: React.FC = () => {
        <div className='w-4/5 md:w-3/5 lg:w-3/5 xl:w-3/5 2xl:w-3/5'>
 
           <div>
-            <h1 className='text-2xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl whitespace-nowrap font-semibold'>Effortless Communication</h1>
+            <h1 className={`text-2xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl ${window.innerWidth < 400 ? null : "whitespace-nowrap"} font-semibold`}>Effortless Communication</h1>
             <h2 className='text-lg md:text-lg  lg:text-xl xl:text-2xl 2xl:text-3xl mt-5  font-medium text-slate-900'>Connect and Sumarize Your Calls with Ease</h2>
           </div>
 
@@ -108,7 +113,7 @@ const Landing: React.FC = () => {
         </div>
       </div>
 
-      <section id="animated-illustration" className='w-full md:w-1/2 lg:w-1/2 xl:w-1/2 2xl:w-1/2 h-1/7 flex justify-center items-center sm:m-0'>
+      <section id="animated-illustration" className='w-full md:w-1/2 lg:w-1/2 xl:w-1/2 2xl:w-1/2 h-1/7 flex justify-center items-center m-0 sm:m-0'>
         <Lottie animationData={animation} loop={true} autoplay className='h-full w-11/12'></Lottie>
       </section>
       <CreateRoom isVisible={showCreate} onClose={() => setShowCreate(false)}></CreateRoom>
