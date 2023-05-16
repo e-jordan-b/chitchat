@@ -31,11 +31,20 @@ body {
   overflow: hidden;
 }
 
-input[type="text"]:focus ~ .input-text,
-input[type="text"]:not(:placeholder-shown) ~ .input-text{
-  @apply text-blue-500 transform -translate-y-5 -translate-x-2 ;
+input[type='text']:focus ~ .input-text,
+input[type='text']:not(:placeholder-shown) ~ .input-text {
+  @apply text-blue-500 transform -translate-y-5 -translate-x-2;
 }
-input[type="password"]:focus ~ .input-text,
-input[type="password"]:not(:placeholder-shown) ~ .input-text{
-  @apply text-blue-500 transform -translate-y-5 -translate-x-2 ;
+input[type='password']:focus ~ .input-text,
+input[type='password']:not(:placeholder-shown) ~ .input-text {
+  @apply text-blue-500 transform -translate-y-5 -translate-x-2;
+}
+
+@layer components {
+  .sidebar-icon {
+    @apply relative flex items-center justify-center
+    h-12 w-12 mx-3 shadow-lg bg-gray-600 text-white
+    hover:bg-white hover:text-black rounded-3xl hover:rounded-xl transition-all
+    duration-150 ease-linear cursor-pointer;
+  }
 }

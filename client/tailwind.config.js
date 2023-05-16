@@ -21,7 +21,8 @@ module.exports = {
           '200': '#C7D2FE',
           '100': '#E0E7FF',
           '50:': '#EEF2FF'
-        }
+        },
+        'background-black-call' : '#202124'
       }
     },
   },

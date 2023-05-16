@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './room-call.css';
 import useRTCSocket from '../../hooks/use-rtc-socket';
+import RoomCallControls from './room-call-controls';
+import RoomLiveMenu from './room-live-menu';
 
 const SERVERS: RTCConfiguration = {
   iceServers: [
@@ -25,6 +27,19 @@ const RoomCall: React.FC<{
   const [offer, setOffer] = useState<string>('');
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const [isOtherVideoLoaded, setOtherVideoLoaded] = useState(false);
+
+  useEffect(() => {
+    const remoteVideoElement = remoteVideoRef.current;
+    remoteVideoElement?.addEventListener('loadeddata', handleOtherVideoLoad);
+
+    return () => {
+      remoteVideoElement?.removeEventListener(
+        'loadeddata',
+        handleOtherVideoLoad
+      );
+    };
+  }, []);
 
   useEffect(() => {
     console.log('STREAM EXISTS', mediaStream !== undefined);
@@ -123,20 +138,58 @@ const RoomCall: React.FC<{
     await peerConnection.addIceCandidate(candidate);
   };
 
+  const styles =
+    'flex flex-col w-full h-full rounded-md transition-all transform duration-300 object-cover'; //border-dashed  text-gray-900 text-xl  border-gray-900
+
+  const handleOtherVideoLoad = () => {
+    setOtherVideoLoaded(true);
+  };
+
   // Also have to handle polling for summaries
   return (
-    <div className="roomcall">
-      <video
-        className="h-[300px] w-full"
-        style={{ height: '300px', width: '100%', scale: '-1 1 1' }}
-        ref={localVideoRef}
-        autoPlay
-      />
-      <video
-        style={{ height: '300px', width: '100%', scale: '-1 1 1' }}
-        ref={remoteVideoRef}
-        autoPlay
-      />
+    <div className="flex h-screen bg-green-500">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex h-full">
+          <main className="w-screen h-full flex flex-col justify-center bg-background-black-call overflow-x-hidden overflow-y-auto mb-20">
+            <div className="flex w-full justify-center align-center bg-background-black-call">
+              <nav className=""></nav>
+            </div>
+            <div className="relative flex w-full h-5/6 mx-auto px-6 mt-6 bg-background-black-call">
+              <video
+                ref={localVideoRef}
+                autoPlay
+                className={
+                  isOtherVideoLoaded
+                    ? 'transition-all h-56 duration-300 absolute bottom-5 right-10 text-gray-900 rounded-lg shadow-lg' //border-gray-900 border-dashed text-xl border-4
+                    : styles
+                }
+                style={{ scale: '-1 1 1' }}
+              ></video>
+              <video
+                ref={remoteVideoRef}
+                autoPlay
+                className={
+                  isOtherVideoLoaded
+                    ? 'flex flex-col w-full h-full text-gray-900 rounded-lg object-cover' // border-green-900 border-dashed border-4 text-xl
+                    : 'hidden'
+                }
+                style={{ scale: '-1 1 1' }}
+              ></video>
+            </div>
+            <div className="flex flex-col w-full h-36 justify-center items-center bg-background-black-call">
+              <RoomCallControls />
+            </div>
+          </main>
+          <RoomLiveMenu url={url} />
+          <nav className="flex w-[550px] h-full bg-white">
+            <div className="w-full flex mx-auto px-6 py-8">
+              <div className="w-full h-full flex items-center justify-center text-gray-900 text-xl border-4 border-gray-900 border-dashed">
+                Rightbar
+              </div>
+            </div>
+          </nav>
+        </div>
+      </div>
     </div>
   );
 };
