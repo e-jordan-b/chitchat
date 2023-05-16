@@ -72,7 +72,7 @@ const RoomPreCall: React.FC<{
 
 
   return (
-  <section id="device-selection" className="h-full w-full flex justify-center items-center bg-zinc-200 ">
+  <section id="device-selection" className="h-full w-full flex justify-center items-center bg-zinc-200 dark:bg-gray-800 ">
     <div className="flex flex-col lg:flex-row md:flex-row justify-center items-center h-full md:h-1/4 lg:h-2/4 mg:h-2/4 p-2 w-full  ">
 
       <div className="h-full md:w-2/4 lg:w-1/3 ">
@@ -82,7 +82,8 @@ const RoomPreCall: React.FC<{
           <div id="video-container" className="flex flex-col xs:ml-5 items-center justify-center  w-full h-full min-w-[300px] aspect-w-16 aspect-h-9 relative ">
 
           <video
-            className={`${isLoading ? "animate-pulse bg-custom-purple-600" : null} absolute top-0 left-0 w-full h-full object-cover rounded-xl border-3 drop-shadow-xl`}
+            // className={`${isLoading ? "animate-pulse bg-custom-purple-600" : null} absolute top-0 left-0 w-full h-full object-cover rounded-xl border-3 drop-shadow-xl`}
+            className={`absolute top-0 left-0 w-full h-full object-cover rounded-xl border-3 drop-shadow-xl`}
             ref={videoRef}
             autoPlay
             muted
@@ -128,8 +129,8 @@ const RoomPreCall: React.FC<{
     </div>
     </div>
 
-    <section id="continue" className="flex justify-center items-center mb-5 md:mx-28 w-full lg:w-1/4 mg:w-1/4 max-w-[500px] h-full">
-      <div className="flex flex-col justify-center items-center rounded-lg drop-shadow-xl h-72 w-full lg:w-3/4 md:w-3/4 bg-custom-purple-300">
+    <section id="continue" className="flex justify-center items-center mb-5 md:mx-28 w-full lg:w-1/4 mg:w-1/4 max-w-[500px] h-full bg-red-400">
+      <div className="flex flex-col justify-center items-center rounded-lg drop-shadow-xl h-72 w-full md:w-5/6 lg:w-5/6 xl:w-5/6 2xl:w-5/6 bg-custom-purple-300">
         <h3 className="md:text-2xl text-4xl text-center font-semibold mb-10">What's your name?</h3>
         <input
           onChange={(e) => setName(e.target.value)}
@@ -138,15 +139,16 @@ const RoomPreCall: React.FC<{
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         className={`mb-10 h-14 w-4/6 border-b-4 min-w-[75px] rounded-t-md transition-all bg-custom-purple-50 px-5 ${inputFocus ? "border-custom-purple-900" : "border-gray-200"}`} type="text" name="" id="" />
-        <button
-          onClick={() => joiningRoom(name)}
+        {/* <button
+          onClick={}
           className="px-2 py-2 border rounded-md bg-custom-purple-400 text-white absolute bottom-8 right-8 w-24"
           >Join Room
-        </button>
+        </button> */}
 
-        {/* <button
-          onClick={goToAgenda}
-          className="px-2 whitespace-nowrap h-14 w-4/6 min-w-[75px] bg-custom-purple-700 transition-all rounded-md text-custom-purple-50 sm:text-xl mb-2 md:text-base md:w-10/12 lg:text-xl  hover:bg-custom-purple-900">Create Agenda</button> */}
+        <button
+          onClick={() => joiningRoom(name)}
+          className="px-2 whitespace-nowrap h-14 w-4/6 min-w-[75px] bg-custom-purple-700 transition-all rounded-md text-custom-purple-50 sm:text-xl mb-2 md:text-base md:w-10/12 lg:text-xl  hover:bg-custom-purple-900">
+          Create Agenda</button>
       </div>
     </section>
 

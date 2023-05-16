@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AuthModal from '../auth/auth-modal';
 import title from '../../assets/ChitChat.png'
-import logo from "../../assets/logo512.png"
+
 import Lottie from 'lottie-react';
 import animation from '../../assets/animation.json';
 import CreateRoom from '../create-room/create-room';
@@ -47,7 +47,7 @@ const Landing: React.FC = () => {
 
     <nav className='w-full h-20 min-h-[80px] flex items-center justify-between dark:bg-gray-800'>
       <div>
-        {window.innerWidth < 300 ? <img src={logo} alt='chitchat logo' className=' h-10 self-center ml-2 '></img> : <img src={title} alt='chitchat title' className=' h-8 self-center ml-7 '></img>}
+       <img src={title} alt='chitchat title' className=' h-8 self-center ml-7 '></img>
 
       </div>
       <div className='flex '>
@@ -117,6 +117,8 @@ const Landing: React.FC = () => {
       <section id="animated-illustration" className='w-full md:w-1/2 lg:w-1/2 xl:w-1/2 2xl:w-1/2 h-1/7 flex justify-center items-center m-0 sm:m-0'>
         <Lottie animationData={animation} loop={true} autoplay className='h-full w-11/12'></Lottie>
       </section>
+
+      {/* Clicking create as a guest should trigger the auth modal. the must be signed in surves no purpose */}
       <CreateRoom isVisible={showCreate} onClose={() => setShowCreate(false)}></CreateRoom>
       <AuthModal isVisible={showAuth} onClose={() => setShowAuth(false)}></AuthModal>
     </div>
