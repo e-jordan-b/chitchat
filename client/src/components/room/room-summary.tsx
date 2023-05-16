@@ -8,28 +8,30 @@ import useClickOutside from '../../hooks/use-clickoutside';
 
 const RoomSummary: React.FC<{
   summary: Summary;
-  onEditStart: () => void;
-  onEditEnd: () => void;
-}> = ({ summary, onEditStart, onEditEnd }) => {
+  // onEditStart: () => void;
+  // onEditEnd: () => void;
+  onEdit: (id: string) => void;
+}> = ({ summary, onEdit }) => {//onEditStart, onEditEnd }) => {
+  // const [currentSummaryId, setCurrentSummaryId] = useState<string | null>(null)
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const summaryRef = useRef<HTMLDivElement>(null);
-  useClickOutside(summaryRef, () => {
-    console.log('CLICKED OUtsiDe');
-    if (isEditing) {
-      console.log('END EDITING for', summary._id);
-      onEditEnd();
-      setIsEditing(false);
-    }
-  });
+  // useClickOutside(summaryRef, () => {
+  //   console.log('CLICKED OUtsiDe');
+  //   if (isEditing) {
+  //     console.log('END EDITING for', summary._id);
+  //     onEditEnd();
+  //     setIsEditing(false);
+  //   }
+  // });
 
-  const startEditing = () => {
+  const startEditing = (id) => {
     if (!isEditing) {
       onEditStart();
       setIsEditing(true);
     }
   };
 
-  const endEditing = () => {};
+  // const endEditing = () => {};
 
   // const [texts, setTexts] = useState<string[]>([]);
   // const [currentTextIndex, setCurrentTextIndex] = useState<number>(0);
@@ -53,9 +55,10 @@ const RoomSummary: React.FC<{
   //     return updatedTexts;
   //   });
   // };
-  // const handleTextBlur = () => {
-  //   setEditiogTextIndex(null)
-  // };
+  const handleTextBlur = () => {
+    let id = '123'
+    onEdit(id)
+  };
   return (
     <div className="roomsummary">
       <div
@@ -65,7 +68,8 @@ const RoomSummary: React.FC<{
       >
         {summary.text}
       </div>
-      <div className="roomsummary__timeindicator">11:20 AM</div>
+
+    <div className="roomsummary__timeindicator">11:20 AM</div>
       {/* {texts.map((text, index) => (
         <div key={index} onClick={() => handleTextClick(index)}>
           {editingTextIndex === index ? (
