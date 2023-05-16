@@ -94,6 +94,11 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
           })}
         </div>
       )}
+
+      {/* Chat conditional rendering */}
+      {menuState === MenuState.CHAT && (
+        <div className="roomlivemenu__chat">CHAT</div>
+      )}
     </div>
   );
 };
