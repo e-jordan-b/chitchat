@@ -38,9 +38,30 @@ class RoomService extends ApiService {
     return { summaries: result };
   }
 
+  async updateSummary(
+    summaryId: string,
+    text: string
+  ): Promise<{ summary?: Summary; error?: string }> {
+    const { result, error } = await this.fetch<Summary>('summary/edit', {
+      method: 'POST',
+      withCredentials: true,
+      body: {
+        summaryId,
+        text,
+      },
+    });
+
+    if (!result || error) {
+      console.log(error);
+      return { error };
+    }
+
+    return { summary: result };
+  }
+
   async createRoom(
     agenda: string[]
-  ): Promise<{ url?: string; error?: string}> {
+  ): Promise<{ url?: string; error?: string }> {
     const { result, error } = await this.fetch<{ url?: string }>(
       'room/create',
       {
@@ -56,7 +77,7 @@ class RoomService extends ApiService {
     }
 
     console.log(result);
-    return { url: result.url }
+    return { url: result.url };
   }
 }
 
