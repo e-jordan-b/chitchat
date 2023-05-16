@@ -5,13 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+
 import useLiveMenuSocket from '../../hooks/use-live-menu-socket';
 import './room-live-menu.css';
 import { Summary } from '../../models/summary-model';
@@ -21,7 +15,7 @@ import { ChatMessage } from '../../models/chat-message-model';
 import RoomChatMessage from './room-chat-message';
 import RoomEditSummary from './room-edit-summary';
 import {BsSend} from "react-icons/bs";
-import RoomEditSummary from './room-edit-summary';
+
 
 enum MenuState {
   SUMMARY,
@@ -32,13 +26,6 @@ interface SummaryEditingState {
   isEditing: boolean;
   summaryId?: string;
   summary?: Summary;
-}
-
-const mock = {
-  timestamp: 12,
-  speakerId: 'Eqwxc22',
-  speaker: 'Eric',
-  message: 'Hi my name is eric'
 }
 
 const mock = {

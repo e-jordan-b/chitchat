@@ -142,7 +142,7 @@ const RoomCall: React.FC<{
 
   // Also have to handle polling for summaries
   return (
-    <div className="flex h-screen bg-green-500 w-full">
+    <div className="flex h-screen w-full">
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex h-full w-full">
           <main className="w-full h-full flex flex-col justify-center bg-background-black-call overflow-x-hidden overflow-y-auto mb-20">

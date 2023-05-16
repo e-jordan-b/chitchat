@@ -11,6 +11,8 @@ const RoomPreCall: React.FC<{
   // Deal with audio stream and video stream
   // Maybe you dont need the audio stream
 
+  console.log('here')
+
   const videoRef = useRef<HTMLVideoElement>(undefined!);
   const [ isLoading, setIsLoading ] = useState(true);
 
@@ -63,9 +65,11 @@ const RoomPreCall: React.FC<{
 
   useEffect(() => {
     if (mediaStream) videoRef.current.srcObject = mediaStream;
-  })
+    console.log('useeffect')
+  }, [mediaStream])
 
   const joiningRoom = (name: string) => {
+    if (!name) return alert('Please provide a name!');
     inputSpeaker(name);
     onJoin();
   }
@@ -129,7 +133,7 @@ const RoomPreCall: React.FC<{
     </div>
     </div>
 
-    <section id="continue" className="flex justify-center items-center mb-5 md:mx-28 w-full lg:w-1/4 mg:w-1/4 max-w-[500px] h-full bg-red-400">
+    <section id="continue" className="flex justify-center items-center mb-5 md:mx-28 w-full lg:w-1/4 mg:w-1/4 max-w-[500px] h-full">
       <div className="flex flex-col justify-center items-center rounded-lg drop-shadow-xl h-72 w-full md:w-5/6 lg:w-5/6 xl:w-5/6 2xl:w-5/6 bg-custom-purple-300">
         <h3 className="md:text-2xl text-4xl text-center font-semibold mb-10">What's your name?</h3>
         <input
@@ -148,7 +152,7 @@ const RoomPreCall: React.FC<{
         <button
           onClick={() => joiningRoom(name)}
           className="px-2 whitespace-nowrap h-14 w-4/6 min-w-[75px] bg-custom-purple-700 transition-all rounded-md text-custom-purple-50 sm:text-xl mb-2 md:text-base md:w-10/12 lg:text-xl  hover:bg-custom-purple-900">
-          Create Agenda</button>
+          Join Room</button>
       </div>
     </section>
 

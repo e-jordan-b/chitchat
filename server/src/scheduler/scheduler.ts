@@ -1,5 +1,5 @@
 import { Configuration, OpenAIApi } from 'openai';
-import { createSummary } from '../models/summary-model';
+import { ISummary, createSummary, updateRoomWithCallSummary } from '../models/summary-model';
 import TranscriptionService from '../services/transcription-service';
 import { updateRoomWithSummary } from '../models/room-model';
 import * as dotenv from 'dotenv';
@@ -131,3 +131,66 @@ class SummaryScheduler {
 }
 
 export default SummaryScheduler;
+
+export const createFinalSummary = async (summaries: ISummary[], roomUrl: string) => {
+  if (!summaries) return;
+
+  summaries.sort((a, b) => a.timestamp - b.timestamp);
+
+  const sortedSummaries = summaries.map(summary => summary.text).join(" ");
+
+  const prompt = `This is a collection of summaries from a meeting: \n\n${sortedSummaries} \n\n. Please create an overall summary of this meeting`
+
+  try {
+    const response = await openai.createChatCompletion({
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: 'You are meeting summary assistant' },
+        { role: 'user', content: prompt },
+      ],
+      max_tokens: 900,
+      temperature: 0.1,
+    })
+    if (
+      response.data &&
+      response.data.choices &&
+      response.data.choices.length &&
+      response.data.choices[0].message
+    ) {
+      const summaryText = response.data.choices[0].message?.content;
+
+      console.log(summaryText);
+      console.log(response.data.usage)
+
+      //!DO WE WANT TO SAVE IT FIRST AS A SUMMARY DOC AND THEN REF IN ROOM OR JUST WHOLE STRING RIGTH IN ROOM???
+      // const summary = {
+      //   timestamp: new Date().getTime(),
+      //   text: summaryText!,
+      // };
+
+      // const { summary: savedSummary, error: createSummaryError } =
+      //   await createSummary(summary);
+      // if (createSummaryError || !savedSummary || !savedSummary._id) {
+      //   console.log('SAVING SUMMARY ERROR: ', createSummaryError);
+      //   return;
+      // }
+
+      const { success, error: updateRoomError } = await updateRoomWithCallSummary(
+        roomUrl,
+        summaryText
+      );
+
+      if (!success || updateRoomError) {
+        console.log('UPDATING ROOM ERROR IN FINAL SUMMARY', updateRoomError);
+        return;
+      }
+
+      // ALL GOOD
+      console.log('FINAL SUMMARY SAVED');
+      return summaryText;
+    }
+  } catch (error) {
+    console.log('OPENAI ERROR', error);
+  }
+
+}
