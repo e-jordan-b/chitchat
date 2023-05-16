@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { fetchRoomSummariesFromUrl } from '../models/room-model';
 import { ErrorMessage } from '../models/error-message';
 import { editSummaryById } from '../models/summary-model';
+import sanitizeHtml from 'sanitize-html';
 
 // Fetch
 export const fetchSummaries = async (req: Request, res: Response) => {
@@ -24,7 +25,7 @@ export const fetchSummaries = async (req: Request, res: Response) => {
 
 // Edit
 export const editSummary = async (req: Request, res: Response) => {
-  const { summaryId, text } = req.body;                   
+  const { summaryId, text } = req.body;
 
   if (
     !summaryId ||
@@ -38,7 +39,14 @@ export const editSummary = async (req: Request, res: Response) => {
 
   // PURIFY, SAVE
 
-  const { summary, error } = await editSummaryById(summaryId, text);
+  const cleanText = sanitizeHtml(text, {
+    allowedTags: ['strong', 'em', 'u'],
+    allowedAttributes: false,
+  })
+
+  console.log(cleanText);
+
+  const { summary, error } = await editSummaryById(summaryId, cleanText);
 
   if (!summary || error) {
     res.status(500).send(ErrorMessage.Error500);
