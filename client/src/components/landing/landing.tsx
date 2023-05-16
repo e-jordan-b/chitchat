@@ -62,7 +62,7 @@ const Landing: React.FC = () => {
 
 
 
-    <div className=' bg-red-700 w-full h-full flex flex-col-reverse sm:flex-col-reverse md:flex-row lg:flex-row xl:flex-row 2xl:flex-row justify-center items-start sm:items-center md:items-center lg:items-center xl:items-center 2xl:items-center '>
+    <div className=' w-full h-full flex flex-col-reverse sm:flex-col-reverse md:flex-row lg:flex-row xl:flex-row 2xl:flex-row justify-center items-start sm:items-center md:items-center lg:items-center xl:items-center 2xl:items-center '>
 
 
 
