@@ -82,7 +82,8 @@ const RoomPreCall: React.FC<{
           <div id="video-container" className="flex flex-col xs:ml-5 items-center justify-center  w-full h-full min-w-[300px] aspect-w-16 aspect-h-9 relative ">
 
           <video
-            className={`${isLoading ? "animate-pulse bg-custom-purple-600" : null} absolute top-0 left-0 w-full h-full object-cover rounded-xl border-3 drop-shadow-xl`}
+            // className={`${isLoading ? "animate-pulse bg-custom-purple-600" : null} absolute top-0 left-0 w-full h-full object-cover rounded-xl border-3 drop-shadow-xl`}
+            className={`absolute top-0 left-0 w-full h-full object-cover rounded-xl border-3 drop-shadow-xl`}
             ref={videoRef}
             autoPlay
             muted
