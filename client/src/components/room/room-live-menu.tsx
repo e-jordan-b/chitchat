@@ -13,6 +13,7 @@ import RoomService from '../../services/room-service';
 import { ChatMessage } from '../../models/chat-message-model';
 import RoomChatMessage from './room-chat-message';
 import RoomEditSummary from './room-edit-summary';
+import {BsSend} from "react-icons/bs";
 
 enum MenuState {
   SUMMARY,
@@ -25,12 +26,26 @@ interface SummaryEditingState {
   summary?: Summary;
 }
 
+const mock = {
+  timestamp: 12,
+  speakerId: 'Eqwxc22',
+  speaker: 'Eric',
+  message: 'Hi my name is eric'
+}
+
+const mock = {
+  timestamp: 12,
+  speakerId: 'Eqwxc22',
+  speaker: 'Eric',
+  message: 'Hi my name is eric'
+}
+
 const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
   const urlMemo = useMemo(() => url, [url]);
   const { sendEditUpdate, sendChatMessage, connect } = useLiveMenuSocket();
   const [menuState, setMenuState] = useState<MenuState>(MenuState.SUMMARY);
   const [summaries, setSummaries] = useState<Summary[]>([]);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([mock, mock, mock, mock]);
   const [roomService, _] = useState<RoomService>(new RoomService());
   const [localEditingState, setLocalEditingState] =
     useState<SummaryEditingState>({ isEditing: false });
@@ -38,6 +53,17 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
     useState<SummaryEditingState>({ isEditing: false });
   const intervalRef = useRef<NodeJS.Timer>();
   const renderRef = useRef<number>(0);
+  const [messageInput, setMessageInput] = useState('')
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMessageInput(event.target.value)
+  }
+
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    sendChatMessage('speaker', messageInput)
+    setMessageInput('')
+  }
 
   useEffect(() => {
     renderRef.current++;
@@ -172,7 +198,8 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
 
       {/* Chat conditional rendering */}
       {menuState === MenuState.CHAT && (
-        <div className="roomlivemenu__chat">
+        <div className="flex flex-col">
+          <div>
           {messages.map((message, idx) => {
             let isFirst = true;
             if (idx > 0 && messages[idx - 1].speakerId === message.speakerId) {
@@ -183,8 +210,22 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
               <RoomChatMessage message={message} isFirst={isFirst} key={idx} />
             );
           })}
-
-          <input />
+          </div>
+          <div className='absolute bottom-0 my-6 ml-5'>
+            <form onSubmit={handleFormSubmit} className='flex'>
+            <input
+              type='text'
+              value={messageInput}
+              onChange={handleInputChange}
+              placeholder='Type a message here...'
+              className="h-10 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              >
+            </input>
+            <button type='submit' className='w-12 h-10 bg-slate-200 flex justify-center items-center rounded-md'>
+              <BsSend className='w-4 h-4 text-slate-600'/>
+            </button>
+            </form>
+          </div>
         </div>
       )}
     </div>
