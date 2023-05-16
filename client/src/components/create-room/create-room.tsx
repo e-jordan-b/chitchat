@@ -5,7 +5,6 @@ import FullscreenModal from '../fullscreen-modal/fullscreen-modal';
 import { useState } from 'react';
 import { CgRemove } from 'react-icons/cg'
 import RoomService from '../../services/room-service';
-import { ImCross } from 'react-icons/im'
 import {AiFillCloseCircle} from 'react-icons/ai'
 import { UserContext } from '../../user/user-context';
 

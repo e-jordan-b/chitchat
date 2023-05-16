@@ -4,12 +4,10 @@ import title from '../../assets/ChitChat.png'
 import Lottie from 'lottie-react';
 import animation from '../../assets/animation.json';
 import CreateRoom from '../create-room/create-room';
-import { BsPeople, BsFillPersonFill } from "react-icons/bs"
+import { BsFillPersonFill } from "react-icons/bs"
 import { TbSquarePlus} from "react-icons/tb"
-import { BiLogInCircle } from "react-icons/bi"
 import { useAuth } from '../../hooks/use-auth';
 import { useNavigate } from 'react-router-dom';
-import {BsArrowRightSquare} from 'react-icons/bs'
 import {TbArrowBigRight} from 'react-icons/tb'
 
 const Landing: React.FC = () => {
