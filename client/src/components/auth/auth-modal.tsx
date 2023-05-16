@@ -45,7 +45,7 @@ const AuthModal: React.FC<{ isVisible: boolean; onClose: () => void }> = ({
   return (
     <FullscreenModal>
       <div className="flex flex-col justify-center items-center h-screen">
-      <div className="shadow-md  h-2/4 w-96 flex flex-col items-center justify-around bg-white rounded-md relative">
+      <div className="shadow-md h-2/4 max-h-[600px] min-h-[400px] w-96 flex flex-col items-center justify-around bg-white rounded-md relative">
       <h1 className="text-3xl">Sign in to your account</h1>
       <form>
         <div className="flex flex-col justify-center items-center h-auto w-auto">
@@ -56,7 +56,7 @@ const AuthModal: React.FC<{ isVisible: boolean; onClose: () => void }> = ({
               className='myInput mb-10 h-10 w-80 px-6 text-xl text-black bg-white border-gray-600 border-2 rounded-lg border-opacity-50 outline-none focus:border-blue-500 placeholder-gray-300 placeholder-opacity-0 transition duration-200'
               onChange={(ev) => setEmail(ev.target.value)}
             />
-            <span className='text-1xl text-black text-opacity-80 bg-white absolute left-5 top-2 px-2 rounded-b-md transition duration-200 input-text'>Email</span>
+            <span className='text-1xl text-black text-opacity-80 bg-white absolute left-5 top-1 px-2 rounded-b-md transition duration-200 input-text'>Email</span>
           </label>
           <label className='relative cursor-pointer'>
             <input
@@ -65,7 +65,7 @@ const AuthModal: React.FC<{ isVisible: boolean; onClose: () => void }> = ({
               className='h-10 w-80 px-6 text-xl text-black bg-white border-gray-600 border-2 rounded-lg border-opacity-50 outline-none focus:border-blue-500 placeholder-gray-300 placeholder-opacity-0 transition duration-200'
               onChange={(ev) => setPassword(ev.target.value)}
             />
-            <span className='text-1xl text-black text-opacity-80 bg-white absolute left-5 top-2 px-2 transition rounded-b-md duration-200 input-text'>Password</span>
+            <span className='text-1xl text-black text-opacity-80 bg-white absolute left-5 top-1 px-2 py-0 transition rounded-b-md duration-200 input-text'>Password</span>
           </label>
         </div>
 
