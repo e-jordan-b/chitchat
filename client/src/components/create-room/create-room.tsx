@@ -5,7 +5,7 @@ import FullscreenModal from '../fullscreen-modal/fullscreen-modal';
 import { useState } from 'react';
 import { CgRemove } from 'react-icons/cg'
 import RoomService from '../../services/room-service';
-import { ImCross } from 'react-icons/im'
+import {AiFillCloseCircle} from 'react-icons/ai'
 import { UserContext } from '../../user/user-context';
 
 
@@ -51,11 +51,13 @@ const CreateRoom: React.FC<{ isVisible: boolean; onClose: () => void }> = ({isVi
     return (
       <FullscreenModal>
         <div className="flex flex-col justify-center items-center h-screen">
-          <div className="shadow-md h-44 w-96 flex flex-col items-center justify-around bg-white rounded-md">
-            <button
-            className='top-96 right-[775px] absolute'
-            onClick={() => onClose()}><ImCross></ImCross></button>
+          <div className="shadow-md h-44 w-96 flex flex-col items-center justify-around bg-white rounded-md relative">
+
             <p>You must be signed-in to create a new room!</p>
+            <div className='absolute top-0 right-0 translate-x-[2px] translate-y-[-1px] bg-white w-3 h-3 rounded-full'></div>
+      <span
+        onClick={() => onClose()}
+      className='absolute top-0 right-0 translate-x-[8px] translate-y-[-8px]'><AiFillCloseCircle size={25} color='red' /></span>
           </div>
       </div>
       </FullscreenModal>
