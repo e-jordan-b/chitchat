@@ -4,6 +4,7 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
+
     scale: {
       '30': '.30',
       '30-percent': '0.30'
@@ -20,10 +21,25 @@ module.exports = {
           "300": '#A5B4FC',
           '200': '#C7D2FE',
           '100': '#E0E7FF',
-          '50:': '#EEF2FF'
+          '50': '#EEF2FF',
+
         }
-      }
+      },
+      screens: {
+        'custom': '900px',
+      },
+      keyframes: {
+        skeletonLoading: {
+          '0%': { backgroundColor: 'custom-purple-400' },
+          '50%': { backgroundColor: 'custom-purple-300' },
+          '100%': { backgroundColor: 'custom-purple-400' },
+        }
+      },
+      animation: {
+        skeleton: 'skeletonLoading 1.5s ease-in-out infinite',
+      },
     },
+
   },
   plugins: [],
 }
