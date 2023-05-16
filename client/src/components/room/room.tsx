@@ -4,11 +4,10 @@ import useMediaStream from '../../hooks/use-media-stream';
 import useMediaSocket from '../../hooks/use-media-socket';
 import './room.css';
 
-import RoomPreCall from './room-precall';
 import RoomCall from './room-call';
 import RoomService from '../../services/room-service';
-import RoomSummary from './room-summary';
 import RoomLiveMenu from './room-live-menu';
+import RoomPrecall from './room-precall';
 
 enum RoomState {
   VALIDATE,
@@ -24,6 +23,7 @@ const Room: React.FC = () => {
   const renderCount = useRef<number>(0);
   const [searchParams, _] = useSearchParams();
   const roomService = new RoomService();
+  const speaker = useRef<string>('placeholder');
   const navigate = useNavigate();
 
   renderCount.current++;
@@ -48,7 +48,8 @@ const Room: React.FC = () => {
       case RoomState.CALL: {
         console.log('Create WebSocketConnection');
         const url = searchParams.get('url');
-        connectSocket(url!, 'Federico', startMediaRecorder, stopMediaRecorder);
+        console.log(speaker.current);
+        connectSocket(url!, speaker.current, startMediaRecorder, stopMediaRecorder);
         break;
       }
     }
@@ -123,6 +124,10 @@ const Room: React.FC = () => {
     setRoomState(RoomState.CALL);
   };
 
+  const inputSpeaker = (name: string) => {
+    speaker.current = name;
+  }
+
   // [ END RoomState Handling ]
 
   const RenderSwitch: React.FC = () => {
@@ -131,29 +136,14 @@ const Room: React.FC = () => {
         return <div>LOADING</div>;
       }
       case RoomState.PRECALL: {
-        // return <RoomPrecall onJoin={() => setRoomState(RoomState.CALL)} mediaStream={stream} />
-        return (
-          <div>
-            <button
-              onClick={() => {
-                setRoomState(RoomState.CALL);
-              }}
-            >
-              START CALL
-            </button>
-          </div>
-        );
+        return <RoomPrecall onJoin={onJoin} mediaStream={stream} inputSpeaker={inputSpeaker}/>
+
       }
       case RoomState.CALL: {
         const url = searchParams.get('url');
         if (!url) return null;
 
-        return (
-          <>
-            <RoomCall url={url} mediaStream={stream} />
-            <RoomLiveMenu url={url} />
-          </>
-        );
+        return <RoomCall url={url} mediaStream={stream} />;
       }
     }
   };

@@ -14,6 +14,9 @@ export const onConnection = (
   const { room: roomUrl } = parse(request.url || '', true).query;
   const userId = uuid4();
 
+  console.log('ROOM', roomUrl);
+  console.log('CLIENTS', socketServer.clients.size);
+
   if (!roomUrl || typeof roomUrl !== 'string') {
     socketClient.close();
     return;

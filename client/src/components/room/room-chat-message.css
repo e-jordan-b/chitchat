@@ -1,0 +1,25 @@
+.roomchatmessage {
+  /* width: 100%; */
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.rooomchatmessage__info {
+  margin-left: 14px;
+  margin-bottom: 3px;
+
+  font-size: 10px;
+  font-weight: 500;
+  color: #939393;
+}
+
+.roomchatmessage__bubble {
+  padding: 14px;
+
+  font-size: 13px;
+  font-weight: 400;
+  color: #939393;
+
+  border-radius: 15px;
+  background-color: #f3f3f3;
+}

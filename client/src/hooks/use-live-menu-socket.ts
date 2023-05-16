@@ -1,17 +1,18 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { ChatMessage } from '../models/chat-message-model';
 
 const useLiveMenuSocket = () => {
   const [socket, setSocket] = useState<WebSocket>();
   const [socketStatus, setSocketStatus] = useState<number>(3);
 
+  useEffect(() => {
+    return () => socket?.close();
+  }, []);
+
   const connect = (
     url: string,
     handleEdit: (id: string, status: string) => void,
-    handleChat: (message: {
-      timestamp: number;
-      speaker: string;
-      message: string;
-    }) => void
+    handleChat: (message: ChatMessage) => void
   ) => {
     const ws = new WebSocket(`ws://localhost:3004/?room=${url}`);
     ws.addEventListener('open', () => setSocketStatus(WebSocket.OPEN));
@@ -20,17 +21,17 @@ const useLiveMenuSocket = () => {
     ws.addEventListener('message', (ev) => {
       const data = JSON.parse(ev.data) as { type: string; payload: any };
 
+      console.log('DATA', data);
+
       if (data.type === 'Edit') {
         const { id, status } = data.payload as { id: string; status: string };
         handleEdit(id, status);
       }
 
       if (data.type === 'Chat') {
-        const message = data.payload as {
-          speaker: string;
-          message: string;
-          timestamp: number;
-        };
+        console.log("THIS IS A CHAT MESSAGE")
+        const message = data.payload as ChatMessage;
+        console.log(message);
         handleChat(message);
       }
     });

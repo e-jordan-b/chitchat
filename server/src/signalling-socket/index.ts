@@ -5,7 +5,7 @@ import { onConnection } from './on-connection';
 // Create instance of WS Server
 export const createSignallingSocketServer = (): WebSocketServer => {
   const socketServer = new WebSocketServer({
-    port: Number(process.env.PORT_SOCKET) || 3003,
+    port: Number(process.env.SIGNALING_SOCKET) || 3003,
   });
 
   socketServer.on('connection', (client: SocketClient, request) =>
@@ -14,7 +14,7 @@ export const createSignallingSocketServer = (): WebSocketServer => {
 
   socketServer.on('close', () => console.log('connection closed'));
 
-  socketServer.on('error', () => console.log('error'));
+  socketServer.on('error', (error) => console.log('error signalign socket', error));
 
   return socketServer;
 };

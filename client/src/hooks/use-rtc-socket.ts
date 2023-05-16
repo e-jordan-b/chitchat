@@ -42,7 +42,7 @@ const useRTCSocket = () => {
     setSocket(ws);
   };
 
-  return { socket, socketStatus: status, connectSocket: connect };
+  return { connectSocket: connect };
 };
 
 export default useRTCSocket;
