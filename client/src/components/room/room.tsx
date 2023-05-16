@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import useMediaStream from '../../hooks/use-media-stream';
 import useMediaSocket from '../../hooks/use-media-socket';
 import './room.css';
@@ -24,6 +24,7 @@ const Room: React.FC = () => {
   const renderCount = useRef<number>(0);
   const [searchParams, _] = useSearchParams();
   const roomService = new RoomService();
+  const navigate = useNavigate();
 
   renderCount.current++;
 
@@ -57,7 +58,7 @@ const Room: React.FC = () => {
     const url = searchParams.get('url');
 
     if (!url) {
-      console.log('URL is Not valid');
+      navigate('/');
       return;
     }
 
@@ -66,9 +67,7 @@ const Room: React.FC = () => {
     if (isValid) {
       setRoomState(RoomState.PRECALL);
     } else {
-      console.log('Room is not valid');
-      console.log('REDIRECT');
-      // REDIRECT
+      navigate('/');
     }
   };
 
