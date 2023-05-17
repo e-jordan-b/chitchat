@@ -1,9 +1,4 @@
-import { useState } from 'react';
-
 const useMediaSocket = () => {
-  const [socket, setSocket] = useState<WebSocket>();
-  const [error, setError] = useState<string>();
-
   const connect = (
     url: string,
     speaker: string,
@@ -29,11 +24,9 @@ const useMediaSocket = () => {
         stop();
       }
     });
-
-    setSocket(ws);
   };
 
-  return { socket, connectSocket: connect };
+  return { connectSocket: connect };
 };
 
 export default useMediaSocket;

@@ -1,4 +1,5 @@
 import React, {
+  MutableRefObject,
   useCallback,
   useEffect,
   useMemo,
@@ -187,18 +188,10 @@ const RoomLiveMenu: React.FC<{ url: string, speaker: string }> = ({ url, speaker
         <div className="flex flex-col mt-5">
           <div>
             {messages.map((message, idx) => {
-              let isFirst = true;
-              if (
-                idx > 0 &&
-                messages[idx - 1].speakerId === message.speakerId
-              ) {
-                isFirst = false;
-              }
-
               return (
                 <RoomChatMessage
                   message={message}
-                  isFirst={isFirst}
+                  isFirst={true}
                   key={idx}
                 />
               );

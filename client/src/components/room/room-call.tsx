@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from 'react';
 import './room-call.css';
 import useRTCSocket from '../../hooks/use-rtc-socket';
 import RoomCallControls from './room-call-controls';

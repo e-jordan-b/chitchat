@@ -18,7 +18,7 @@ enum RoomState {
 const Room: React.FC = () => {
   const [roomState, setRoomState] = useState<RoomState>(RoomState.VALIDATE); // Switch back to VALIDATE
   const { stream, error, requestPermissions } = useMediaStream();
-  const { socket, connectSocket } = useMediaSocket();
+  const { connectSocket } = useMediaSocket();
   const audioRecorder = useRef<MediaRecorder>();
   const renderCount = useRef<number>(0);
   const [searchParams, _] = useSearchParams();
@@ -121,12 +121,12 @@ const Room: React.FC = () => {
     audioRecorder.current = undefined;
   };
 
-  const onJoin = () => {
+  const onJoin = (name: string) => {
+    speaker.current = name;
     setRoomState(RoomState.CALL);
   };
 
   const inputSpeaker = (name: string) => {
-    speaker.current = name;
   }
 
   // [ END RoomState Handling ]
@@ -137,7 +137,7 @@ const Room: React.FC = () => {
         return <RoomLoading/>;
       }
       case RoomState.PRECALL: {
-        return <RoomPrecall onJoin={onJoin} mediaStream={stream} inputSpeaker={inputSpeaker}/>
+        return <RoomPrecall onJoin={onJoin} mediaStream={stream} />
 
       }
       case RoomState.CALL: {
