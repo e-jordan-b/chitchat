@@ -24,7 +24,7 @@ export default function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/room" element={<Room />} />
 
-            <Route path="/u/:userId" element={ <CallsLayout/>} >
+            <Route path="/calls/:userId" element={ <CallsLayout/>} loader={CallsLoader} >
               <Route path="calls" element={<CallHistory />} loader={CallsLoader}/>
               <Route path="call/:callId" element={<CallDetailView />} />
             </Route>

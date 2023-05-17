@@ -98,7 +98,7 @@ const Landing: React.FC = () => {
           :
           <div className='flex justify-center items-center'>
           <button
-          onClick={() => navigate(`/u/${user._id}`)}
+          onClick={() => navigate(`calls/${user._id}`)}
             className='
               flex justify-center items-center
               h-12 w-12
