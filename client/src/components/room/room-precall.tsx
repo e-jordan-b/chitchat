@@ -4,10 +4,9 @@ import { AiFillAudio, AiFillVideoCamera } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 
 const RoomPreCall: React.FC<{
-  onJoin: () => void;
+  onJoin: (name: string) => void;
   mediaStream: MediaStream | undefined;
-  inputSpeaker: (name: string) => void;
-}> = ({ onJoin, mediaStream, inputSpeaker }) => {
+}> = ({ onJoin, mediaStream}) => {
   // Deal with audio stream and video stream
   // Maybe you dont need the audio stream
 
@@ -54,7 +53,6 @@ const RoomPreCall: React.FC<{
   const handleMouseEnter = () => setInputFocus(true)
   const handleMouseLeave = () => setInputFocus(false)
 
-
   const handleAudioDeviceChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
     console.log("audio device changed");
   };
@@ -67,13 +65,6 @@ const RoomPreCall: React.FC<{
     if (mediaStream) videoRef.current.srcObject = mediaStream;
     console.log('useeffect')
   }, [mediaStream])
-
-  const joiningRoom = (name: string) => {
-    if (!name) return alert('You must enter a name');
-    inputSpeaker(name);
-    onJoin();
-  }
-
 
   return (
   <section id="device-selection" className="h-full w-full flex justify-center items-center bg-white dark:bg-gray-800 ">
@@ -99,7 +90,7 @@ const RoomPreCall: React.FC<{
 
         </div>
         <div id="controls-container" className="bottom-5 mt-5 flex justify-center space-x-4">
-        <div id="video-devices" className="flex items-center justify-center bg-white rounded-md xs:mr-1 lg:mr-5 md:mr-8 border-custom-purple-600 p-2">
+        <div id="video-devices" className="flex items-center justify-center bg-white dark:bg-custom-purple-100 rounded-md xs:mr-1 lg:mr-5 md:mr-8 border-custom-purple-600 p-2">
 
         <AiFillVideoCamera size={20} className="mt-0.5 mr-1" />
 
@@ -118,7 +109,7 @@ const RoomPreCall: React.FC<{
       </div>
 
 
-        <div id="audio-devices" className="flex items-center justify-center bg-white rounded-md border-custom-purple-600 p-2">
+        <div id="audio-devices" className="flex items-center justify-center bg-white dark:bg-custom-purple-100 rounded-md border-custom-purple-600 p-2">
         <AiFillAudio size={23} className="mt-0.5 mr-1 w-[25px]" />
         <select
           className="w-48 rounded-md h-7"
@@ -136,8 +127,8 @@ const RoomPreCall: React.FC<{
     </div>
 
     <section id="continue" className=" flex justify-center items-center mb-5 md:mx-28 w-full lg:w-1/4 mg:w-1/4 max-w-[500px] h-full">
-      <div className="flex flex-col justify-center items-center rounded-lg drop-shadow-sm h-72 w-full md:w-5/6 lg:w-5/6 xl:w-5/6 2xl:w-5/6 bg-white">
-        <h3 className="md:text-2xl text-4xl text-center font-semibold mb-4">What's your name?</h3>
+      <div className="flex flex-col justify-center items-center rounded-lg drop-shadow-sm h-72 w-full md:w-5/6 lg:w-5/6 xl:w-5/6 2xl:w-5/6 ">
+        <h3 className="md:text-2xl text-4xl text-center font-semibold  dark:text-custom-purple-50">What's your name?</h3>
         <input
           onChange={(e) => setName(e.target.value)}
           onFocus={handleFocus}
@@ -145,7 +136,7 @@ const RoomPreCall: React.FC<{
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           placeholder='Enter your name...'
-        className={` mb-10 h-14 w-4/6 border-b-4 min-w-[75px] rounded-t-md transition-all bg-custom-purple-50 px-5 ${inputFocus ? "border-custom-purple-900" : "border-gray-200"}`} type="text" name="" id="" />
+        className={` mt-8 mb-10 h-14 w-4/6 border-b-4 min-w-[75px] rounded-t-md transition-all bg-custom-purple-50 px-5 ${inputFocus ? "border-custom-purple-900" : "border-gray-200"}`} type="text" name="" id="" />
         {/* <button
           onClick={}
           className="px-2 py-2 border rounded-md bg-custom-purple-400 text-white absolute bottom-8 right-8 w-24"
@@ -153,7 +144,7 @@ const RoomPreCall: React.FC<{
         </button> */}
 
         <button
-          onClick={() => joiningRoom(name)}
+          onClick={() => onJoin(name)}
           className="px-2 whitespace-nowrap h-14 w-4/6 min-w-[75px] bg-custom-purple-400 transition-all rounded-md text-custom-purple-50 sm:text-xl mb-2 md:text-base md:w-/12 lg:text-xl  hover:bg-custom-purple-900">
           Join Room</button>
       </div>

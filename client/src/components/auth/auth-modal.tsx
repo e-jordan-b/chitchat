@@ -4,6 +4,7 @@ import FullscreenModal from '../fullscreen-modal/fullscreen-modal';
 import AuthService from '../../services/auth-service';
 import { UserContext } from '../../user/user-context';
 import {AiFillCloseCircle} from 'react-icons/ai'
+import { useAuth } from '../../hooks/use-auth';
 
 enum AuthType {
   SIGNUP,
@@ -19,6 +20,7 @@ const AuthModal: React.FC<{ isVisible: boolean; onClose: () => void }> = ({
   const [password, setPassword] = useState<string>('');
   const userContext = useContext(UserContext);
   const authService = new AuthService();
+  const {setUser} = useAuth();
 
   const onSubmit = async () => {
     if (!email.length || !password.length) {
@@ -35,6 +37,7 @@ const AuthModal: React.FC<{ isVisible: boolean; onClose: () => void }> = ({
 
     if (user) {
       userContext.update(user);
+      setUser(user);
       onClose();
     }
   };

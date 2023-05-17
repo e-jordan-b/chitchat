@@ -17,6 +17,15 @@ class AuthService extends ApiService {
 
     return { user, error };
   }
+
+  async signout (): Promise<{ error?: string }> {
+    const { error } = await this.fetch('auth/signout', {
+      method: 'POST',
+      withCredentials: true,
+    });
+
+    return { error };
+  }
 }
 
 export default AuthService;

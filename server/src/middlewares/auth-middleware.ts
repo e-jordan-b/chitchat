@@ -11,7 +11,8 @@ const authMiddleware = (
   const unrestrictedRoutes: string[] = [
     '/auth/signin',
     '/auth/signup',
-    '/summary',
+    '/summary/',
+    '/summary/finalsummary',
     '/summary/edit',
     '/room/validate',
   ];

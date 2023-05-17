@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from 'react';
 import './room-call.css';
 import useRTCSocket from '../../hooks/use-rtc-socket';
 import RoomCallControls from './room-call-controls';
@@ -15,7 +15,8 @@ const SERVERS: RTCConfiguration = {
 const RoomCall: React.FC<{
   url: string;
   mediaStream: MediaStream | undefined;
-}> = ({ url, mediaStream }) => {
+  speaker: string;
+}> = ({ url, mediaStream, speaker }) => {
   const urlMemo = useMemo(() => url, [url]);
   const [peerConnection, _] = useState<RTCPeerConnection>(
     new RTCPeerConnection(SERVERS)
@@ -142,7 +143,7 @@ const RoomCall: React.FC<{
 
   // Also have to handle polling for summaries
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex h-screen w-screen">
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex h-full w-full">
           <main className="w-full h-full flex flex-col justify-center bg-background-black-call overflow-x-hidden overflow-y-auto mb-20">
@@ -153,6 +154,7 @@ const RoomCall: React.FC<{
               <video
                 ref={localVideoRef}
                 autoPlay
+                muted
                 className={
                   isOtherVideoLoaded
                     ? 'transition-all h-56 duration-300 absolute bottom-5 right-10 text-gray-900 rounded-lg shadow-lg z-50' //border-gray-900 border-dashed text-xl border-4
@@ -175,8 +177,8 @@ const RoomCall: React.FC<{
               <RoomCallControls />
             </div>
           </main>
-            <nav className="w-[500px] right-0 h-full">
-              <RoomLiveMenu url={urlMemo}/>
+            <nav className="max-w-[500px] w-full h-full">
+              <RoomLiveMenu url={urlMemo} speaker={speaker}/>
             </nav>
         </div>
       </div>

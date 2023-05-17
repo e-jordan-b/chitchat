@@ -7,6 +7,7 @@ import './room.css';
 import RoomCall from './room-call';
 import RoomService from '../../services/room-service';
 import RoomPrecall from './room-precall';
+import RoomLoading from './room-loading';
 
 enum RoomState {
   VALIDATE,
@@ -17,7 +18,7 @@ enum RoomState {
 const Room: React.FC = () => {
   const [roomState, setRoomState] = useState<RoomState>(RoomState.VALIDATE); // Switch back to VALIDATE
   const { stream, error, requestPermissions } = useMediaStream();
-  const { socket, connectSocket } = useMediaSocket();
+  const { connectSocket } = useMediaSocket();
   const audioRecorder = useRef<MediaRecorder>();
   const renderCount = useRef<number>(0);
   const [searchParams, _] = useSearchParams();
@@ -38,6 +39,7 @@ const Room: React.FC = () => {
     switch (roomState) {
       case RoomState.VALIDATE: {
         validateRoom();
+
         break;
       }
       case RoomState.PRECALL: {
@@ -119,12 +121,12 @@ const Room: React.FC = () => {
     audioRecorder.current = undefined;
   };
 
-  const onJoin = () => {
+  const onJoin = (name: string) => {
+    speaker.current = name;
     setRoomState(RoomState.CALL);
   };
 
   const inputSpeaker = (name: string) => {
-    speaker.current = name;
   }
 
   // [ END RoomState Handling ]
@@ -132,17 +134,17 @@ const Room: React.FC = () => {
   const RenderSwitch: React.FC = () => {
     switch (roomState) {
       case RoomState.VALIDATE: {
-        return <div>LOADING</div>;
+        return <RoomLoading/>;
       }
       case RoomState.PRECALL: {
-        return <RoomPrecall onJoin={onJoin} mediaStream={stream} inputSpeaker={inputSpeaker}/>
+        return <RoomPrecall onJoin={onJoin} mediaStream={stream} />
 
       }
       case RoomState.CALL: {
         const url = searchParams.get('url');
         if (!url) return null;
 
-        return <RoomCall url={url} mediaStream={stream} />;
+        return <RoomCall url={url} mediaStream={stream} speaker={speaker.current}/>;
       }
     }
   };
