@@ -37,10 +37,11 @@ const RoomEditSummary: React.FC<{
         <button
           className="roomeditsummary__button"
           onClick={() => onClose(summary)}
+          data-testid = 'close-button'
         >
           <img className="roomeditsummary__button__icon" src={ArrowIcon} />
         </button>
-        <button className="roomeditsummary__button" onClick={onSave}>
+        <button className="roomeditsummary__button" onClick={onSave} data-testid = 'save-button'>
           Save
         </button>
       </div>
@@ -54,6 +55,7 @@ const RoomEditSummary: React.FC<{
         }}
         value={text}
         onChange={(value) => setText(value)}
+        data-testid = 'quill-editor'
       />
     </div>
   );

@@ -84,7 +84,7 @@ class RoomService extends ApiService {
     url: string
   ) {
     const { result, error } = await this.fetch<Summary>('summary/finalsummary', {
-      method: 'GET',
+      method: 'POST',
       withCredentials: true,
       body: {
         url,
