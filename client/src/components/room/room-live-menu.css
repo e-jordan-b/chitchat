@@ -61,7 +61,23 @@
   overflow-y: scroll;
 }
 
-/*
+.roomlivemenu__summary:-webkit-scrollbar-track
+{
+  @apply shadow-inner bg-gray-200
+}
+
+.roomlivemenu__summary::-webkit-scrollbar
+{
+  @apply w-3 bg-gray-200;
+}
+
+.roomlivemenu__summary::-webkit-scrollbar-thumb
+{
+  @apply bg-gray-400 border-2 border-gray-400 rounded-lg;
+}
+
+
+
 .roomlivemenu__chat::-webkit-scrollbar-track
 {
   @apply shadow-inner bg-gray-200
@@ -69,11 +85,11 @@
 
 .roomlivemenu__chat::-webkit-scrollbar
 {
-  @apply w-2 bg-gray-200;
+  @apply w-3 bg-gray-200 rounded-md;
 }
 
 .roomlivemenu__chat::-webkit-scrollbar-thumb
 {
-  @apply bg-black border-2 border-gray-700;
-} */
+  @apply bg-gray-400 border-2 border-gray-400 rounded-lg;
+}
 
