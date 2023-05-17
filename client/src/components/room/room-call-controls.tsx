@@ -1,18 +1,46 @@
-import { AiFillAudio, AiFillPhone } from 'react-icons/ai';
-import { BiVideo } from 'react-icons/bi';
+import { useState } from 'react';
+import { AiFillPhone } from 'react-icons/ai';
+import { FaMicrophoneSlash, FaMicrophone} from 'react-icons/fa';
+import { BiVideo, BiVideoOff } from 'react-icons/bi';
+import { useNavigate } from 'react-router-dom';
+
+
 
 const RoomCallControls = () => {
+  const navigate = useNavigate();
+  const [isMuted, setIsMuted] = useState(false);
+  const [isVideoOn, setIsVideoOn] = useState(false);
+
+
+  const handleHangUp = () => {
+    console.log('HANG UP');
+    navigate('/');
+  };
+
+  const handleMute = () => {
+    setIsMuted(!isMuted);
+  }
+
+  const handleVideoToggle = () => {
+    setIsVideoOn(!isVideoOn);
+  }
+
   return (
     <div className="bottom-0 w-1/2 h-24 bg-background-black-call m-0 flex text-white items-center justify-center">
-      <div className="sidebar-icon">
-        <AiFillAudio size={'20'} />
-      </div>
-      <div className="sidebar-icon bg-red-600 hover:bg-red-400 hover:text-white">
+      <button
+      onClick={handleMute}
+      className="sidebar-icon">
+        {isMuted ? <FaMicrophoneSlash size={'20'} /> : <FaMicrophone size={'20'} />}
+      </button>
+      <button onClick={handleHangUp} className="sidebar-icon bg-red-600 hover:bg-red-400 hover:text-white">
         <AiFillPhone size={'25'} />
-      </div>
-      <div className="sidebar-icon">
-        <BiVideo size={'25'} />
-      </div>
+      </button>
+      <button
+      onClick={handleVideoToggle}
+      className="sidebar-icon">
+      {isVideoOn ? <BiVideoOff size={'20'} /> : <BiVideo size={'20'} />}
+
+      </button>
     </div>
   );
 };

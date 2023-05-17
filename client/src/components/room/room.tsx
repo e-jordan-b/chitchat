@@ -7,6 +7,7 @@ import './room.css';
 import RoomCall from './room-call';
 import RoomService from '../../services/room-service';
 import RoomPrecall from './room-precall';
+import RoomLoading from './room-loading';
 
 enum RoomState {
   VALIDATE,
@@ -38,6 +39,7 @@ const Room: React.FC = () => {
     switch (roomState) {
       case RoomState.VALIDATE: {
         validateRoom();
+
         break;
       }
       case RoomState.PRECALL: {
@@ -132,7 +134,7 @@ const Room: React.FC = () => {
   const RenderSwitch: React.FC = () => {
     switch (roomState) {
       case RoomState.VALIDATE: {
-        return <div>LOADING</div>;
+        return <RoomLoading/>;
       }
       case RoomState.PRECALL: {
         return <RoomPrecall onJoin={onJoin} mediaStream={stream} inputSpeaker={inputSpeaker}/>
