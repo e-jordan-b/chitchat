@@ -106,6 +106,7 @@ const RoomPreCall: React.FC<{
         <select
           className="w-48 rounded-md"
           id="video"
+          data-testid='select-video'
           onChange={handleVideoDeviceChange}
           >
           {availableVideoDevices.map((device) => (
