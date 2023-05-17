@@ -10,8 +10,13 @@ import { TbSquarePlus} from "react-icons/tb"
 import { useAuth } from '../../hooks/use-auth';
 import { useNavigate } from 'react-router-dom';
 import {TbArrowBigRight} from 'react-icons/tb'
+import { log } from 'console';
 
 const Landing: React.FC = () => {
+  const {user, error, loading} = useAuth();
+  console.log({user});
+
+  console.log(user);
   const [showAuth, setShowAuth] = useState<boolean>(false);
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [joinCode, setJoinCode] = useState<string>('');
@@ -29,7 +34,7 @@ const Landing: React.FC = () => {
   useEffect(() => {
     const timerID = setInterval(() => {
       setDate(new Date());
-    }, 1000);
+    }, 60000);
 
     return () => {
       clearInterval(timerID);

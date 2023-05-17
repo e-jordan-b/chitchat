@@ -7,7 +7,7 @@ import { useAuth } from './hooks/use-auth';
 import Landing from './components/landing/landing';
 
 export default function App() {
-  const { user, setUser, loading, error, fire } = useAuth();
+  const { user, setUser, loading, error } = useAuth();
 
   console.log('USER', user);
 
