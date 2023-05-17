@@ -10,7 +10,7 @@ export interface IRoom {
   participants: string[] | ObjectId[];
   transcriptions: string[] | ObjectId[];
   summaries: ObjectId[] | string[] | ISummary[];
-  callSummary: ObjectId | string;
+  callSummary: string;
   agenda: string[];
 }
 
