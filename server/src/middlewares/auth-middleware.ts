@@ -12,6 +12,7 @@ const authMiddleware = (
     '/auth/signin',
     '/auth/signup',
     '/summary/',
+    '/summary/finalsummary',
     '/summary/edit',
     '/room/validate',
   ];

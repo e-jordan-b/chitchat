@@ -4,10 +4,9 @@ import { AiFillAudio, AiFillVideoCamera } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 
 const RoomPreCall: React.FC<{
-  onJoin: () => void;
+  onJoin: (name: string) => void;
   mediaStream: MediaStream | undefined;
-  inputSpeaker: (name: string) => void;
-}> = ({ onJoin, mediaStream, inputSpeaker }) => {
+}> = ({ onJoin, mediaStream}) => {
   // Deal with audio stream and video stream
   // Maybe you dont need the audio stream
 
@@ -66,13 +65,6 @@ const RoomPreCall: React.FC<{
     if (mediaStream) videoRef.current.srcObject = mediaStream;
     console.log('useeffect')
   }, [mediaStream])
-
-  const joiningRoom = (name: string) => {
-    if (!name) return alert('You must enter a name');
-    inputSpeaker(name);
-    onJoin();
-  }
-
 
   return (
   <section id="device-selection" className="h-full w-full flex justify-center items-center bg-white dark:bg-gray-800 ">
@@ -151,7 +143,7 @@ const RoomPreCall: React.FC<{
         </button> */}
 
         <button
-          onClick={() => joiningRoom(name)}
+          onClick={() => onJoin(name)}
           className="px-2 whitespace-nowrap h-14 w-4/6 min-w-[75px] bg-custom-purple-400 transition-all rounded-md text-custom-purple-50 sm:text-xl mb-2 md:text-base md:w-/12 lg:text-xl  hover:bg-custom-purple-900">
           Join Room</button>
       </div>

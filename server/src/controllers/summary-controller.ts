@@ -4,6 +4,7 @@ import { ErrorMessage } from '../models/error-message';
 import { editSummaryById } from '../models/summary-model';
 import sanitizeHtml from 'sanitize-html';
 import { createFinalSummary } from '../scheduler/scheduler';
+import { AuthenticatedRequest } from '../models/authenticated-request';
 
 // Fetch
 export const fetchSummaries = async (req: Request, res: Response) => {
