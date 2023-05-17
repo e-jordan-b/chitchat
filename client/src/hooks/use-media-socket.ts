@@ -30,7 +30,7 @@ const useMediaSocket = () => {
       }
     });
 
-    setSocket(socket);
+    setSocket(ws);
   };
 
   return { socket, connectSocket: connect };

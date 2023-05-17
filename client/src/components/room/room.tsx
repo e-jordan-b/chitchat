@@ -144,7 +144,7 @@ const Room: React.FC = () => {
         const url = searchParams.get('url');
         if (!url) return null;
 
-        return <RoomCall url={url} mediaStream={stream} />;
+        return <RoomCall url={url} mediaStream={stream} speaker={speaker.current}/>;
       }
     }
   };

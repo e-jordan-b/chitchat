@@ -34,7 +34,7 @@ const mock = {
   message: 'Hi my name is eric',
 };
 
-const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
+const RoomLiveMenu: React.FC<{ url: string, speaker: string }> = ({ url, speaker }) => {
   const { sendEditUpdate, sendChatMessage, connect } = useLiveMenuSocket();
   const [menuState, setMenuState] = useState<MenuState>(MenuState.SUMMARY);
   const [summaries, setSummaries] = useState<Summary[]>([]);
@@ -54,7 +54,7 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    sendChatMessage('speaker', messageInput);
+    sendChatMessage(speaker, messageInput);
     setMessageInput('');
   };
 
@@ -211,7 +211,7 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
                 value={messageInput}
                 onChange={handleInputChange}
                 placeholder="Type a message here..."
-                className="h-10 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                className="h-10 shadow appearance-none border rounded w-[330px] mr-2 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               ></input>
               <button
                 type="submit"
