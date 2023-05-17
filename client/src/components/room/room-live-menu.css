@@ -2,7 +2,7 @@
   position: relative;
   height: 100%;
   width: 100%;
-  max-width: 400px;
+  /* max-width: 400px; */
   background-color: white;
 }
 
@@ -60,3 +60,20 @@
 
   overflow-y: scroll;
 }
+
+/*
+.roomlivemenu__chat::-webkit-scrollbar-track
+{
+  @apply shadow-inner bg-gray-200
+}
+
+.roomlivemenu__chat::-webkit-scrollbar
+{
+  @apply w-2 bg-gray-200;
+}
+
+.roomlivemenu__chat::-webkit-scrollbar-thumb
+{
+  @apply bg-black border-2 border-gray-700;
+} */
+
