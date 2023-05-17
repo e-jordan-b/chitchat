@@ -18,6 +18,21 @@
   color: #939393;
 }
 
+.roomsummary__edit {
+  position: absolute;
+  top: 30px;
+  left: 25px;
+  padding: 4px;
+
+  border-radius: 8px;
+  background-color: #f3f3f3;
+}
+
+.roomsummary__edit__icon {
+  height: 18px;
+  width: 18px;
+}
+
 .roomsummary__summary {
   margin-left: 65px;
   padding: 12px;

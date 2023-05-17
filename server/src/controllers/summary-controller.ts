@@ -3,6 +3,7 @@ import { fetchRoomSummariesFromUrl } from '../models/room-model';
 import { ErrorMessage } from '../models/error-message';
 import { editSummaryById } from '../models/summary-model';
 import sanitizeHtml from 'sanitize-html';
+import { createFinalSummary } from '../scheduler/scheduler';
 
 // Fetch
 export const fetchSummaries = async (req: Request, res: Response) => {
@@ -55,3 +56,25 @@ export const editSummary = async (req: Request, res: Response) => {
 
   res.status(200).json(summary);
 };
+
+
+//final summary
+export const getFinalSummary = async (req: Request, res: Response ) => {
+  const { url } = req.body;
+
+  const { summaries, error } = await fetchRoomSummariesFromUrl(url);
+
+  if (!summaries || error) {
+    res.status(500).send(ErrorMessage.Error500);
+    return;
+  }
+
+  const finalSummary = await createFinalSummary(summaries, url);
+
+  if (!finalSummary) {
+    res.status(500).send(ErrorMessage.Error500);
+    return;
+  }
+
+  res.status(200).json(finalSummary);
+}

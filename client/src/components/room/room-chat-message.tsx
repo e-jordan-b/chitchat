@@ -14,11 +14,14 @@ const RoomChatMessage: React.FC<{ message: ChatMessage; isFirst: boolean }> = ({
         <div className="rooomchatmessage__info">{`${
           message.speaker
         } • ${date.toLocaleTimeString('en-US', {
-          hour: '2-digit',
+          hourCycle: 'h12',
+          hour: 'numeric',
           minute: '2-digit',
         })}`}</div>
       )}
-      <div className="roomchatmessage__bubble">{message.message}</div>
+      <div className="roomchatmessage__bubble">
+        <span className="roomchatmessage__message">{message.message}</span>
+      </div>
     </div>
   );
 };

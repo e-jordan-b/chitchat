@@ -1,4 +1,5 @@
 import mongoose, { MongooseError, ObjectId } from 'mongoose';
+import { Room } from './room-model';
 
 export interface ISummary {
   _id?: ObjectId | string;
@@ -47,5 +48,20 @@ export const editSummaryById = async (
   } catch (error) {
     const mongooseError = error as MongooseError;
     return { error: mongooseError };
+  }
+};
+
+export const updateRoomWithCallSummary = async (
+  roomUrl: string,
+  summaryText: string
+): Promise<{ success: boolean; error?: MongooseError }> => {
+  try {
+    await Room.findOneAndUpdate({urlUUID: roomUrl}, {
+      $set: { callSummary: summaryText }
+    }).orFail();
+    return { success: true };
+  } catch (error) {
+    const mongooseError = error as MongooseError;
+    return { success: false, error: mongooseError };
   }
 };

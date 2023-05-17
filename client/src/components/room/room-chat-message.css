@@ -1,7 +1,9 @@
 .roomchatmessage {
   /* width: 100%; */
-  display: inline-flex;
-  flex-direction: column;
+  /* display: inline-flex; */
+  /* flex-direction: column; */
+
+  padding: 0px 8px;
 }
 
 .rooomchatmessage__info {
@@ -14,6 +16,8 @@
 }
 
 .roomchatmessage__bubble {
+  max-width: 100%;
+  display: inline-block;
   padding: 14px;
 
   font-size: 13px;
@@ -22,4 +26,9 @@
 
   border-radius: 15px;
   background-color: #f3f3f3;
+}
+
+.roomchatmessage__message {
+  max-width: 100%;
+  overflow-wrap: break-word;
 }

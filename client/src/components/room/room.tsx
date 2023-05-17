@@ -6,7 +6,6 @@ import './room.css';
 
 import RoomCall from './room-call';
 import RoomService from '../../services/room-service';
-import RoomLiveMenu from './room-live-menu';
 import RoomPrecall from './room-precall';
 
 enum RoomState {
