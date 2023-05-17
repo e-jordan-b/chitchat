@@ -17,6 +17,7 @@ import AuthService from '../../services/auth-service';
 
 const Landing: React.FC = () => {
   const {user, update} = useContext(UserContext);
+  console.log(user);
 
   const windowWidth = useRef( window.innerWidth);
   const [showAuth, setShowAuth] = useState<boolean>(false);
@@ -60,6 +61,8 @@ const Landing: React.FC = () => {
 };
 
 
+
+
   return (
 
 
@@ -84,7 +87,7 @@ const Landing: React.FC = () => {
             className='
               flex justify-center items-center
               h-12 w-12 mr-7
-              sm:w-32 ml:w-48 lg:w-48 xl:w-48 2xl:w-48
+              sm:w-32 ml:w-0 lg:w-40 xl:w-40 2xl:w-40
               bg-custom-purple-500 hover:bg-custom-purple-600
               rounded-md shadow-md hover:shadow-xl transition-colors duration-150 text-lg text-white'
             >
@@ -95,6 +98,7 @@ const Landing: React.FC = () => {
           :
           <div className='flex justify-center items-center'>
           <button
+          onClick={() => navigate(`/u/${user._id}`)}
             className='
               flex justify-center items-center
               h-12 w-12
