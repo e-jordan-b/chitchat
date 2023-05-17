@@ -56,6 +56,7 @@ const Landing: React.FC = () => {
         <div className='self-center mr-7 hidden font-medium sm:hidden md:block lg:block xl:block 2xl:block cursor-default	 dark:text-custom-purple-50'>{formattedDate}</div>
         <button
           onClick={() => {setShowAuth(true)}}
+          data-testid='button-login'
           className='h-12 w-12  sm:w-32 ml:w-48 lg:w-48 xl:w-48 2xl:w-48 bg-custom-purple-500 rounded-md text-white text-lg flex justify-center items-center mr-7 shadow-md transition-colors duration-150 hover:bg-custom-purple-600 hover:shadow-xl' ><BsFillPersonFill className='sm:mr-2 md:mr-2 lg:mr-2 xl:mr-2 2xl:mr-2'/>{window.innerWidth >= 640 ? "Login" : null}</button>
       </div>
     </nav>
@@ -106,6 +107,7 @@ const Landing: React.FC = () => {
               <button
                 className={`${!joinCode ? "invisible" : "animate-pulse" } transition-all drop-shadow-md bg-green-400 hover:bg-green-600 hover:animate-none h-12 w-auto rounded-md min-w-20 ml-3 px-2 text-lg text-slate-800`}
                 onClick={() => navigate(`/room/?url=${joinCode}`)}
+                data-testid = 'nav-button'
                 ><TbArrowBigRight size={30} color='white'/>
               </button>
 
@@ -120,7 +122,7 @@ const Landing: React.FC = () => {
 
       {/* Clicking create as a guest should trigger the auth modal. the must be signed in surves no purpose */}
       <CreateRoom isVisible={showCreate} onClose={() => setShowCreate(false)}></CreateRoom>
-      <AuthModal isVisible={showAuth} onClose={() => setShowAuth(false)}></AuthModal>
+      <AuthModal data-testid='auth-modal' isVisible={showAuth} onClose={() => setShowAuth(false)}></AuthModal>
     </div>
   </div>
 
