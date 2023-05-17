@@ -213,7 +213,7 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
               );
             })}
           </div>
-          <div className="absolute bottom-0 my-6 ml-14 flex justify-center items-center ">
+          <div className="absolute bottom-0 my-6  flex justify-center items-center w-full">
             <form onSubmit={handleFormSubmit} className="flex">
               <input
                 type="text"

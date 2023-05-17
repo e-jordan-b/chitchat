@@ -142,7 +142,7 @@ const RoomCall: React.FC<{
 
   // Also have to handle polling for summaries
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex h-screen w-screen">
       <div className="flex-1 flex flex-col overflow-hidden">
         <div className="flex h-full w-full">
           <main className="w-full h-full flex flex-col justify-center bg-background-black-call overflow-x-hidden overflow-y-auto mb-20">
@@ -153,6 +153,7 @@ const RoomCall: React.FC<{
               <video
                 ref={localVideoRef}
                 autoPlay
+                muted
                 className={
                   isOtherVideoLoaded
                     ? 'transition-all h-56 duration-300 absolute bottom-5 right-10 text-gray-900 rounded-lg shadow-lg z-50' //border-gray-900 border-dashed text-xl border-4
@@ -175,7 +176,7 @@ const RoomCall: React.FC<{
               <RoomCallControls />
             </div>
           </main>
-            <nav className="w-[500px] right-0 h-full">
+            <nav className="max-w-[500px] w-full h-full">
               <RoomLiveMenu url={urlMemo}/>
             </nav>
         </div>
