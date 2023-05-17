@@ -48,6 +48,7 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
     useState<SummaryEditingState>({ isEditing: false });
   const intervalRef = useRef<NodeJS.Timer>();
   const renderRef = useRef<number>(0);
+  const messageInputRef = useRef<HTMLInputElement>(null);
   const [messageInput, setMessageInput] = useState('');
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -103,8 +104,7 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
   };
 
   const handleChatMessage = (message: ChatMessage) => {
-    console.log('MESSAGE', message);
-    const updatedMessages = messages;
+    const updatedMessages = [...messages];
     updatedMessages.push(message);
     setMessages(updatedMessages);
   };

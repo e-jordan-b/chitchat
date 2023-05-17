@@ -6,21 +6,16 @@ export const socketOnMessage = (
   socketClient: SocketClient,
   data: RawData
 ) => {
-  console.log('DATA', data.toString());
+  const message = JSON.parse(data.toString()) as {
+    type: string;
+    payload: any;
+  };
 
-  socketServer.clients.forEach((client) => {
-    if (
-      (client as SocketClient).roomId === socketClient.roomId &&
-      (client as SocketClient).userId !== socketClient.userId
-    ) {
-      const message = JSON.parse(data.toString()) as {
-        type: string;
-        payload: any;
-      };
+  console.log('message', message);
 
-      console.log(message);
-
-      if (message.type === 'Chat') {
+  if (message.type === 'Chat') {
+    socketServer.clients.forEach((client) => {
+      if ((client as SocketClient).roomId === socketClient.roomId) {
         const payload = message.payload as {
           timestamp: number;
           speaker: string;
@@ -30,12 +25,22 @@ export const socketOnMessage = (
         client.send(
           JSON.stringify({
             type: message.type,
-            payload: { ...payload, speakerId: (client as SocketClient).userId },
+            payload: {
+              ...payload,
+              speakerId: (client as SocketClient).userId,
+            },
           })
         );
-      } else {
+      }
+    });
+  } else {
+    socketServer.clients.forEach((client) => {
+      if (
+        (client as SocketClient).roomId === socketClient.roomId &&
+        (client as SocketClient).userId !== socketClient.userId
+      ) {
         client.send(data.toString());
       }
-    }
-  });
+    });
+  }
 };
