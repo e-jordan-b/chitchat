@@ -7,7 +7,7 @@ router.get('/', fetchSummaries);
 
 router.post('/edit', editSummary);
 
-router.get('/finalsummary', getFinalSummary);
+router.post('/finalsummary', getFinalSummary);
 
 router.get('/getusersummaries', getSummariesByUserId);
 
