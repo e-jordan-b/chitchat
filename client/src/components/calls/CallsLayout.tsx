@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import title from '../../assets/ChitChat.png'
+import title from "../../assets/ChitChat.png"
 import AuthService from '../../services/auth-service';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { UserContext } from '../../user/user-context';

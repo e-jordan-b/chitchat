@@ -68,7 +68,13 @@ const CreateRoom: React.FC<{ isVisible: boolean; onClose: () => void }> = ({isVi
   return (
     <FullscreenModal>
       <div className='w-full h-screen flex justify-center items-center'>
-        <div className={`${isLoading ? "animate-pulse" : null} relative h-[800px] flex flex-col justify-start items-center rounded-md border border-zinc-600 bg-slate-50 dark:bg-gray-800 w-[600px]`}>
+        <div className={`${isLoading ? "animate-pulse" : null} relative h-[800px]  flex flex-col justify-start items-center rounded-md border border-zinc-600 bg-slate-50 dark:bg-gray-800 w-[600px]`}>
+
+        <div className='absolute top-0 right-0 translate-x-[6px] translate-y-[-6px] bg-white w-4 h-4 rounded-full'></div>
+      <span
+        onClick={() => onClose()}
+      className='absolute top-0 right-0 translate-x-[12px] cursor-pointer translate-y-[-12px]'><AiFillCloseCircle size={25} color='red' />
+      </span>
 
           <h3 className='mt-8 mb-4 font-semibold text-4xl dark:text-custom-purple-100'>Set a Meeting Agenda</h3>
 
