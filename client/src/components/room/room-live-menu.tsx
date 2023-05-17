@@ -14,8 +14,7 @@ import RoomService from '../../services/room-service';
 import { ChatMessage } from '../../models/chat-message-model';
 import RoomChatMessage from './room-chat-message';
 import RoomEditSummary from './room-edit-summary';
-import {BsSend} from "react-icons/bs";
-
+import { BsSend } from 'react-icons/bs';
 
 enum MenuState {
   SUMMARY,
@@ -32,11 +31,10 @@ const mock = {
   timestamp: 12,
   speakerId: 'Eqwxc22',
   speaker: 'Eric',
-  message: 'Hi my name is eric'
-}
+  message: 'Hi my name is eric',
+};
 
 const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
-  const urlMemo = useMemo(() => url, [url]);
   const { sendEditUpdate, sendChatMessage, connect } = useLiveMenuSocket();
   const [menuState, setMenuState] = useState<MenuState>(MenuState.SUMMARY);
   const [summaries, setSummaries] = useState<Summary[]>([]);
@@ -48,7 +46,6 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
     useState<SummaryEditingState>({ isEditing: false });
   const intervalRef = useRef<NodeJS.Timer>();
   const renderRef = useRef<number>(0);
-  const messageInputRef = useRef<HTMLInputElement>(null);
   const [messageInput, setMessageInput] = useState('');
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,9 +101,7 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
   };
 
   const handleChatMessage = (message: ChatMessage) => {
-    const updatedMessages = [...messages];
-    updatedMessages.push(message);
-    setMessages(updatedMessages);
+    setMessages((state) => [...state, message]);
   };
 
   const handleSummaryOnEditStart = async (summary: Summary) => {
@@ -133,10 +128,6 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
     setLocalEditingState({ isEditing: false });
     sendEditUpdate(summary._id, 'Stopped');
   };
-
-  useEffect(() => {
-    console.log('CHANGED LOCAL EDITING END HANDLER');
-  }, [handleSummaryOnEditEnd]);
 
   return (
     <div className="roomlivemenu">
