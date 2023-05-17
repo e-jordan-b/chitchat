@@ -4,5 +4,5 @@ import { User } from '../models/user-model';
 
 export const UserContext = createContext<{
   user: User | undefined;
-  update: (user: User) => void;
+  update: (user: User | undefined) => void;
 }>({ user: undefined, update: () => {} });

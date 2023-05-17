@@ -85,3 +85,12 @@ export const signin = async (req: Request, res: Response) => {
     res.sendStatus(500);
   }
 };
+
+
+export const signout = async (_: Request, res: Response) => {
+  res.cookie('authToken', '', {
+      expires: new Date(0),
+      httpOnly: true,
+  })
+  res.status(200).json({ success: true, message: 'User logged out successfully' })
+}

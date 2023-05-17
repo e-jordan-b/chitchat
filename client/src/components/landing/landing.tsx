@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import AuthModal from '../auth/auth-modal';
 import title from '../../assets/ChitChat.png'
 
@@ -6,16 +6,24 @@ import Lottie from 'lottie-react';
 import animation from '../../assets/animation.json';
 import CreateRoom from '../create-room/create-room';
 import { BsFillPersonFill } from "react-icons/bs"
-import { TbSquarePlus} from "react-icons/tb"
-import { useAuth } from '../../hooks/use-auth';
+import { BiConversation } from "react-icons/bi"
+import { TbSquarePlus } from "react-icons/tb"
 import { useNavigate } from 'react-router-dom';
-import {TbArrowBigRight} from 'react-icons/tb'
+import { GoSignOut } from 'react-icons/go'
+import { TbArrowBigRight } from 'react-icons/tb'
+import { UserContext } from '../../user/user-context';
+
+import AuthService from '../../services/auth-service';
 
 const Landing: React.FC = () => {
+  const {user, update} = useContext(UserContext);
+
+  const windowWidth = useRef( window.innerWidth);
   const [showAuth, setShowAuth] = useState<boolean>(false);
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [joinCode, setJoinCode] = useState<string>('');
   const navigate = useNavigate()
+  const authService = new AuthService();
 
   const options: Intl.DateTimeFormatOptions = {
     hour: '2-digit',
@@ -29,7 +37,7 @@ const Landing: React.FC = () => {
   useEffect(() => {
     const timerID = setInterval(() => {
       setDate(new Date());
-    }, 1000);
+    }, 60000);
 
     return () => {
       clearInterval(timerID);
@@ -37,6 +45,20 @@ const Landing: React.FC = () => {
   }, []);
 
   const formattedDate = date.toLocaleString('en-US', options);
+
+  const handleLogout = async () => {
+    try {
+      const response = await authService.signout();
+      if (!response.error) {
+        update(undefined);
+      } else {
+        console.log(response.error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+};
+
 
   return (
 
@@ -50,14 +72,54 @@ const Landing: React.FC = () => {
        <img src={title} alt='chitchat title' className=' h-8 self-center ml-7 '></img>
 
       </div>
-      <div className='flex '>
+      <div className='flex'>
 
 
         <div className='self-center mr-7 hidden font-medium sm:hidden md:block lg:block xl:block 2xl:block cursor-default	 dark:text-custom-purple-50'>{formattedDate}</div>
-        <button
-          onClick={() => {setShowAuth(true)}}
-          className='h-12 w-12  sm:w-32 ml:w-48 lg:w-48 xl:w-48 2xl:w-48 bg-custom-purple-500 rounded-md text-white text-lg flex justify-center items-center mr-7 shadow-md transition-colors duration-150 hover:bg-custom-purple-600 hover:shadow-xl' ><BsFillPersonFill className='sm:mr-2 md:mr-2 lg:mr-2 xl:mr-2 2xl:mr-2'/>{window.innerWidth >= 640 ? "Login" : null}</button>
-      </div>
+
+        { !user
+          ?
+          <button
+            onClick={() => {setShowAuth(true)}}
+            className='
+              flex justify-center items-center
+              h-12 w-12 mr-7
+              sm:w-32 ml:w-48 lg:w-48 xl:w-48 2xl:w-48
+              bg-custom-purple-500 hover:bg-custom-purple-600
+              rounded-md shadow-md hover:shadow-xl transition-colors duration-150 text-lg text-white'
+            >
+              <BsFillPersonFill
+                className='sm:mr-2 md:mr-2 lg:mr-2 xl:mr-2 2xl:mr-2'/>
+                  {windowWidth.current >= 640 ? "Login" : null}
+          </button>
+          :
+          <div className='flex justify-center items-center'>
+          <button
+            className='
+              flex justify-center items-center
+              h-12 w-12
+              sm:w-32 ml:w-32 lg:w-32 xl:w-32 2xl:w-32
+            bg-custom-purple-500 hover:bg-custom-purple-600
+              rounded-md shadow-md hover:shadow-xl transition-colors duration-150 text-lg text-white'
+            >
+              <BiConversation className='sm:mr-2 md:mr-2 lg:mr-2 xl:mr-2 2xl:mr-2'/>
+              <span className='hidden sm:hidden md:block'>Calls</span>
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className='
+              flex justify-center items-center
+              h-12 w-12 ml-4 mr-7
+
+            bg-custom-purple-900 hover:bg-custom-purple-600
+              rounded-md shadow-md hover:shadow-xl transition-colors duration-150 text-lg text-white'
+            >
+              <GoSignOut className=''/>
+
+          </button>
+          </div>}
+        </div>
     </nav>
 
 
