@@ -74,7 +74,7 @@ export default function CallsLayout() {
             bg-custom-purple-900 hover:bg-custom-purple-600
               rounded-md shadow-md hover:shadow-xl transition-colors duration-150 text-lg text-white'
             >
-            <GoSignOut className=''/>
+            <GoSignOut/>
           </button>
         </div>
       </div>

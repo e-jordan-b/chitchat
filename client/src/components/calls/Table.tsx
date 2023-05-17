@@ -1,18 +1,7 @@
 import React from 'react';
 import { useTable, CellProps, Column } from 'react-table';
-import { RiFunctionLine } from 'react-icons/ri';
-
-const data: MeetingObject[] = [
-  {
-    roomId: "645a205090d5f0e0b2b99689",
-    createdAt: 1683628112403,
-    urlUUID: "93917803-f90e-452f-b872-65092d470fe1",
-    callSummary:
-      "The meeting appears to have been focused on discussing various technical aspects related to a transcription service, including the use of Google API and open AI for summarization, rate limiters, and the implementation of a transcription system...",
-    agenda: ["introduction", "product pipeline :rocket:", "objectives :dart:"],
-  },
-  // Additional objects...
-];
+import { useNavigate } from 'react-router';
+import {AiFillEye} from 'react-icons/ai'
 
 export type MeetingObject = {
   roomId: string;
@@ -23,12 +12,18 @@ export type MeetingObject = {
 }
 
 export const Table = ({ data }: { data: MeetingObject[] }) => {
+  const navigate = useNavigate();
+
+
   const columns: Column<MeetingObject>[] = React.useMemo(
     () => [
       {
-        Header: 'Created At',
+        Header: 'Date',
         accessor: 'createdAt',
-        Cell: ({ value }) => <span>{new Date(value).toLocaleString()}</span>,
+        Cell: ({ value }) => {
+          const date = new Date(value);
+          return <span>{date.toLocaleString(undefined, { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>;
+        },
       },
       {
         Header: 'Call Summary',
@@ -39,12 +34,12 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
         accessor: 'agenda',
       },
       {
-        Header: 'Action',
+        Header: ' ',
         Cell: ({ row }: CellProps<MeetingObject>) => (
-          <button
+          <button className='flex justify-center '
             onClick={() => handleButtonClick(row.original.roomId)}
           >
-            Call Function
+            <AiFillEye/>
           </button>
         ),
       },
@@ -61,33 +56,91 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
   } = useTable({ columns, data });
 
   const handleButtonClick = (roomId: string) => {
-    // Function to be called on button click
     console.log('Button clicked with roomId: ', roomId);
   };
 
+
   return (
-    <table {...getTableProps()} className="react-table">
-      <thead>
-        {headerGroups.map((headerGroup) => (
+    <table {...getTableProps()} className="react-table w-full rounded-tr-xl ">
+      <thead className="bg-custom-purple-400 text-white border-b-2 border-custom-purple-50 roudend-tr-xl">
+        {headerGroups.map(headerGroup => (
           <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-            ))}
+            {headerGroup.headers.map((column , i)=> {
+              let classNames = " py-3";
+              if (i === headerGroup.headers.length - 1) {
+                classNames += " rounded-tr-xl";
+              }
+              switch (column.id) {
+                case 'createdAt':
+                  classNames += "text-left rounded-tl-xl min-w-[200px]";
+                  break;
+                case 'callSummary':
+                  classNames += " ";
+                  break;
+                case 'agenda':
+                  classNames += "  ";
+                  break;
+                case 'action':
+                  classNames += "  bg-custom-purple-200 rounded-tr-xl";
+                  break;
+                default:
+                  classNames += " bg-custom-purple-400";
+              }
+              return (
+                <th {...column.getHeaderProps()} className={classNames}>
+                  {column.render('Header')}
+                </th>
+              );
+            })}
           </tr>
         ))}
       </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
+      <tbody {...getTableBodyProps()} className="bg-custom-purple-50">
+        {rows.map((row, i) => {
           prepareRow(row);
           return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => (
-                <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-              ))}
+            <tr {...row.getRowProps()} className={i !== 0 ? "pt-4" : ""}>
+              {row.cells.map((cell) => {
+                let classNames = "px-4 py-2 border-b-2 border-custom-purple-50";
+                switch (cell.column.id) {
+                  case 'createdAt':
+                    classNames += "";
+                    break;
+                  case 'callSummary':
+                    classNames += "  truncate  max-w-[500px] ";
+                    break;
+                  case 'agenda':
+                    classNames += " truncate max-w-[200px]  ";
+                    break;
+                  case 'action':
+                    classNames += "  flex justify-center items-center";
+                    break;
+                  default:
+                    classNames += " bg-custom-purple-50";
+                }
+                return (
+                  <td
+                    {...cell.getCellProps()}
+                    className={classNames}
+                  >
+                    {cell.render('Cell')}
+                  </td>
+                );
+              })}
             </tr>
           );
         })}
       </tbody>
+      <tfoot>
+      <tr className='h-5 bg-custom-purple-50 rounded-b-lg'>
+
+        <td className='rounded-bl-lg h-10'></td>
+        <td></td>
+        <td></td>
+        <td className='rounded-br-lg'></td>
+      </tr>
+    </tfoot>
     </table>
   );
-};
+
+}

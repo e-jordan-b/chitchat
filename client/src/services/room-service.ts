@@ -1,3 +1,4 @@
+import { async } from 'q';
 import { Summary } from '../models/summary-model';
 import ApiService from './api-service';
 
@@ -98,6 +99,11 @@ class RoomService extends ApiService {
 
     return { summary: result };
   }
+
+
+
+
 }
+
 
 export default RoomService;
