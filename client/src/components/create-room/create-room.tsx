@@ -70,7 +70,7 @@ const CreateRoom: React.FC<{ isVisible: boolean; onClose: () => void }> = ({isVi
       <div className='w-full h-screen flex justify-center items-center'>
         <div className={`${isLoading ? "animate-pulse" : null} relative h-[800px] flex flex-col justify-start items-center rounded-md border border-zinc-600 bg-slate-50 dark:bg-gray-800 w-[600px]`}>
 
-          <h3 className='mt-6 mb-4 font-semibold text-4xl dark:text-custom-purple-100'>Set a Meeting Agenda</h3>
+          <h3 className='mt-8 mb-4 font-semibold text-4xl dark:text-custom-purple-100'>Set a Meeting Agenda</h3>
 
               <form className="mt-6 w-[475px]  flex " onSubmit={handleItemSubmit}>
                 <input
