@@ -76,10 +76,10 @@ const Landing: React.FC = () => {
 
 
         <div className='self-center mr-7 hidden font-medium sm:hidden md:block lg:block xl:block 2xl:block cursor-default	 dark:text-custom-purple-50'>{formattedDate}</div>
-
         { !user
           ?
           <button
+            data-testid='button-login'
             onClick={() => {setShowAuth(true)}}
             className='
               flex justify-center items-center
