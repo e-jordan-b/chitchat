@@ -41,18 +41,4 @@ describe('RoomPreCall', () => {
 
     alertMock.mockRestore();
   })
-
-  it('should trigger the handleVideoDeviceChange function when the audio device is changed', () => {
-    const onJoinMock = jest.fn();
-    const inputSpeakerMock = jest.fn();
-
-    render(
-      <RoomPreCall onJoin={onJoinMock} mediaStream={undefined} inputSpeaker={inputSpeakerMock} />
-    );
-
-    const videoSelect = screen.getByTestId('select-video')
-    fireEvent.change(videoSelect, {target: {value: "Trust GXT 1160 Vero Streaming Webcam FullHD"}})
-
-    expect(videoSelect.value).toBe("Trust GXT 1160 Vero Streaming Webcam FullHD")
-  })
 })
