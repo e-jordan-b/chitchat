@@ -9,6 +9,9 @@ module.exports = {
       '30-percent': '0.30'
     },
     extend: {
+      height: {
+        "h-18": "4.5rem"}
+        ,
       colors: {
         'custom-purple': {
           "900": '#312E81',

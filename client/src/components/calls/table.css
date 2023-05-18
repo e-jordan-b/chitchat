@@ -1,0 +1,15 @@
+.tablescrollbar::-webkit-scrollbar-track
+{
+  @apply shadow-inner bg-gray-200
+}
+
+.tablescrollbar::-webkit-scrollbar
+{
+  @apply w-3 bg-gray-200 rounded-md;
+}
+
+.tablescrollbar::-webkit-scrollbar-thumb
+{
+  @apply bg-gray-400 border-2 border-gray-400 rounded-lg;
+}
+

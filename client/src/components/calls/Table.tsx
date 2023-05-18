@@ -2,7 +2,7 @@ import React from 'react';
 import { useTable, CellProps, Column } from 'react-table';
 import { useNavigate } from 'react-router';
 import {AiFillEye} from 'react-icons/ai'
-
+import './table.css'
 export type MeetingObject = {
   roomId: string;
   createdAt: number;
@@ -62,26 +62,28 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
 
 
   return (
-    <div className='h-4/5 '>
+    <div className='h-full '>
 
-    <div {...getTableProps()} className="h-4/5 w-full ">
-      <div className=" roudend-t-xl text-custom-purple-100 dark:text-white border-b-4 h-3/4 rounded-t-xl dark:border-gray-100 dark:bg-gray-900 bg-custom-purple-800">
+    <div {...getTableProps()} className=" w-full h-full">
+      <div className=" roudend-t-xl text-custom-purple-100 dark:text-white dark:border-b-4 h-20 rounded-t-xl drop-shadow-md dark:border-gray-100 dark:bg-gray-900 bg-custom-purple-900">
         {headerGroups.map(headerGroup => (
-          <div {...headerGroup.getHeaderGroupProps()} className='flex justify-center rounded-t-xl '>
+          <div {...headerGroup.getHeaderGroupProps()} className='flex justify-center rounded-t-xl h-5'>
             {headerGroup.headers.map((column , i)=> {
               let classNames = " text-2xl py-5 px-8 ";
               if (i === headerGroup.headers.length - 1) {
                 classNames += " rounded-tr-xl";
               }
+
+
               switch (column.id) {
                 case 'createdAt':
-                  classNames += " text-left pl-4 rounded-tl-xl min-w-[200px] left-5 top-0  ";
+                  classNames += " text-left pl-4 rounded-tl-xl min-w-[200px] mt-1 ";
                   break;
                   case 'callSummary':
-                    classNames += "  ml-auto";
+                    classNames += "  ml-auto mt-1";
                     break;
                 case 'agenda':
-                  classNames += "  ml-auto mr-5  ";
+                  classNames += "  ml-auto mr-5 mt-1  ";
                   break;
                 case ' ':
                   classNames += "   ";
@@ -98,15 +100,19 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
           </div>
         ))}
       </div>
-      <div className="bg-red-200 h-3/4 overflow-y-auto ">
+      <div className="h-2/4 overflow-y-auto tablescrollbar border-l-2 mt-1">
 
-      <div {...getTableBodyProps()} className="text-xl h-4/5 font-medium dark:text-gray-900 ">
+      <div {...getTableBodyProps()} className="text-xl h-full font-medium dark:text-gray-900 ">
         {rows.map((row, i) => {
           prepareRow(row);
+          let rowClass = (i % 2 === 1) ? 'bg-gray-50' : '';
           return (
-            <tr {...row.getRowProps()} className={`${i !== 0 ? "pt-4" : ""} border-b-2 border-gray-300 pt-2`}>
+            <tr {...row.getRowProps({ className: `${i !== 0 ? "pt-4" : ""} border-b-2 border-gray-300 pt-2 ${rowClass}` })}>
               {row.cells.map((cell) => {
                 let classNames = "pl-4 py-2 dark:bg-gray-200";
+
+
+
                 switch (cell.column.id) {
                   case 'createdAt':
                     classNames += " ";
@@ -138,13 +144,13 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
       </div>
       </div>
       <div>
-      <tr className='h-5 dark:bg-gray-900 bg-gray-600 rounded-b-lg'>
+      <div className='h-5 dark:bg-gray-900 bg-custom-purple-900 rounded-b-lg'>
 
-        <td className='rounded-bl-lg h-6'></td>
-        <td></td>
-        <td></td>
-        <td className='rounded-br-lg'></td>
-      </tr>
+        <div className='rounded-bl-lg h-6'></div>
+        <div></div>
+        <div></div>
+        <div className='rounded-br-lg'></div>
+      </div>
     </div>
     </div>
         </div>

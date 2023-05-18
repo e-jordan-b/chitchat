@@ -148,8 +148,8 @@ const CallHistory: React.FC = () => {
 
 
   return (
-    <section id="call-history" className='h-3/4 w-full flex justify-center items-center  dark:bg-gray-800'>
-      <div id="table-wrapper" className='max-w-[2000px] w-full h-3/4 flex justify-center items-center rounded-lg mx-5 px-5 mt-10'>
+    <section id="call-history" className='h-full w-full flex justify-center items-center mt-16 dark:bg-gray-800'>
+      <div id="table-wrapper" className='max-w-[2000p]x w-full h-full flex justify-center items-center rounded-lg mx-5 px-5'>
         <Table data={calls} />
         {/* <Table data={meetings} /> */}
       </div>
