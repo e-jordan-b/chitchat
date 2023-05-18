@@ -9,7 +9,12 @@ module.exports = {
       '30-percent': '0.30'
     },
     extend: {
+      height: {
+        "h-18": "4.5rem"}
+        ,
       colors: {
+        'gradient-pink': '#E20BB8',
+        'gradient-blue': '#2A87F9',
         'custom-purple': {
           "900": '#312E81',
           '800': '#3730A3',

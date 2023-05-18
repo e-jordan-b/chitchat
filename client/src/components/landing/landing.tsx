@@ -17,6 +17,7 @@ import AuthService from '../../services/auth-service';
 
 const Landing: React.FC = () => {
   const {user, update} = useContext(UserContext);
+  console.log(user);
 
   const windowWidth = useRef( window.innerWidth);
   const [showAuth, setShowAuth] = useState<boolean>(false);
@@ -60,10 +61,9 @@ const Landing: React.FC = () => {
 };
 
 
+
+
   return (
-
-
-
 
     <div id="landing-wrapper" className="flex h-screen w-screen flex-col justify-center items-center overflow-auto">
 
@@ -81,12 +81,12 @@ const Landing: React.FC = () => {
           <button
             data-testid='button-login'
             onClick={() => {setShowAuth(true)}}
-            className='
+            className={` ${"shake"}
               flex justify-center items-center
               h-12 w-12 mr-7
-              sm:w-32 ml:w-48 lg:w-48 xl:w-48 2xl:w-48
+              sm:w-32 ml:w-0 lg:w-40 xl:w-40 2xl:w-40
               bg-custom-purple-500 hover:bg-custom-purple-600
-              rounded-md shadow-md hover:shadow-xl transition-colors duration-150 text-lg text-white'
+              rounded-md shadow-md hover:shadow-xl transition-colors duration-150 text-lg text-white`}
             >
               <BsFillPersonFill
                 className='sm:mr-2 md:mr-2 lg:mr-2 xl:mr-2 2xl:mr-2'/>
@@ -95,6 +95,7 @@ const Landing: React.FC = () => {
           :
           <div className='flex justify-center items-center'>
           <button
+          onClick={() => navigate(`calls/${user._id}`)}
             className='
               flex justify-center items-center
               h-12 w-12
@@ -159,7 +160,7 @@ const Landing: React.FC = () => {
               </button>
               <input
               className='text-lg text-center border border-custom-purple-500 text:custom-purple-500 rounded-md h-12 sm:ml-3 ml-3 w-36 md:w-48 lg:w-48 xl:w-48 2xl:w-48'
-              placeholder={window.innerWidth > 768 ? "Enter code to join" : "Enter code"}
+              placeholder={window.innerWidth > 700 ? "Enter code to join" : "Enter code"}
 
               onChange={(e) => setJoinCode(e.target.value)}
               ></input>

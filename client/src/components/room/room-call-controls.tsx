@@ -22,7 +22,7 @@ const RoomCallControls = () => {
 
     console.log(finalSummary);
 
-    navigate(`/calls/${url}`);
+    navigate(`/calls/summary/${url}`);
   };
 
   const handleMute = () => {

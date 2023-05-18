@@ -98,6 +98,11 @@ class RoomService extends ApiService {
 
     return { summary: result };
   }
+
+
+
+
 }
+
 
 export default RoomService;
