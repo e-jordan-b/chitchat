@@ -19,12 +19,13 @@ const Landing: React.FC = () => {
   const {user, update} = useContext(UserContext);
   console.log(user);
 
-  const windowWidth = useRef( window.innerWidth);
   const [showAuth, setShowAuth] = useState<boolean>(false);
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [joinCode, setJoinCode] = useState<string>('');
   const navigate = useNavigate()
   const authService = new AuthService();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
 
   const options: Intl.DateTimeFormatOptions = {
     hour: '2-digit',
@@ -43,6 +44,15 @@ const Landing: React.FC = () => {
     return () => {
       clearInterval(timerID);
     };
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const formattedDate = date.toLocaleString('en-US', options);
@@ -65,7 +75,7 @@ const Landing: React.FC = () => {
 
   return (
 
-    <div id="landing-wrapper" className="flex h-screen w-screen flex-col justify-center items-center overflow-auto">
+    <div id="landing-wrapper" className="flex h-screen w-screen flex-col  items-center overflow-auto dark:bg-gray-800">
 
     <nav className='w-full h-20 min-h-[80px] flex items-center justify-between dark:bg-gray-800'>
       <div>
@@ -90,7 +100,7 @@ const Landing: React.FC = () => {
             >
               <BsFillPersonFill
                 className='sm:mr-2 md:mr-2 lg:mr-2 xl:mr-2 2xl:mr-2'/>
-                  {windowWidth.current >= 640 ? "Login" : null}
+                  { Number(windowWidth) >= 640 ? "Login" : null }
           </button>
           :
           <div className='flex justify-center items-center'>
@@ -160,7 +170,7 @@ const Landing: React.FC = () => {
               </button>
               <input
               className='text-lg text-center border border-custom-purple-500 text:custom-purple-500 rounded-md h-12 sm:ml-3 ml-3 w-36 md:w-48 lg:w-48 xl:w-48 2xl:w-48'
-              placeholder={window.innerWidth > 700 ? "Enter code to join" : "Enter code"}
+              placeholder={window.innerWidth > 767 ? "Enter code to join" : "Enter code"}
 
               onChange={(e) => setJoinCode(e.target.value)}
               ></input>
@@ -177,7 +187,7 @@ const Landing: React.FC = () => {
         </div>
       </div>
 
-      <section id="animated-illustration" className='w-full md:w-1/2 lg:w-1/2 xl:w-1/2 2xl:w-1/2 h-1/7 flex justify-center items-center m-0 sm:m-0'>
+      <section id="animated-illustration" className='w-full md:w-1/2 lg:w-1/2 xl:w-1/2 2xl:w-1/2 h-1/7  flex justify-center items-center m-0 sm:m-0'>
         <Lottie animationData={animation} loop={true} autoplay className='h-full w-11/12'></Lottie>
       </section>
 

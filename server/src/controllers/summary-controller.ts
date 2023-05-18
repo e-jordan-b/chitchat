@@ -77,14 +77,15 @@ export const getFinalSummary = async (req: Request, res: Response ) => {
     return;
   }
 
-  res.status(200).json(finalSummary);
+  res.status(201).json(finalSummary);
 }
 
 export const getSummariesByUserId = async (req: AuthenticatedRequest, res: Response) => {
 
-  const { userid } = req.body;
+  // was the easiest fix instead of having to come up with a different way to handle it in the frontend
+  const userId = req.token!.id
 
-  const { rooms, error } = await fetchUserSummaries(userid);
+  const { rooms, error } = await fetchUserSummaries(userId);
 
   if (!rooms || error) {
     res.status(500).send(ErrorMessage.Error500);
