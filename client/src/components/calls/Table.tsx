@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTable, CellProps, Column } from 'react-table';
 import { useNavigate } from 'react-router';
 import {AiFillEye} from 'react-icons/ai'
@@ -15,7 +15,15 @@ export type MeetingObject = {
 
 export const Table = ({ data }: { data: MeetingObject[] }) => {
   const navigate = useNavigate();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
 
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const columns: Column<MeetingObject>[] = React.useMemo(
     () => [
@@ -23,8 +31,14 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
         Header: 'Date',
         accessor: 'createdAt',
         Cell: ({ value }) => {
-          const date = new Date(value);
-          return <span>{date.toLocaleString(undefined, { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>;
+          if(windowWidth < 1500) {
+            const date = new Date(value);
+            return <span>{date.toLocaleString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}</span>;
+            } else {
+
+              const date = new Date(value);
+              return <span>{date.toLocaleString(undefined, { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>;
+            }
         },
       },
       {
@@ -104,9 +118,9 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
           </div>
         ))}
       </div>
-      <div className="h-2/4 overflow-y-auto tablescrollbar ">
+      <div className="h-2/4 overflow-y-auto  tablescrollbar ">
 
-      <div {...getTableBodyProps()} className="text-xl h-full font-medium bg-gray-50 dark:text-gray-900 ">
+      <div {...getTableBodyProps()} className="text-xl h-full overflow-x-hidden font-medium bg-gray-50 dark:text-gray-900 ">
         {rows.map((row, i) => {
           prepareRow(row);
           let rowClass = (i % 2 === 1) ? ' dark:bg-gray-50 bg-gray-50' : 'bg-gray-100';
@@ -126,7 +140,7 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
                     classNames += " ";
                     break;
                     case 'callSummary':
-                      classNames += "  truncate  max-w-[500px] ";
+                      classNames += "  truncate  max-w-[400px] ";
                       break;
                       case 'agenda':
                         classNames += " truncate max-w-[200px]  ";

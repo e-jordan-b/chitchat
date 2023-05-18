@@ -38,8 +38,8 @@ const Room: React.FC = () => {
   useEffect(() => {
     switch (roomState) {
       case RoomState.VALIDATE: {
-        validateRoom();
-
+        // validateRoom();
+return
         break;
       }
       case RoomState.PRECALL: {
