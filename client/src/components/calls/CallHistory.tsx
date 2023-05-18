@@ -3,6 +3,18 @@ import { useParams } from 'react-router-dom';
 import type { MeetingObject } from './Table';
 import axios from 'axios';
 import { Table } from './Table';
+import Lottie from 'lottie-react';
+import animationData from '../../assets/64328-video-conference.json'
+
+const defaultOptions = {
+  loop: true,
+  autoplay: true,
+  animationData: animationData,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice"
+  }
+};
+
 
 const meetings = [
     {
@@ -88,9 +100,11 @@ const CallHistory: React.FC = () => {
 
 
   return (
-    <section id="call-history" className='h-full w-full flex justify-center items-center mt-16 dark:bg-gray-800'>
-      <div id="table-wrapper" className='max-w-[2000p]x w-full h-full flex justify-center items-center rounded-lg mx-5 px-5'>
+    <section id="call-history" className='h-5/6 w-screen flex justify-center items-center mt-16 dark:bg-gray-800'>
+      <div id="table-wrapper" className=' w-full h-full flex justify-center items-start rounded-lg mx-5 px-5 '>
         <Table data={calls} />
+        <Lottie
+        animationData={animationData} loop={true} autoplay className='h-4/5 '/>
         {/* <Table data={meetings} /> */}
       </div>
     </section>

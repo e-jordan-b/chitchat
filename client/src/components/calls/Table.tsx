@@ -38,7 +38,7 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
         Header: ' ',
 
         Cell: ({ row }: CellProps<MeetingObject>) => (
-          <button className='flex justify-center items-center h-5 w-6 mr-2  rounded-full '
+          <button className=' flex justify-center items-center h-5 w-6 mr-2 rounded-full '
             onClick={() => handleButtonClick(row.original.urlUUID)}
           >
             <AiFillEye size={25} />
@@ -63,10 +63,12 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
 
 
   return (
-    <div className='h-full '>
+    <div className='flex flex-col justify-center items-center h-full mt-20'>
 
     <div {...getTableProps()} className=" w-full h-full">
-      <div className=" roudend-t-xl  text-white  h-[70px] rounded-t-xl drop-shadow-lg dark:border-gray-100  bg-gradient-to-r from-gradient-pink to-gradient-blue">
+      <div className=" text-white h-[70px] rounded-t-xl drop-shadow-lg dark:border-gray-100 bg-custom-purple-500">
+         {/* //bg-gradient-to-r from-gradient-pink to-gradient-blue */}
+
         {headerGroups.map(headerGroup => (
           <div {...headerGroup.getHeaderGroupProps()} className='flex justify-center rounded-t-xl h-5 font-semibold'>
             {headerGroup.headers.map((column , i)=> {
@@ -78,13 +80,13 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
 
               switch (column.id) {
                 case 'createdAt':
-                  classNames += " text-left pl-4 rounded-tl-xl min-w-[200px]  ";
+                  classNames += "ml-14 text-left pl-4 rounded-tl-xl min-w-[200px]  ";
                   break;
                   case 'callSummary':
                     classNames += "  ml-auto ";
                     break;
                 case 'agenda':
-                  classNames += "  ml-auto mr-5   ";
+                  classNames += "  ml-auto   ";
                   break;
                 case ' ':
                   classNames += "   ";

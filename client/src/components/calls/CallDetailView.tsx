@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import RoomService from '../../services/room-service';
 import {BiArrowBack} from 'react-icons/bi'
 import { useAuth } from '../../hooks/use-auth';
+import {AiOutlinePaperClip} from "react-icons/ai";
 
 interface Message {
   role: string;
@@ -75,10 +76,12 @@ const handleBackButton  = () => {
     <section>
 
 
-<div className=" w-full h-full mt-16">
+<div className=" w-full h-3/5 mt-16">
 
-  <div className="relative roudend-t-xl  text-white w-full h-[70px] rounded-t-xl drop-shadow-lg dark:border-gray-100  bg-gradient-to-r from-gradient-pink to-gradient-blue flex justify-center items-center">
+  <div className="relative roudend-t-xl  text-white w-full h-[70px] rounded-t-xl drop-shadow-lg dark:border-gray-100 flex justify-center items-center bg-custom-purple-500">
+  {/* bg-gradient-to-r from-gradient-pink to-gradient-blue */}
   <button onClick={handleBackButton} className='absolute left-5 rounded-full p-1'><BiArrowBack size={35}/></button><div className='font-bold text-2xl select-none'>A Conversation between {speakers[0]} and {speakers[1]}</div>
+  <button className="absolute right-5" onClick={() => navigator.clipboard.writeText(conversation)}><AiOutlinePaperClip className='w-14 h-7'/></button>
   </div>
 
 <div className='h-2/4 overflow-y-auto tablescrollbar'>
