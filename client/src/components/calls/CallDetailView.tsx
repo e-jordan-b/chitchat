@@ -83,7 +83,7 @@ const handleBackButton  = () => {
 
 <div className='h-2/4 overflow-y-auto tablescrollbar'>
 
-  <div className="p-5 w-full max-w-screen-lg leading-8 break-words tablescrollbar bg-gray-100">
+  <div className="p-5 w-full max-w-screen-lg text-lg leading-10 break-words tablescrollbar bg-gray-100">
     <div>{conversation}</div>
 </div>
 
