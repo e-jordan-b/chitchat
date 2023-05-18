@@ -39,7 +39,7 @@ const sanatizeSummary = (summaryData: ISummaryData) => {
 
 export default function CallDetailView() {
   const [summary, setSummary] = useState<string>("")
-  const [speakers, setSpeakers] = useState<string[]>([])
+  const [speakers, setSpeakers] = useState<string[]>(['Leonor', 'Ali'])
   const [conversation, setConversation] = useState<string>("")
   const [isClicked, setIsClicked] = useState(true)
   const roomService = new RoomService();
@@ -54,18 +54,17 @@ console.log(mockData);
     const fetchData = async () => {
       console.log(roomId);
         try {
-            const response = await roomService.fecthFinalSummary(roomId!);
-            console.log(response);
-
+            const { summary } = await roomService.fecthFinalSummary(roomId!);
+            console.log('LEONS MESS RES: ', summary);
+            setConversation(String(summary!))
 
         } catch (error) {
             console.error('Error fetching data: ', error);
         }
     };
-    // fetchData();
-    const {speakers, conversation} = sanatizeSummary(mockData)
-    setSpeakers(speakers);
-    setConversation(conversation)
+    fetchData();
+
+
 }, []);
 
 const handleBackButton  = () => {
@@ -81,13 +80,16 @@ const handleBackButton  = () => {
 
   <div className="relative roudend-t-xl  text-white w-full h-[70px] rounded-t-xl drop-shadow-lg dark:border-gray-100 flex justify-center items-center bg-custom-purple-500">
   {/* bg-gradient-to-r from-gradient-pink to-gradient-blue */}
-  <button onClick={handleBackButton} className='absolute left-5 rounded-full p-1'><BiArrowBack size={35}/></button><div className='font-bold text-2xl select-none'>A Conversation between {speakers[0]} and {speakers[1]}</div>
+
+
+  <button onClick={handleBackButton} type="button"
+  className='absolute left-5 rounded-full p-1'><BiArrowBack size={35}/></button><div className='font-bold text-2xl select-none'>A Conversation between {speakers[0]} and {speakers[1]}</div>
   <button className="absolute right-5" onClick={() => {navigator.clipboard.writeText(conversation); setIsClicked(false)}}>{isClicked ? <BsClipboardPlus className='w-14 h-7'/> : <BsClipboardCheck className='w-14 h-7'/>} </button>
   </div>
 
-<div className='h-2/4 overflow-y-auto tablescrollbar'>
+<div className='h-full overflow-y-auto tablescrollbar'>
 
-  <div className="p-5 w-full max-w-screen-lg text-lg leading-10 break-words tablescrollbar bg-gray-100">
+  <div className="p-5 w-full h-full max-w-screen-lg text-lg leading-10 break-words tablescrollbar bg-gray-100">
     <div>{conversation}</div>
 </div>
 

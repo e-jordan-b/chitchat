@@ -13,7 +13,7 @@ dotenv.config();
 const httpServer = createHttpServer();
 
 // SocketServers
-// const streamSocketServer = createStreamSocketServer();
+const streamSocketServer = createStreamSocketServer();
 const signallingSocketServer = createSignallingSocketServer();
 const roomSocketServer = createRoomSocketServer();
 

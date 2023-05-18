@@ -1,9 +1,8 @@
 import React from 'react';
 import { useTable, CellProps, Column } from 'react-table';
 import { useNavigate } from 'react-router';
-import {AiFillEye} from 'react-icons/ai'
 import './table.css'
-import { TbHeartMinus } from 'react-icons/tb';
+import { CgNotes } from 'react-icons/cg';
 
 export type MeetingObject = {
   roomId: string;
@@ -42,7 +41,7 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
           <button className=' flex justify-center items-center h-5 w-6 mr-2 rounded-full '
             onClick={() => handleButtonClick(row.original.urlUUID)}
           >
-            <AiFillEye size={25} />
+            <CgNotes size={25} />
           </button>
         ),
       },

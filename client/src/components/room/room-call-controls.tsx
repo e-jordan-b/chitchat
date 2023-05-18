@@ -18,9 +18,9 @@ const RoomCallControls = () => {
 
     const url = searchParams.get('url');
 
-    const finalSummary = await roomService.fecthFinalSummary(url!);
+    // const finalSummary = await roomService.fecthFinalSummary(url!);
 
-    console.log(finalSummary);
+    // console.log(finalSummary);
 
     navigate(`/calls/summary/${url}`);
   };
