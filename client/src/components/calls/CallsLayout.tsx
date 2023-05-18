@@ -49,7 +49,7 @@ export default function CallsLayout() {
 
 
   return (
-    <div  className="flex h-screen w-screen flex-col justify-center items-center overflow-auto">
+    <div  className="flex h-full w-screen flex-col justify-center items-center overflow-auto dark:bg-gray-800">
     <nav className='w-full h-20 min-h-[80px] flex mb-auto items-center justify-between dark:bg-gray-800'>
       <div><img src={title} alt='chitchat title' className=' h-8 self-center ml-7 '></img></div>
       <div className='flex'>
