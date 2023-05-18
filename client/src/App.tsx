@@ -26,7 +26,7 @@ export default function App() {
 
             <Route path="/calls" element={ <CallsLayout/>} >
               <Route path=":userId" element={<CallHistory />} />
-              <Route path="call/:callId" element={<CallDetailView />} />
+              <Route path="summary/:roomId" element={<CallDetailView />} />
             </Route>
 
           </Route>

@@ -1,20 +1,10 @@
-import { useMemo, useState, useEffect, useContext } from 'react';
-import { useNavigate, useLoaderData, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import type { MeetingObject } from './Table';
-import CallsService from '../../services/calls-service';
-import AuthService from '../../services/auth-service';
-import { GoSignOut } from 'react-icons/go'
-import title from "../../assets/ChitChat.png"
-import {AiOutlineHome} from 'react-icons/ai'
 import axios from 'axios';
-
 import { Table } from './Table';
-import ApiService from '../../services/api-service';
-import { UserContext } from '../../user/user-context';
 
-
-
-  const meetings = [
+const meetings = [
     {
         "roomId": "645a205090d5f0e0b2b99689",
         "createdAt": 1683628112403,
@@ -74,17 +64,9 @@ import { UserContext } from '../../user/user-context';
 
 const CallHistory: React.FC = () => {
   const { userId } = useParams();
-  const callsService = new CallsService();
-  const [isLoading, setIsLoading] = useState(true);
   const [calls, setCalls] = useState<MeetingObject[] | []>([]);
-  const [date, setDate] = useState<Date>(new Date());
-  const navigate = useNavigate()
-  const authService = new AuthService();
-  const {user, update} = useContext(UserContext);
-
 
   useEffect(() => {
-
     const fetchData = async () => {
       console.log(userId);
         try {
@@ -103,48 +85,6 @@ const CallHistory: React.FC = () => {
     };
     fetchData();
 }, []);
-
-
-
-
-  const options: Intl.DateTimeFormatOptions = {
-    hour: '2-digit',
-    minute: '2-digit',
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short'
-  };
-
-
-  useEffect(() => {
-    const timerID = setInterval(() => {
-      setDate(new Date());
-    }, 60000);
-
-    return () => {
-      clearInterval(timerID);
-    };
-  }, []);
-
-  const formattedDate = date.toLocaleString('en-US', options);
-
-  const handleLogout = async () => {
-    try {
-      const response = await authService.signout();
-      if (!response.error) {
-        update(undefined);
-        navigate('/');
-      } else {
-        console.log(response.error);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-};
-
-
-
-
 
 
   return (

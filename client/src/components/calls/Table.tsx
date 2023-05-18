@@ -38,7 +38,7 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
 
         Cell: ({ row }: CellProps<MeetingObject>) => (
           <button className='flex justify-center items-center h-5 w-6 mr-2  rounded-full '
-            onClick={() => handleButtonClick(row.original.roomId)}
+            onClick={() => handleButtonClick(row.original.urlUUID)}
           >
             <AiFillEye size={25} />
           </button>
@@ -56,8 +56,9 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
     prepareRow,
   } = useTable({ columns, data });
 
-  const handleButtonClick = (roomId: string) => {
-    console.log('Button clicked with roomId: ', roomId);
+  const handleButtonClick = (roomId: any) => {
+    alert('Button clicked with roomId' + roomId);
+    navigate(`/calls/summary/${roomId}`);
   };
 
 
@@ -65,9 +66,9 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
     <div className='h-full '>
 
     <div {...getTableProps()} className=" w-full h-full">
-      <div className=" roudend-t-xl text-custom-purple-100 dark:text-white dark:border-b-4 h-20 rounded-t-xl drop-shadow-md dark:border-gray-100 dark:bg-gray-900 bg-custom-purple-900">
+      <div className=" roudend-t-xl  text-white  h-[70px] rounded-t-xl drop-shadow-lg dark:border-gray-100  bg-gradient-to-r from-gradient-pink to-gradient-blue">
         {headerGroups.map(headerGroup => (
-          <div {...headerGroup.getHeaderGroupProps()} className='flex justify-center rounded-t-xl h-5'>
+          <div {...headerGroup.getHeaderGroupProps()} className='flex justify-center rounded-t-xl h-5 font-semibold'>
             {headerGroup.headers.map((column , i)=> {
               let classNames = " text-2xl py-5 px-8 ";
               if (i === headerGroup.headers.length - 1) {
@@ -77,13 +78,13 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
 
               switch (column.id) {
                 case 'createdAt':
-                  classNames += " text-left pl-4 rounded-tl-xl min-w-[200px] mt-1 ";
+                  classNames += " text-left pl-4 rounded-tl-xl min-w-[200px]  ";
                   break;
                   case 'callSummary':
-                    classNames += "  ml-auto mt-1";
+                    classNames += "  ml-auto ";
                     break;
                 case 'agenda':
-                  classNames += "  ml-auto mr-5 mt-1  ";
+                  classNames += "  ml-auto mr-5   ";
                   break;
                 case ' ':
                   classNames += "   ";
@@ -100,16 +101,16 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
           </div>
         ))}
       </div>
-      <div className="h-2/4 overflow-y-auto tablescrollbar border-l-2 mt-1">
+      <div className="h-2/4 overflow-y-auto tablescrollbar ">
 
-      <div {...getTableBodyProps()} className="text-xl h-full font-medium dark:text-gray-900 ">
+      <div {...getTableBodyProps()} className="text-xl h-full font-medium bg-gray-50 dark:text-gray-900 ">
         {rows.map((row, i) => {
           prepareRow(row);
-          let rowClass = (i % 2 === 1) ? 'bg-gray-50' : '';
+          let rowClass = (i % 2 === 1) ? ' dark:bg-gray-50 bg-gray-50' : 'bg-gray-100';
           return (
-            <tr {...row.getRowProps({ className: `${i !== 0 ? "pt-4" : ""} border-b-2 border-gray-300 pt-2 ${rowClass}` })}>
+            <tr {...row.getRowProps({ className: `${i !== 0 ? "mt-4" : ""} border-b-2 border-gray-300 pt-2 ${rowClass}` })}>
               {row.cells.map((cell) => {
-                let classNames = "pl-4 py-2 dark:bg-gray-200";
+                let classNames = "pl-4 py-2 ";
 
 
 
@@ -144,7 +145,7 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
       </div>
       </div>
       <div>
-      <div className='h-5 dark:bg-gray-900 bg-custom-purple-900 rounded-b-lg'>
+      <div className='h-5 dark:bg-gray-900 bg-gradient-to-r from-gradient-pink to-gradient-blue rounded-b-lg'>
 
         <div className='rounded-bl-lg h-6'></div>
         <div></div>
