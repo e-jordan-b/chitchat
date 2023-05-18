@@ -71,11 +71,11 @@ const RoomCall: React.FC<{
 
   const setupPeerConnection = (socket: WebSocket) => {
     // We add tracks to the connection
+    const senders = peerConnection.getSenders();
+    if (senders.length) {
+      senders.forEach((sender) => peerConnection.removeTrack(sender));
+    }
     mediaStream?.getTracks().forEach((track) => {
-      const senders = peerConnection.getSenders();
-      if (senders.length) {
-        senders.forEach((sender) => peerConnection.removeTrack(sender));
-      }
 
       peerConnection.addTrack(track, mediaStream);
     });
