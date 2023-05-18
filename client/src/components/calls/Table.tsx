@@ -3,6 +3,7 @@ import { useTable, CellProps, Column } from 'react-table';
 import { useNavigate } from 'react-router';
 import {AiFillEye} from 'react-icons/ai'
 import './table.css'
+import { TbHeartMinus } from 'react-icons/tb';
 export type MeetingObject = {
   roomId: string;
   createdAt: number;
@@ -57,7 +58,6 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
   } = useTable({ columns, data });
 
   const handleButtonClick = (roomId: any) => {
-    alert('Button clicked with roomId' + roomId);
     navigate(`/calls/summary/${roomId}`);
   };
 
@@ -108,6 +108,10 @@ export const Table = ({ data }: { data: MeetingObject[] }) => {
           prepareRow(row);
           let rowClass = (i % 2 === 1) ? ' dark:bg-gray-50 bg-gray-50' : 'bg-gray-100';
           return (
+
+            // styling the table was a nightmare. tables dont take margin and without super custom components you cannot get a scrollbar inside
+            // the tr element is throwing an error in the console but i choose to ignore it <:
+
             <tr {...row.getRowProps({ className: `${i !== 0 ? "mt-4" : ""} border-b-2 border-gray-300 pt-2 ${rowClass}` })}>
               {row.cells.map((cell) => {
                 let classNames = "pl-4 py-2 ";
