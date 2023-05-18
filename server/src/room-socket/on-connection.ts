@@ -25,6 +25,8 @@ export const onConnection = (
   socketClient.roomId = roomUrl;
   socketClient.userId = userId;
 
+  console.log('RoomSocket/ClientID', socketClient.userId);
+
   socketClient.on('message', (data) =>
     socketOnMessage(socketServer, socketClient, data)
   );

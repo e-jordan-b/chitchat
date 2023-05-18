@@ -34,7 +34,10 @@ const mock = {
   message: 'Hi my name is eric',
 };
 
-const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
+const RoomLiveMenu: React.FC<{ url: string; speaker: string }> = ({
+  url,
+  speaker,
+}) => {
   const { sendEditUpdate, sendChatMessage, connect } = useLiveMenuSocket();
   const [menuState, setMenuState] = useState<MenuState>(MenuState.SUMMARY);
   const [summaries, setSummaries] = useState<Summary[]>([]);
@@ -54,7 +57,7 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    sendChatMessage('speaker', messageInput);
+    sendChatMessage(speaker, messageInput);
     setMessageInput('');
   };
 
@@ -187,6 +190,7 @@ const RoomLiveMenu: React.FC<{ url: string }> = ({ url }) => {
         <div className="flex flex-col mt-5">
           <div>
             {messages.map((message, idx) => {
+              console.log(message);
               let isFirst = true;
               if (
                 idx > 0 &&

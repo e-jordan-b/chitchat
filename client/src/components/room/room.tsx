@@ -18,7 +18,7 @@ enum RoomState {
 const Room: React.FC = () => {
   const [roomState, setRoomState] = useState<RoomState>(RoomState.VALIDATE); // Switch back to VALIDATE
   const { stream, error, requestPermissions } = useMediaStream();
-  const { socket, connectSocket } = useMediaSocket();
+  const { connectSocket } = useMediaSocket();
   const audioRecorder = useRef<MediaRecorder>();
   const renderCount = useRef<number>(0);
   const [searchParams, _] = useSearchParams();
@@ -50,7 +50,12 @@ const Room: React.FC = () => {
         console.log('Create WebSocketConnection');
         const url = searchParams.get('url');
         console.log(speaker.current);
-        connectSocket(url!, speaker.current, startMediaRecorder, stopMediaRecorder);
+        connectSocket(
+          url!,
+          speaker.current,
+          startMediaRecorder,
+          stopMediaRecorder
+        );
         break;
       }
     }
@@ -127,24 +132,31 @@ const Room: React.FC = () => {
 
   const inputSpeaker = (name: string) => {
     speaker.current = name;
-  }
+  };
 
   // [ END RoomState Handling ]
 
   const RenderSwitch: React.FC = () => {
     switch (roomState) {
       case RoomState.VALIDATE: {
-        return <RoomLoading/>;
+        return <RoomLoading />;
       }
       case RoomState.PRECALL: {
-        return <RoomPrecall onJoin={onJoin} mediaStream={stream} inputSpeaker={inputSpeaker}/>
-
+        return (
+          <RoomPrecall
+            onJoin={onJoin}
+            mediaStream={stream}
+            inputSpeaker={inputSpeaker}
+          />
+        );
       }
       case RoomState.CALL: {
         const url = searchParams.get('url');
         if (!url) return null;
 
-        return <RoomCall url={url} mediaStream={stream} />;
+        return (
+          <RoomCall url={url} mediaStream={stream} speaker={speaker.current} />
+        );
       }
     }
   };

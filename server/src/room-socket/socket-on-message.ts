@@ -22,6 +22,8 @@ export const socketOnMessage = (
           message: string;
         };
 
+        console.log('CHAT MESSAGE CLIENTID', (client as SocketClient).userId);
+
         client.send(
           JSON.stringify({
             type: message.type,

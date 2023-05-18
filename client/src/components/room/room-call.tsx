@@ -14,8 +14,9 @@ const SERVERS: RTCConfiguration = {
 
 const RoomCall: React.FC<{
   url: string;
+  speaker: string;
   mediaStream: MediaStream | undefined;
-}> = ({ url, mediaStream }) => {
+}> = ({ url, speaker, mediaStream }) => {
   const urlMemo = useMemo(() => url, [url]);
   const [peerConnection, _] = useState<RTCPeerConnection>(
     new RTCPeerConnection(SERVERS)
@@ -176,9 +177,9 @@ const RoomCall: React.FC<{
               <RoomCallControls />
             </div>
           </main>
-            <nav className="max-w-[500px] w-full h-full">
-              <RoomLiveMenu url={urlMemo}/>
-            </nav>
+          <nav className="max-w-[500px] w-full h-full">
+            <RoomLiveMenu url={urlMemo} speaker={speaker} />
+          </nav>
         </div>
       </div>
     </div>
