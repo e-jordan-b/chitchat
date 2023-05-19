@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { fetchRoomSummariesFromUrl } from '../models/room-model';
 import { ErrorMessage } from '../models/error-message';
-import { editSummaryById } from '../models/summary-model';
+import { editSummaryById, fetchUserSummaries } from '../models/summary-model';
 import sanitizeHtml from 'sanitize-html';
 import { createFinalSummary } from '../scheduler/scheduler';
+import { AuthenticatedRequest } from '../models/authenticated-request';
 
 // Fetch
 export const fetchSummaries = async (req: Request, res: Response) => {
@@ -76,5 +77,20 @@ export const getFinalSummary = async (req: Request, res: Response ) => {
     return;
   }
 
-  res.status(200).json(finalSummary);
+  res.status(201).json(finalSummary);
+}
+
+export const getSummariesByUserId = async (req: AuthenticatedRequest, res: Response) => {
+
+  // was the easiest fix instead of having to come up with a different way to handle it in the frontend
+  const userId = req.token!.id
+
+  const { rooms, error } = await fetchUserSummaries(userId);
+
+  if (!rooms || error) {
+    res.status(500).send(ErrorMessage.Error500);
+    return;
+  }
+
+  res.status(200).json(rooms);
 }

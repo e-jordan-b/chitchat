@@ -126,13 +126,13 @@ const Room: React.FC = () => {
     audioRecorder.current = undefined;
   };
 
-  const onJoin = () => {
+  const onJoin = (name: string) => {
+    speaker.current = name;
     setRoomState(RoomState.CALL);
   };
 
   const inputSpeaker = (name: string) => {
-    speaker.current = name;
-  };
+  }
 
   // [ END RoomState Handling ]
 
@@ -142,21 +142,14 @@ const Room: React.FC = () => {
         return <RoomLoading />;
       }
       case RoomState.PRECALL: {
-        return (
-          <RoomPrecall
-            onJoin={onJoin}
-            mediaStream={stream}
-            inputSpeaker={inputSpeaker}
-          />
-        );
+        return <RoomPrecall onJoin={onJoin} mediaStream={stream} />
+
       }
       case RoomState.CALL: {
         const url = searchParams.get('url');
         if (!url) return null;
 
-        return (
-          <RoomCall url={url} mediaStream={stream} speaker={speaker.current} />
-        );
+        return <RoomCall url={url} mediaStream={stream} speaker={speaker.current}/>;
       }
     }
   };

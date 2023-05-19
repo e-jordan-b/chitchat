@@ -2,19 +2,27 @@ import { useState } from 'react';
 import { AiFillPhone } from 'react-icons/ai';
 import { FaMicrophoneSlash, FaMicrophone} from 'react-icons/fa';
 import { BiVideo, BiVideoOff } from 'react-icons/bi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams} from 'react-router-dom';
+import RoomService from '../../services/room-service';
 
+const roomService = new RoomService()
 
 
 const RoomCallControls = () => {
   const navigate = useNavigate();
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoOn, setIsVideoOn] = useState(false);
+  const [searchParams, _] = useSearchParams();
 
+  const handleHangUp = async () => {
 
-  const handleHangUp = () => {
-    console.log('HANG UP');
-    navigate('/');
+    const url = searchParams.get('url');
+
+    // const finalSummary = await roomService.fecthFinalSummary(url!);
+
+    // console.log(finalSummary);
+
+    navigate(`/calls/summary/${url}`);
   };
 
   const handleMute = () => {

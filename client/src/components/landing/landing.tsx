@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import AuthModal from '../auth/auth-modal';
 import title from '../../assets/ChitChat.png'
 
@@ -6,16 +6,26 @@ import Lottie from 'lottie-react';
 import animation from '../../assets/animation.json';
 import CreateRoom from '../create-room/create-room';
 import { BsFillPersonFill } from "react-icons/bs"
-import { TbSquarePlus} from "react-icons/tb"
-import { useAuth } from '../../hooks/use-auth';
+import { BiConversation } from "react-icons/bi"
+import { TbSquarePlus } from "react-icons/tb"
 import { useNavigate } from 'react-router-dom';
-import {TbArrowBigRight} from 'react-icons/tb'
+import { GoSignOut } from 'react-icons/go'
+import { TbArrowBigRight } from 'react-icons/tb'
+import { UserContext } from '../../user/user-context';
+
+import AuthService from '../../services/auth-service';
 
 const Landing: React.FC = () => {
+  const {user, update} = useContext(UserContext);
+  console.log(user);
+
   const [showAuth, setShowAuth] = useState<boolean>(false);
   const [showCreate, setShowCreate] = useState<boolean>(false);
   const [joinCode, setJoinCode] = useState<string>('');
   const navigate = useNavigate()
+  const authService = new AuthService();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
 
   const options: Intl.DateTimeFormatOptions = {
     hour: '2-digit',
@@ -29,35 +39,98 @@ const Landing: React.FC = () => {
   useEffect(() => {
     const timerID = setInterval(() => {
       setDate(new Date());
-    }, 1000);
+    }, 60000);
 
     return () => {
       clearInterval(timerID);
     };
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const formattedDate = date.toLocaleString('en-US', options);
+
+  const handleLogout = async () => {
+    try {
+      const response = await authService.signout();
+      if (!response.error) {
+        update(undefined);
+      } else {
+        console.log(response.error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+};
+
+
+
 
   return (
 
-
-
-
-    <div id="landing-wrapper" className="flex h-screen w-screen flex-col justify-center items-center overflow-auto">
+    <div id="landing-wrapper" className="flex h-screen w-screen flex-col  items-center overflow-auto dark:bg-gray-800">
 
     <nav className='w-full h-20 min-h-[80px] flex items-center justify-between dark:bg-gray-800'>
       <div>
        <img src={title} alt='chitchat title' className=' h-8 self-center ml-7 '></img>
 
       </div>
-      <div className='flex '>
+      <div className='flex'>
 
 
         <div className='self-center mr-7 hidden font-medium sm:hidden md:block lg:block xl:block 2xl:block cursor-default	 dark:text-custom-purple-50'>{formattedDate}</div>
-        <button
-          onClick={() => {setShowAuth(true)}}
-          className='h-12 w-12  sm:w-32 ml:w-48 lg:w-48 xl:w-48 2xl:w-48 bg-custom-purple-500 rounded-md text-white text-lg flex justify-center items-center mr-7 shadow-md transition-colors duration-150 hover:bg-custom-purple-600 hover:shadow-xl' ><BsFillPersonFill className='sm:mr-2 md:mr-2 lg:mr-2 xl:mr-2 2xl:mr-2'/>{window.innerWidth >= 640 ? "Login" : null}</button>
-      </div>
+        { !user
+          ?
+          <button
+            data-testid='button-login'
+            onClick={() => {setShowAuth(true)}}
+            className={` ${"shake"}
+              flex justify-center items-center
+              h-12 w-12 mr-7
+              sm:w-32 ml:w-0 lg:w-40 xl:w-40 2xl:w-40
+              bg-custom-purple-500 hover:bg-custom-purple-600
+              rounded-md shadow-md hover:shadow-xl transition-colors duration-150 text-lg text-white`}
+            >
+              <BsFillPersonFill
+                className='sm:mr-2 md:mr-2 lg:mr-2 xl:mr-2 2xl:mr-2'/>
+                  { Number(windowWidth) >= 640 ? "Login" : null }
+          </button>
+          :
+          <div className='flex justify-center items-center'>
+          <button
+          onClick={() => navigate(`calls/${user._id}`)}
+            className='
+              flex justify-center items-center
+              h-12 w-12
+              sm:w-32 ml:w-32 lg:w-32 xl:w-32 2xl:w-32
+            bg-custom-purple-500 hover:bg-custom-purple-600
+              rounded-md shadow-md hover:shadow-xl transition-colors duration-150 text-lg text-white'
+            >
+              <BiConversation className='sm:mr-2 md:mr-2 lg:mr-2 xl:mr-2 2xl:mr-2'/>
+              <span className='hidden sm:hidden md:block'>Calls</span>
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className='
+              flex justify-center items-center
+              h-12 w-12 ml-4 mr-7
+
+            bg-custom-purple-900 hover:bg-custom-purple-600
+              rounded-md shadow-md hover:shadow-xl transition-colors duration-150 text-lg text-white'
+            >
+              <GoSignOut className=''/>
+
+          </button>
+          </div>}
+        </div>
     </nav>
 
 
@@ -97,7 +170,7 @@ const Landing: React.FC = () => {
               </button>
               <input
               className='text-lg text-center border border-custom-purple-500 text:custom-purple-500 rounded-md h-12 sm:ml-3 ml-3 w-36 md:w-48 lg:w-48 xl:w-48 2xl:w-48'
-              placeholder={window.innerWidth > 768 ? "Enter code to join" : "Enter code"}
+              placeholder={window.innerWidth > 767 ? "Enter code to join" : "Enter code"}
 
               onChange={(e) => setJoinCode(e.target.value)}
               ></input>
@@ -114,7 +187,7 @@ const Landing: React.FC = () => {
         </div>
       </div>
 
-      <section id="animated-illustration" className='w-full md:w-1/2 lg:w-1/2 xl:w-1/2 2xl:w-1/2 h-1/7 flex justify-center items-center m-0 sm:m-0'>
+      <section id="animated-illustration" className='w-full md:w-1/2 lg:w-1/2 xl:w-1/2 2xl:w-1/2 h-1/7  flex justify-center items-center m-0 sm:m-0'>
         <Lottie animationData={animation} loop={true} autoplay className='h-full w-11/12'></Lottie>
       </section>
 

@@ -8,7 +8,7 @@ import authMiddleware from '../middlewares/auth-middleware';
 export const createHttpServer = (): Express => {
   const app: Express = express();
 
-  app.use(cors({ origin: ['http://localhost:3000'], credentials: true }));
+  app.use(cors({ origin: ['http://localhost:3000', 'http://10.10.22.212:3000'], credentials: true }));
 
   app.use(cookieParser());
 

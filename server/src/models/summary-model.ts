@@ -1,5 +1,6 @@
 import mongoose, { MongooseError, ObjectId } from 'mongoose';
-import { Room } from './room-model';
+import { IRoom, Room } from './room-model';
+import { User } from './user-model';
 
 export interface ISummary {
   _id?: ObjectId | string;
@@ -65,3 +66,38 @@ export const updateRoomWithCallSummary = async (
     return { success: false, error: mongooseError };
   }
 };
+
+interface IUserRoom {
+  roomId: ObjectId;
+  roomName: string;
+  createdAt?: number;
+  urlUUID: string;
+  callSummary?: string;
+  agenda?: string[];
+}
+
+export const fetchUserSummaries = async (
+  userId: string,
+): Promise<{ rooms?: IUserRoom[]; error?: MongooseError }> => {
+
+  try {
+    const user = await User.findById(userId).populate('createdRooms').orFail();
+
+    const rooms: IUserRoom[] = user.createdRooms.map((room: any) => ({
+      roomId: room._id,
+      roomName: room.roomName,
+      createdAt: room.createdAt,
+      urlUUID: room.urlUUID,
+      callSummary: room.callSummary,
+      agenda: room.agenda,
+    }));
+
+    //console.log('rooms ---> ', rooms);
+    return { rooms };
+
+  } catch (error) {
+    console.error(error);
+    const mongooseError = error as MongooseError;
+    return { error: mongooseError };
+  }
+}

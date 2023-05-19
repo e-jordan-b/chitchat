@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { MutableRefObject, useEffect, useMemo, useRef, useState } from 'react';
 import './room-call.css';
 import useRTCSocket from '../../hooks/use-rtc-socket';
 import RoomCallControls from './room-call-controls';
@@ -16,7 +16,8 @@ const RoomCall: React.FC<{
   url: string;
   speaker: string;
   mediaStream: MediaStream | undefined;
-}> = ({ url, speaker, mediaStream }) => {
+
+}> = ({ url, mediaStream, speaker }) => {
   const urlMemo = useMemo(() => url, [url]);
   const [peerConnection, _] = useState<RTCPeerConnection>(
     new RTCPeerConnection(SERVERS)
@@ -71,11 +72,11 @@ const RoomCall: React.FC<{
 
   const setupPeerConnection = (socket: WebSocket) => {
     // We add tracks to the connection
+    const senders = peerConnection.getSenders();
+    if (senders.length) {
+      senders.forEach((sender) => peerConnection.removeTrack(sender));
+    }
     mediaStream?.getTracks().forEach((track) => {
-      const senders = peerConnection.getSenders();
-      if (senders.length) {
-        senders.forEach((sender) => peerConnection.removeTrack(sender));
-      }
 
       peerConnection.addTrack(track, mediaStream);
     });
@@ -177,9 +178,9 @@ const RoomCall: React.FC<{
               <RoomCallControls />
             </div>
           </main>
-          <nav className="max-w-[500px] w-full h-full">
-            <RoomLiveMenu url={urlMemo} speaker={speaker} />
-          </nav>
+            <nav className="max-w-[500px] w-full h-full">
+              <RoomLiveMenu url={urlMemo} speaker={speaker}/>
+            </nav>
         </div>
       </div>
     </div>

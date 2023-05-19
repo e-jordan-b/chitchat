@@ -27,6 +27,7 @@ const RoomSummary: React.FC<{
       </div>
       <button
         className="roomsummary__edit"
+        data-testid = 'edit-button'
         style={{ cursor: isLocked ? 'default' : 'pointer' }}
         onClick={() => {
           if (!isLocked) onEdit();

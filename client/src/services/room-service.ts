@@ -79,6 +79,27 @@ class RoomService extends ApiService {
     console.log(result);
     return { url: result.url };
   }
+
+  async fecthFinalSummary(
+    url: string
+  ) {
+    const { result, error } = await this.fetch<Summary>('summary/finalsummary', {
+      method: 'POST',
+      withCredentials: true,
+      body: {
+        url,
+      },
+    });
+
+    if (!result || error) {
+      console.log(error);
+      return { error };
+    }
+
+    return { summary: result };
+  }
+
 }
+
 
 export default RoomService;
